@@ -1,4 +1,4 @@
 # Bee Happy
 
 __Teachingbee__  
-Dies ist das Software-Projekt des 4. Semesters WI-7 an der HDM Stuttgart.
+This is the repo for the coding project of the 4th semester WI-7 at HDM Stuttgart.
