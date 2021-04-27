@@ -1,18 +1,17 @@
+-- create database
 DROP DATABASE IF EXISTS teachingbee;
 CREATE DATABASE teachingbee;
 
 USE teachingbee;
 
+
+-- create tables
 DROP TABLE IF EXISTS interests;
 CREATE TABLE interests (
   id int AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO interests (name) VALUES ('Sport');
-INSERT INTO interests (name) VALUES ('Mathe');
-INSERT INTO interests (name) VALUES ('Programmieren');
 
 DROP TABLE IF EXISTS profile;
 CREATE TABLE profile (
@@ -27,8 +26,6 @@ CREATE TABLE profile (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO profile (stamp, course, studytype, extroverted, frequency, online) VALUES ('2000-01-01 10:00:00', 'WI', 'audiovisuell', 3, 3, 1);
-
 DROP TABLE IF EXISTS interests_in_profile;
 CREATE TABLE interests_in_profile (
   id int AUTO_INCREMENT,
@@ -38,9 +35,6 @@ CREATE TABLE interests_in_profile (
   FOREIGN KEY (profileID) REFERENCES profile(id),
   FOREIGN KEY (interestID) REFERENCES interests(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO interests_in_profile (profileID, interestID) VALUES (1, 1);
-INSERT INTO interests_in_profile (profileID, interestID) VALUES (1, 2);
 
 DROP TABLE IF EXISTS person;
 CREATE TABLE person (
@@ -55,5 +49,16 @@ CREATE TABLE person (
   PRIMARY KEY (id),
   FOREIGN KEY (profileID) REFERENCES profile(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- insert values into tables
+INSERT INTO interests (name) VALUES ('Sport');
+INSERT INTO interests (name) VALUES ('Mathe');
+INSERT INTO interests (name) VALUES ('Programmieren');
+
+INSERT INTO profile (stamp, course, studytype, extroverted, frequency, online) VALUES ('2000-01-01 10:00:00', 'WI', 'audiovisuell', 3, 3, 1);
+
+INSERT INTO interests_in_profile (profileID, interestID) VALUES (1, 1);
+INSERT INTO interests_in_profile (profileID, interestID) VALUES (1, 2);
 
 INSERT INTO person (stamp, fname, lname, birthdate, semester, gender, profileID) VALUES ('2000-01-01 10:00:00', 'Paula', 'Pudding', '2000-01-01', 3, 'female', 1);
