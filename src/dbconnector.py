@@ -1,3 +1,9 @@
+'''
+module to select data from the database
+
+timestamps are messed up for now, needs to be fixed/looked into!
+'''
+
 import mysql.connector
 from mysql.connector import errorcode
 import json
