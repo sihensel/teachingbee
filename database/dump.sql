@@ -21,7 +21,7 @@ CREATE TABLE profile (
   studytype varchar(255) NOT NULL,
   extroverted int NOT NULL,
   frequency int NOT NULL,
-  online bit NOT NULL,
+  online int NOT NULL,
   /*on_off varchar(3) NOT NULL,*/
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -50,6 +50,68 @@ CREATE TABLE person (
   FOREIGN KEY (profileID) REFERENCES profile(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS studygroup;
+CREATE TABLE studygroup (
+  id int NOT NULL AUTO_INCREMENT,
+  stamp timestamp NOT NULL,
+  gname varchar(255),
+  head int NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (head) REFERENCES person(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS person_in_group;
+CREATE TABLE person_in_group (
+  id int NOT NULL AUTO_INCREMENT,
+  groupID int NOT NULL,
+  personID int NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (groupID) REFERENCES studygroup(id),
+  FOREIGN KEY (personID) REFERENCES person(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS chat;
+CREATE TABLE chat (
+  id int NOT NULL AUTO_INCREMENT,
+  stamp timestamp NOT NULL,
+  groupID int,
+  -- personID ???
+  PRIMARY KEY (id),
+  FOREIGN KEY (groupID) REFERENCES studygroup(id)
+  -- FK for person ???
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS message;
+CREATE TABLE message (
+  id int NOT NULL AUTO_INCREMENT,
+  stamp timestamp NOT NULL,
+  content varchar(255),
+  sender int NOT NULL,
+  chatID int NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (sender) REFERENCES person(id),
+  FOREIGN KEY (chatID) REFERENCES chat(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS person_in_chat;
+CREATE TABLE person_in_chat (
+  id int NOT NULL AUTO_INCREMENT,
+  personID int NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (personID) REFERENCES person(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS request;
+CREATE TABLE request (
+  id int NOT NULL,
+  stamp timestamp NOT NULL,
+  sender int NOT NULL,
+  recipient int NOT NULL,
+  is_resolved int NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (sender) REFERENCES person(id),
+  FOREIGN KEY (recipient) REFERENCES person(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- insert values into tables
 INSERT INTO interests (name) VALUES ('Sport');
