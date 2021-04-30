@@ -18,7 +18,7 @@ CREATE TABLE Profile (
   id int AUTO_INCREMENT,
   stamp timestamp NOT NULL,
   course varchar(255) NOT NULL,
-  studytype varchar(255) NOT NULL,  -- int or varchar?
+  studytype varchar(255) NOT NULL,
   extroverted int NOT NULL,         -- value between 1 and 5
   frequency int NOT NULL,           -- value between 1 and 5
   online int NOT NULL,              -- online is either 1 or 0 (0 = offline)
@@ -43,7 +43,7 @@ CREATE TABLE Person (
   lname varchar(100) NOT NULL,    -- lname = last name
   birthdate date NOT NULL,
   semester int NOT NULL,
-  gender varchar(100) NOT NULL,   -- or int?
+  gender varchar(100) NOT NULL,
   profileID int,
   PRIMARY KEY (id),
   FOREIGN KEY (profileID) REFERENCES Profile(id)
@@ -54,9 +54,9 @@ CREATE TABLE Studygroup (
   id int NOT NULL AUTO_INCREMENT,
   stamp timestamp NOT NULL,
   gname varchar(255),         -- gname = group name
-  head int NOT NULL,          -- head = group admin
+  admin int NOT NULL,          -- head = group admin
   PRIMARY KEY (id),
-  FOREIGN KEY (head) REFERENCES Person(id)
+  FOREIGN KEY (admin) REFERENCES Person(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS R_person_group;
