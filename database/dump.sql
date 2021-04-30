@@ -6,15 +6,15 @@ USE teachingbee;
 
 
 -- create tables
-DROP TABLE IF EXISTS interests;
-CREATE TABLE interests (
+DROP TABLE IF EXISTS Interests;
+CREATE TABLE Interests (
   id int AUTO_INCREMENT,
   iname varchar(255) NOT NULL,  -- iname = interest name
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS profile;
-CREATE TABLE profile (
+DROP TABLE IF EXISTS Profile;
+CREATE TABLE Profile (
   id int AUTO_INCREMENT,
   stamp timestamp NOT NULL,
   course varchar(255) NOT NULL,
@@ -25,18 +25,18 @@ CREATE TABLE profile (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS r_interests_profile;
-CREATE TABLE r_interests_profile (
+DROP TABLE IF EXISTS R_interests_profile;
+CREATE TABLE R_interests_profile (
   id int AUTO_INCREMENT,
   profileID int NOT NULL,
   interestID int NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (profileID) REFERENCES profile(id),
-  FOREIGN KEY (interestID) REFERENCES interests(id)
+  FOREIGN KEY (profileID) REFERENCES Profile(id),
+  FOREIGN KEY (interestID) REFERENCES Interests(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS person;
-CREATE TABLE person (
+DROP TABLE IF EXISTS Person;
+CREATE TABLE Person (
   id int NOT NULL AUTO_INCREMENT,
   stamp timestamp NOT NULL,
   fname varchar(100) NOT NULL,    -- fname = first name
@@ -46,81 +46,81 @@ CREATE TABLE person (
   gender varchar(100) NOT NULL,   -- or int?
   profileID int,
   PRIMARY KEY (id),
-  FOREIGN KEY (profileID) REFERENCES profile(id)
+  FOREIGN KEY (profileID) REFERENCES Profile(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS studygroup;
-CREATE TABLE studygroup (
+DROP TABLE IF EXISTS Studygroup;
+CREATE TABLE Studygroup (
   id int NOT NULL AUTO_INCREMENT,
   stamp timestamp NOT NULL,
   gname varchar(255),         -- gname = group name
   head int NOT NULL,          -- head = group admin
   PRIMARY KEY (id),
-  FOREIGN KEY (head) REFERENCES person(id)
+  FOREIGN KEY (head) REFERENCES Person(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS r_person_group;
-CREATE TABLE r_person_group (
+DROP TABLE IF EXISTS R_person_group;
+CREATE TABLE R_person_group (
   id int NOT NULL AUTO_INCREMENT,
   groupID int NOT NULL,
   personID int NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (groupID) REFERENCES studygroup(id),
-  FOREIGN KEY (personID) REFERENCES person(id)
+  FOREIGN KEY (groupID) REFERENCES Studygroup(id),
+  FOREIGN KEY (personID) REFERENCES Person(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS chat;
-CREATE TABLE chat (
+DROP TABLE IF EXISTS Chat;
+CREATE TABLE Chat (
   id int NOT NULL AUTO_INCREMENT,
   stamp timestamp NOT NULL,
   groupID int,
   -- personID ???
   PRIMARY KEY (id),
-  FOREIGN KEY (groupID) REFERENCES studygroup(id)
+  FOREIGN KEY (groupID) REFERENCES Studygroup(id)
   -- FK for person ???
   -- how to differentiate between group and person?
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS message;
-CREATE TABLE message (
+DROP TABLE IF EXISTS Message;
+CREATE TABLE Message (
   id int NOT NULL AUTO_INCREMENT,
   stamp timestamp NOT NULL,
   content varchar(255),
   sender int NOT NULL,
   chatID int NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (sender) REFERENCES person(id),
-  FOREIGN KEY (chatID) REFERENCES chat(id)
+  FOREIGN KEY (sender) REFERENCES Person(id),
+  FOREIGN KEY (chatID) REFERENCES Chat(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS r_person_chat;
-CREATE TABLE r_person_chat (
+DROP TABLE IF EXISTS R_person_chat;
+CREATE TABLE R_person_chat (
   id int NOT NULL AUTO_INCREMENT,
   personID int NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (personID) REFERENCES person(id)
+  FOREIGN KEY (personID) REFERENCES Person(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS request;
-CREATE TABLE request (
+DROP TABLE IF EXISTS Request;
+CREATE TABLE Request (
   id int NOT NULL,
   stamp timestamp NOT NULL,
   sender int NOT NULL,
   recipient int NOT NULL,
   is_resolved int NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (sender) REFERENCES person(id),
-  FOREIGN KEY (recipient) REFERENCES person(id)
+  FOREIGN KEY (sender) REFERENCES Person(id),
+  FOREIGN KEY (recipient) REFERENCES Person(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- insert values into tables
-INSERT INTO interests (iname) VALUES ('Sport');
-INSERT INTO interests (iname) VALUES ('Mathe');
-INSERT INTO interests (iname) VALUES ('Programmieren');
+INSERT INTO Interests (iname) VALUES ('Sport');
+INSERT INTO Interests (iname) VALUES ('Mathe');
+INSERT INTO Interests (iname) VALUES ('Programmieren');
 
-INSERT INTO profile (stamp, course, studytype, extroverted, frequency, online) VALUES ('2000-01-01 10:00:00', 'WI', 'audiovisuell', 3, 3, 1);
+INSERT INTO Profile (stamp, course, studytype, extroverted, frequency, online) VALUES ('2000-01-01 10:00:00', 'WI', 'audiovisuell', 3, 3, 1);
 
-INSERT INTO r_interests_profile (profileID, interestID) VALUES (1, 1);
-INSERT INTO r_interests_profile (profileID, interestID) VALUES (1, 2);
+INSERT INTO R_interests_profile (profileID, interestID) VALUES (1, 1);
+INSERT INTO R_interests_profile (profileID, interestID) VALUES (1, 2);
 
-INSERT INTO person (stamp, fname, lname, birthdate, semester, gender, profileID) VALUES ('2000-01-01 10:00:00', 'Paula', 'Pudding', '2000-01-01', 3, 'female', 1);
+INSERT INTO Person (stamp, fname, lname, birthdate, semester, gender, profileID) VALUES ('2000-01-01 10:00:00', 'Paula', 'Pudding', '2000-01-01', 3, 'female', 1);
