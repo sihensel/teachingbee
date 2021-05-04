@@ -55,8 +55,10 @@ CREATE TABLE Studygroup (
   stamp timestamp NOT NULL,
   gname varchar(255),         -- gname = group name
   admin int NOT NULL,          -- head = group admin
+  profileID int NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (admin) REFERENCES Person(id)
+  FOREIGN KEY (profileID) REFERENCES Profile(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS R_person_group;
