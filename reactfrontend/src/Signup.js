@@ -13,7 +13,7 @@ class UserSignup extends React.Component {
     }
   
     render() {
-      return (
+        return (
             <div>
                 <h1>SignUp</h1>
                 <form>
@@ -32,13 +32,28 @@ class UserSignup extends React.Component {
                             <option value="d">Diverse</option>
                         </select><br/>
                 </form>
-                <button onClick={this.handleSubmit}>Absenden</button>
+                <button onClick={this.handleSubmit.bind(this)}>Absenden</button>
             </div>
       );
     }
   
     handleSubmit(){
-        console.log("hallo")
+      // Simple POST request with a JSON body using fetch
+      console.log("test");
+      const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                fname: this.state.fname,
+                lname: this.state.lname,
+                date: this.state.date,
+                semester: this.state.semester,
+                gender: this.state.gender
+                })
+         };
+        fetch('https://localhost:5000/api', requestOptions)
+            .then(response => response.json())
+            .then(data => this.setState({ postId: data.id }));
     }
 
     updateFname(evt) {
