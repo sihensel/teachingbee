@@ -23,6 +23,7 @@ elif usr == 'simon':
     HOST = '192.168.0.105'
     DB = 'teachingbee'
 
+
 '''
 try:
     cnx = mysql.connector.connect(user=USER, password=PASSWD,
