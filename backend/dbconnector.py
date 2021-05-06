@@ -9,15 +9,14 @@ from mysql.connector import errorcode
 import json
 
 # only for testing purposes
-usr = 'simon'
+import sys
 
-if usr == 'jacky':
-    USER = ''
-    PASSWD = ''
+if sys.platform == 'darwin':
+    USER = 'root'
+    PASSWD = 'Password'
     HOST = 'localhost'
     DB = 'teachingbee'
-
-elif usr == 'simon':
+elif sys.platform == 'win32':
     USER = 'me'
     PASSWD = 'password'
     HOST = '192.168.0.105'
