@@ -27,6 +27,7 @@ class UserSignup extends React.Component {
                     <input type="text" value={this.state.semester} onChange={evt => this.updateSemester(evt)}></input><br/>
                     <label htmlFor="gender">Geschlecht:</label><br/>
                         <select id="gender" value={this.state.gender} onChange={evt => this.updateGender(evt)}>
+                            <option value=""></option>
                             <option value="f">Weiblich</option>
                             <option value="m">Männlich</option>
                             <option value="d">Diverse</option>
