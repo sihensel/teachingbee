@@ -63,3 +63,6 @@ def insert(fetch_data):
     cnx.commit()
     cnx.close()
     print(cursor)
+
+def select():
+    pass
