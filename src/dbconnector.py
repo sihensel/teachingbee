@@ -9,7 +9,7 @@ from mysql.connector import errorcode
 import json
 
 # only for testing purposes
-usr = 'jacky'
+usr = 'simon'
 
 if usr == 'jacky':
     USER = ''

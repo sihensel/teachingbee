@@ -57,7 +57,7 @@ CREATE TABLE Studygroup (
   admin int NOT NULL,          -- head = group admin
   profileID int NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (admin) REFERENCES Person(id)
+  FOREIGN KEY (admin) REFERENCES Person(id),
   FOREIGN KEY (profileID) REFERENCES Profile(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
