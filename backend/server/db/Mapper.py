@@ -1,0 +1,1 @@
+# Super-Klasse von der alle Mapper erben
