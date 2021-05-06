@@ -16,12 +16,12 @@ CREATE TABLE Interests (
 DROP TABLE IF EXISTS Profile;
 CREATE TABLE Profile (
   id int AUTO_INCREMENT,
-  stamp timestamp NOT NULL,
+  stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   course varchar(255) NOT NULL,
-  studytype varchar(255) NOT NULL,
+  studytype varchar(255) NOT NULL,  -- auditiv, visuell, kommunikativ, motorisch
   extroverted int NOT NULL,         -- value between 1 and 5
   frequency int NOT NULL,           -- value between 1 and 5
-  online int NOT NULL,              -- online is either 1 or 0 (0 = offline)
+  online int NOT NULL,              -- online is either 0 (offline) or 1 (online) or 2 (both)
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -52,9 +52,9 @@ CREATE TABLE Person (
 DROP TABLE IF EXISTS Studygroup;
 CREATE TABLE Studygroup (
   id int NOT NULL AUTO_INCREMENT,
-  stamp timestamp NOT NULL,
+  stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   gname varchar(255),         -- gname = group name
-  admin int NOT NULL,          -- head = group admin
+  admin int NOT NULL,
   profileID int NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (admin) REFERENCES Person(id),
@@ -74,7 +74,7 @@ CREATE TABLE R_person_group (
 DROP TABLE IF EXISTS Chat;
 CREATE TABLE Chat (
   id int NOT NULL AUTO_INCREMENT,
-  stamp timestamp NOT NULL,
+  stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   groupID int,
   -- personID ???
   PRIMARY KEY (id),
@@ -86,7 +86,7 @@ CREATE TABLE Chat (
 DROP TABLE IF EXISTS Message;
 CREATE TABLE Message (
   id int NOT NULL AUTO_INCREMENT,
-  stamp timestamp NOT NULL,
+  stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   content varchar(255),
   sender int NOT NULL,
   chatID int NOT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE R_person_chat (
 DROP TABLE IF EXISTS Request;
 CREATE TABLE Request (
   id int NOT NULL,
-  stamp timestamp NOT NULL,
+  stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   sender int NOT NULL,
   recipient int NOT NULL,
   is_resolved int NOT NULL,
@@ -117,12 +117,33 @@ CREATE TABLE Request (
 
 -- insert values into tables
 INSERT INTO Interests (iname) VALUES ('Sport');
-INSERT INTO Interests (iname) VALUES ('Mathe');
-INSERT INTO Interests (iname) VALUES ('Programmieren');
+INSERT INTO Interests (iname) VALUES ('Technik');
+INSERT INTO Interests (iname) VALUES ('Natur');
+INSERT INTO Interests (iname) VALUES ('Sprachen');
+INSERT INTO Interests (iname) VALUES ('Kultur');
+INSERT INTO Interests (iname) VALUES ('Musik');
+INSERT INTO Interests (iname) VALUES ('Reisen');
+INSERT INTO Interests (iname) VALUES ('Gaming');
+INSERT INTO Interests (iname) VALUES ('Kreativität');
 
-INSERT INTO Profile (stamp, course, studytype, extroverted, frequency, online) VALUES ('2000-01-01 10:00:00', 'WI', 'audiovisuell', 3, 3, 1);
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 3, 3, 1);
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('OM', 'kommunikativ', 2, 4, 0);
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('ID', 'motorisch', 4, 4, 2);
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('IW', 'visuell', 3, 2, 1);
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 1, 2, 2);
+
+INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paula', 'Pudding', '2000-01-01', 3, 'female', 1);
+INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paul', 'Meier', '2000-01-01', 2, 'female', 2);
+INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Petra', 'Müller', '2000-01-01', 1, 'male', 3);
+INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Sabine', 'Kurz', '2000-01-01', 4, 'female', 4);
+INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Hans', 'Lang', '2000-01-01', 6, 'male', 5);
 
 INSERT INTO R_interests_profile (profileID, interestID) VALUES (1, 1);
 INSERT INTO R_interests_profile (profileID, interestID) VALUES (1, 2);
-
-INSERT INTO Person (stamp, fname, lname, birthdate, semester, gender, profileID) VALUES ('2000-01-01 10:00:00', 'Paula', 'Pudding', '2000-01-01', 3, 'female', 1);
+INSERT INTO R_interests_profile (profileID, interestID) VALUES (2, 4);
+INSERT INTO R_interests_profile (profileID, interestID) VALUES (2, 5);
+INSERT INTO R_interests_profile (profileID, interestID) VALUES (3, 7);
+INSERT INTO R_interests_profile (profileID, interestID) VALUES (4, 3);
+INSERT INTO R_interests_profile (profileID, interestID) VALUES (4, 8);
+INSERT INTO R_interests_profile (profileID, interestID) VALUES (5, 9);
+INSERT INTO R_interests_profile (profileID, interestID) VALUES (5, 3);
