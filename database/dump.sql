@@ -38,7 +38,7 @@ CREATE TABLE R_interests_profile (
 DROP TABLE IF EXISTS Person;
 CREATE TABLE Person (
   id int NOT NULL AUTO_INCREMENT,
-  stamp timestamp NOT NULL,
+  stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   fname varchar(100) NOT NULL,    -- fname = first name
   lname varchar(100) NOT NULL,    -- lname = last name
   birthdate date NOT NULL,
