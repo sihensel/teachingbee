@@ -33,5 +33,5 @@ class BusinessObject(ABC):
         return self._name
     
     def set_name(self, value):
-        """Setzen der ID."""
+        """Setzen des Namens."""
         self._name = value

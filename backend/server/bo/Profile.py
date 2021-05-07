@@ -73,12 +73,3 @@ class Profile (bo.BusinessObject):
         obj.set_frequency(dictionary["frequency"])
         obj.set_online(dictionary["online"])
         return obj
-
-testobj = Profile()
-
-
-data = {'id': 3, 'course': 'WI', 'studytype': 'visuell', 'extroverted': 3, 'frequency': 3, 'online': 1}
-
-testobj = testobj.from_dict(data)
-
-print(testobj.__str__())
