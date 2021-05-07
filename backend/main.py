@@ -18,8 +18,6 @@ def api_post():
 
         dbconnector.insert(data)
         
-        
-        
         return 'Success', 200
 
     if request.method == 'GET':

@@ -8,11 +8,20 @@ import mysql.connector
 from mysql.connector import errorcode
 import json
 
+# only for testing purposes
+import sys
 
-USER = 'me'
-PASSWD = 'password'
-HOST = '192.168.0.105'
-DB = 'teachingbee'
+if sys.platform == 'darwin':
+    USER = 'root'
+    PASSWD = 'Password'
+    HOST = 'localhost'
+    DB = 'teachingbee'
+elif sys.platform == 'win32':
+    USER = 'me'
+    PASSWD = 'password'
+    HOST = '192.168.0.105'
+    DB = 'teachingbee'
+
 
 '''
 try:
@@ -54,3 +63,6 @@ def insert(fetch_data):
     cnx.commit()
     cnx.close()
     print(cursor)
+
+def select():
+    pass

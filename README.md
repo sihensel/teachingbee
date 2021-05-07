@@ -11,7 +11,8 @@ Sign Up | Lisa, Tim
 Login | 
 Logout | 
 Create Profile | Kai & Tobi
-Manage Profile | 
+Manage Profile | Jacky, Simon
+Manage Person | Jacky, Simon
 Browse Recommendations |
 Request Contact |
 Chat |
