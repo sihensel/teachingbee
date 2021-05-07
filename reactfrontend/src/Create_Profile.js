@@ -44,7 +44,7 @@ class Create_Profile extends React.Component {
                         </select><br/>
 
 
-                <label htmlFor="interests">Interessen:</label><br/>
+                <label htmlFor="interests">Interessen:</label><br/> 
                         <select id="interests" value={this.state.interests} onChange={evt => this.updateInterests(evt)}>
                             <option value="1">LOREM OPSUM</option>
                             <option value="2">LOREM OPSUM</option>

@@ -17,9 +17,9 @@ if sys.platform == 'darwin':
     HOST = 'localhost'
     DB = 'teachingbee'
 elif sys.platform == 'win32':
-    USER = 'me'
+    USER = 'root'
     PASSWD = 'password'
-    HOST = '192.168.0.105'
+    HOST = '127.0.0.1:3000'
     DB = 'teachingbee'
 
 

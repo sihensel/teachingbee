@@ -1,4 +1,5 @@
 from Mapper import Mapper
+
 ##Habe noch Probleme das die Mysql datenbank einen error gibt 2005 Unknown MySQL server host obwohl alle Daten stimmen
 class InterestMapper(Mapper):
     """Mapper-Klasse, die Customer-Objekte auf eine relationale
@@ -17,7 +18,7 @@ class InterestMapper(Mapper):
         """
         interests = {}
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from Interest")
+        cursor.execute("SELECT * from Interests")
         tuples = cursor.fetchall()
 
         for (id, iname) in tuples:
@@ -53,16 +54,8 @@ class InterestMapper(Mapper):
 
 
 
-
-"""Zu Testzwecken können wir diese Datei bei Bedarf auch ausführen, 
-um die grundsätzliche Funktion zu überprüfen.
-
-Anmerkung: Nicht professionell aber hilfreich..."""
-if (__name__ == "__main__"):
-    with InterestMapper() as mapper:
-        result = mapper.find_all()
-        for p in result:
-            print(p)
+x = InterestMapper()
+print(x.find_all())
 
 
 

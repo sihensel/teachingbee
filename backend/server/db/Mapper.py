@@ -20,7 +20,7 @@ class Mapper (AbstractContextManager, ABC):
             # Windows
             USER = 'root'
             PASSWD = 'password'
-            HOST = '127.0.0.1:3306'
+            HOST = 'LocalHost'
             DB = 'teachingbee'
 
         self._cnx = connector.connect(user=USER, password=PASSWD,
