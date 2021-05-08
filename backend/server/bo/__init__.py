@@ -1,1 +1,1 @@
-print("bla")
+print("db package (Mapper) wird initialisiert...")

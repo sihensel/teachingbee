@@ -1,5 +1,9 @@
-from server.db.Mapper import Mapper
-from backend.server.bo.Person import Person
+from Mapper import Mapper
+import sys
+import sys
+sys.path.append(".:/server/bo/Person")
+from Person import Person
+
 
 class PersonMapper(Mapper):
     def __init__(self):
