@@ -21,3 +21,19 @@ Create Group |
 Leave Group |
 Invite Student in Group |
 Kick Student from Group |
+
+
+## Enable Imports in VSCode
+
+```json
+"terminal.integrated.env.osx": {
+    "PYTHONPATH": "${workspaceFolder}/backend",
+},
+"terminal.integrated.env.linux": {
+    "PYTHONPATH": "${workspaceFolder}/backend",
+},
+"terminal.integrated.env.windows": {
+    "PYTHONPATH": "${workspaceFolder}/backend",
+},
+"python.envFile": "${workspaceFolder}/.env"
+```
