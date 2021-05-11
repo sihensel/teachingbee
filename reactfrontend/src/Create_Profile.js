@@ -19,12 +19,16 @@ class Create_Profile extends React.Component {
     render() {
         return (
             <div>
-                <h1>Create Profile</h1>
+                <h1>Profil erstellen</h1>
+                
                 <form>
                 <label htmlFor="frequency">Lernfrequenz:</label><br/>
                         <select id="frequency" value={this.state.frequency} onChange={evt => this.updateFrequency(evt)}>
-                            <option value="1">Likert skala maybe? link in front end</option>
                             
+                            <option value="1">1 mal die Woche</option>
+                            <option value="2">2-3 mal die Woche</option>
+                            <option value="3">4 mal oder mehr</option>
+                            {/* Likert Skala oder so coole Bausteine zum durchklicken */} 
                         </select><br/>
 
                 <label htmlFor="online">Online oder Offline lernen?:</label><br/>
@@ -46,9 +50,18 @@ class Create_Profile extends React.Component {
 
                 <label htmlFor="interests">Interessen:</label><br/> 
                         <select id="interests" value={this.state.interests} onChange={evt => this.updateInterests(evt)}>
-                            <option value="1">LOREM OPSUM</option>
-                            <option value="2">LOREM OPSUM</option>
-                            <option value="3">LOREM OPSUM</option>
+                            <option value ="1">Sport</option>
+                            <option value ="2">Technik</option>
+                            <option value ="3">Natur</option>
+                            <option value ="4">Sprachen</option>
+                            <option value ="5">Kultur</option>
+                            <option value ="6">Musik</option>
+                            <option value ="7">Reisen</option>
+                            <option value ="8">Gaming</option>
+                            <option value ="9">Kreativität</option>
+                            {/* mehrere auswählbar machen */} 
+
+                        
                         </select><br/>
 
                 <label htmlFor="studytype">Wie lernst du lieber?:</label><br/>
@@ -61,14 +74,20 @@ class Create_Profile extends React.Component {
 
                 <label htmlFor="extroverted">Wie extrovertiert bist du?:</label><br/>
                         <select id="extroverted" value={this.state.frequency} onChange={evt => this.updateExtroverted(evt)}>
-                            <option value="extro-skala">1 bis 5?</option>
+                            <option value="ex1">sehr wenig</option>
+                            <option value="ex1">wenig</option>
+                            <option value="ex1">neutral</option>
+                            <option value="ex1">sehr</option>
+
+                            {/* Likert Skala */} 
+
                         </select><br/>       
                 </form>
                 <button onClick={this.handleSubmit.bind(this)}>Profil erstellen</button>
             </div>
       );
     }
-  
+    
     handleSubmit(){
       
         // Simple POST request with a JSON body using fetch
