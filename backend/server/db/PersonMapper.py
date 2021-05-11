@@ -1,13 +1,11 @@
-from Mapper import Mapper
+from server.db.Mapper import Mapper
 import sys
-import sys
-sys.path.append(".:/server/bo/Person")
-from Person import Person
+from server.bo.Person import Person
 
 
 class PersonMapper(Mapper):
-    def __init__(self):
-        super.__init__()
+    #def __init__(self):
+        #super(self).__init__()
 
     def find_all(self):
         """Auslesen aller Benutzer unseres Systems.
@@ -119,14 +117,18 @@ class PersonMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 person.set_id(1)
 
+        print(person)
+
         command = "INSERT INTO person (id, stamp, fname, lname, birthdate, semester, gender, profileID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        data = (person.get_id(), person.get_timestamp(), person.get_fname(), person.get_lname(), person.get_birthdate(), person.get_semester(), person.get_gender(), NULL)
+        data = (person.get_id(), person.get_timestamp(), person.get_fname(), person.get_lname(), person.get_birthdate(), person.get_semester(), person.get_gender(), 5)
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
+
         return person
+
 
     def update(self, person):
         """Wiederholtes Schreiben eines Objekts in die Datenbank.
@@ -160,8 +162,8 @@ class PersonMapper(Mapper):
 um die grundsätzliche Funktion zu überprüfen.
 
 Anmerkung: Nicht professionell aber hilfreich..."""
-if (__name__ == "__main__"):
-    with PersonMapper() as mapper:
-        result = mapper.find_all()
-        for user in result:
-            print(user)
+#if (__name__ == "__main__"):
+    #with PersonMapper() as mapper:
+        #result = mapper.find_all()
+        #for user in result:
+            #print(user)

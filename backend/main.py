@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from server.bo.Person import Person
+from server.db.PersonMapper import PersonMapper as pm
 
 import dbconnector
 
@@ -21,7 +22,8 @@ def api_post():
         person.set_semester(data["semester"])
         person.set_fname(data["fname"])
         person.set_lname(data["lname"])
-        person.save_person()
+        mapper = pm()
+        mapper.insert(person)
         return 'Success', 200
 
     if request.method == 'GET':
