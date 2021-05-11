@@ -1,4 +1,4 @@
-import BusinessObject as bo
+import server.bo.BusinessObject as bo
 
 
 class Profile (bo.BusinessObject):
