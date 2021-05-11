@@ -17,7 +17,7 @@ Browse Recommendations |
 Request Contact |
 Chat |
 Join Group |
-Create Group |
+Create Group | Lisa, Tim
 Leave Group |
 Invite Student in Group |
 Kick Student from Group |
