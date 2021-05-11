@@ -1,6 +1,6 @@
-import BusinessObject as bo
+import server.bo.BusinessObject as bo
 from datetime import datetime
-from PersonMapper import PersonMapper
+from server.db.PersonMapper import PersonMapper
 
 class Person(bo.BusinessObject):
     def __init__(self):
