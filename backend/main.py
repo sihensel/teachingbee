@@ -1,6 +1,7 @@
 #import flask
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
+from server.db.InterestMapper import InterestMapper as IM
 
 import dbconnector
 
@@ -24,5 +25,17 @@ def api_post():
         data = request.get_json()
 
         return 'Success', 200
+        
+
+@app.route('/create_profile', methods=['GET'])
+def create_profile_post():
+    if request.method == 'GET':
+        data = request.get_json()
+        interest = IM()
+        interest_list = interest.find_all()
+
+
+        return jsonify(interest_list)
+
 
 app.run(debug=True)

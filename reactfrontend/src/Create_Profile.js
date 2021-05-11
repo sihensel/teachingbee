@@ -16,6 +16,9 @@ class Create_Profile extends React.Component {
       };
     }
   //get methode reinmachen für interest mapper hier, vor render()
+        
+
+  
     render() {
         return (
             <div>
@@ -84,9 +87,21 @@ class Create_Profile extends React.Component {
                         </select><br/>       
                 </form>
                 <button onClick={this.handleSubmit.bind(this)}>Profil erstellen</button>
+                <button onClick={this.get_interests(this)}>Interessen</button>
             </div>
       );
     }
+    get_interests(){
+        var result = {}
+  
+    fetch('http://127.0.0.1:5000/create_profile', {
+              method: 'GET',
+              headers: {'content-type': 'application/json'}
+             }).then(res=>{res.json()})
+             .then(data=>result = data)
+  
+             console.log(result)
+          }
     
     handleSubmit(){
       
@@ -109,7 +124,7 @@ class Create_Profile extends React.Component {
             //console.log(response.json())
             */
 
-        fetch('http://127.0.0.1:5000/api', {
+        fetch('http://127.0.0.1:5000/create_profile', {
             method: 'post',
             headers: {'content-type': 'application/json'},
             body: JSON.stringify({
@@ -122,6 +137,7 @@ class Create_Profile extends React.Component {
                 })
             })
         }
+
         
     
 

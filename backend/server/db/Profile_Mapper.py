@@ -36,11 +36,7 @@ class ProfileMapper(Mapper):
         return result
 
     def find_by_name(self, fname, lname):
-        """Auslesen aller Benutzer anhand des Benutzernamens.
-        :param name Name der zugehörigen Benutzer.
-        :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
-            mit dem gewünschten Namen enthält.
-        """
+
         pass
 
     def find_by_key(self, key):
@@ -101,7 +97,7 @@ class ProfileMapper(Mapper):
                 profile.set_id(1)
 
         command = "INSERT INTO profile (id, stamp, course, studytype, extroverted, frequency, online, profileID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        data = (profile.get_id(), profile.get_timestamp(), profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online(), NULL)
+        data = (profile.get_id(), profile.get_timestamp(), profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -135,13 +131,3 @@ class ProfileMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
-
-
-"""Zu Testzwecken können wir diese Datei bei Bedarf auch ausführen, 
-um die grundsätzliche Funktion zu überprüfen.
-Anmerkung: Nicht professionell aber hilfreich..."""
-if (__name__ == "__main__"):
-    with ProfileMapper() as mapper:
-        result = mapper.find_all()
-        for user in result:
-            print(user)
