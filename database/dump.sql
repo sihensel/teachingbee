@@ -41,7 +41,7 @@ CREATE TABLE Person (
   stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   fname varchar(100) NOT NULL,    -- fname = first name
   lname varchar(100) NOT NULL,    -- lname = last name
-  birthdate date NOT NULL,
+  birthdate varchar(100) NOT NULL,
   semester int NOT NULL,
   gender varchar(100) NOT NULL,
   profileID int,
