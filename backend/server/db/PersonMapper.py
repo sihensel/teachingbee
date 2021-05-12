@@ -16,18 +16,19 @@ class PersonMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "SELECT id, fname, lname, birthdate, semester, gender, profileID FROM Person WHERE id={}".format(key)
-        #command = "SELECT * FROM Person WHERE id={}".format(key)
+        #command = "SELECT * FROM Person WHERE id={}".format(key)   # only when the timestamp is needed as well
         cursor.execute(command)
         tuples = cursor.fetchall()
-        print(tuples)
-
         
         try:
-            (id, firstName, lastName) = tuples[0]
+            (id, fname, lname, birthdate, semester, gender, profileID) = tuples[0]
             person = Person()
             person.set_id(id)
-            person.set_first_name(firstName)
-            person.set_last_name(lastName)
+            person.set_fname(fname)
+            person.set_lname(lname)
+            person.set_birthdate(birthdate)
+            person.set_semester(semester)
+            person.set_gender(gender)
             result = person
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
@@ -38,7 +39,6 @@ class PersonMapper(Mapper):
         cursor.close()
 
         return result
-        
 
     def insert(self, object):
         """Füge das folgende Objekt als Datensatz in die DB ein."""
@@ -51,7 +51,3 @@ class PersonMapper(Mapper):
     def delete(self, object):
         """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""
         pass
-
-test = PersonMapper()
-
-test.find_by_key(1)
