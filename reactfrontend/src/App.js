@@ -1,9 +1,10 @@
 import './App.css';
-import Signup from './Signup.js';
+import ManagePerson from './ManagePerson';
+//import Signup from './Signup.js';
 
 function App() {
   return (
-      <Signup/>
+      <ManagePerson/>
   );
 }
 
