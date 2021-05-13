@@ -15,7 +15,7 @@ Manage Profile | Jacky, Simon
 Manage Person | Jacky, Simon
 Browse Recommendations |
 Request Contact |
-Chat |
+Chat | Kai & Tobi
 Join Group |
 Create Group | Lisa, Tim
 Leave Group |
