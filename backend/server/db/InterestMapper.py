@@ -1,4 +1,5 @@
 from server.db.Mapper import Mapper
+from flask import jsonify
 
 ##Habe noch Probleme das die Mysql datenbank einen error gibt 2005 Unknown MySQL server host obwohl alle Daten stimmen
 class InterestMapper(Mapper):
@@ -16,13 +17,13 @@ class InterestMapper(Mapper):
 
         :return die Interessen
         """
-        interests = []
+        interests = {}
         cursor = self._cnx.cursor()
         cursor.execute("SELECT * from Interests")
         tuples = cursor.fetchall()
 
         for (id, iname) in tuples:
-            interests.append(iname)
+            interests[id] = iname
 
            
         self._cnx.commit()
@@ -49,11 +50,6 @@ class InterestMapper(Mapper):
     def delete(self, object):
         """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""
         pass
-
-
-
-x = InterestMapper()
-print(x.find_all())
 
 
 

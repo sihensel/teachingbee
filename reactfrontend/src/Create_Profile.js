@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-
 class Create_Profile extends React.Component {
     constructor(props) {
       super(props);
@@ -9,14 +8,26 @@ class Create_Profile extends React.Component {
         online: '',
         course: '',
         semester: '',
-        interests: '',
+        interests: [],
         studytype: '',
         extroverted: ''
 
+
       };
+      fetch('http://localhost:5000/create_profile', {
+            method: 'get'})
+            .then(function (response) {
+                return response.json();
+            }).then(function (text) {
+                console.log(text)
+                
+        });
     }
+    
+
   //get methode reinmachen für interest mapper hier, vor render()
-        
+
+
 
   
     render() {
@@ -53,7 +64,7 @@ class Create_Profile extends React.Component {
 
                 <label htmlFor="interests">Interessen:</label><br/> 
                         <select id="interests" value={this.state.interests} onChange={evt => this.updateInterests(evt)}>
-                            <option value ="1">Sport</option>
+                            {/*<option value ="1">Sport</option>
                             <option value ="2">Technik</option>
                             <option value ="3">Natur</option>
                             <option value ="4">Sprachen</option>
@@ -62,7 +73,11 @@ class Create_Profile extends React.Component {
                             <option value ="7">Reisen</option>
                             <option value ="8">Gaming</option>
                             <option value ="9">Kreativität</option>
-                            {/* mehrere auswählbar machen */} 
+                            */} 
+                            {interests.map((interest) => {
+                                 return <option> {interest}</option>;
+
+                            })}
 
                         
                         </select><br/>
@@ -91,17 +106,15 @@ class Create_Profile extends React.Component {
             </div>
       );
     }
-    get_interests(){
-        var result = {}
-  
-    fetch('http://127.0.0.1:5000/create_profile', {
+     
+    /*fetch('http://127.0.0.1:5000/create_profile', {
               method: 'GET',
               headers: {'content-type': 'application/json'}
-             }).then(res=>{res.json()})
+             }).then(res=>{ console.log(res)})
              .then(data=>result = data)
   
              console.log(result)
-          }
+          } */
     
     handleSubmit(){
       
