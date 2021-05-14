@@ -1,7 +1,10 @@
 #import flask
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
+
+
 from server.db.InterestMapper import InterestMapper as IM
+from server.db.ProfileMapper import ProfileMapper
 
 import dbconnector
 
