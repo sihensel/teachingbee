@@ -26,10 +26,11 @@ person = api.inherit('Person', bo, {
 
 @app.route('/person/', methods=['GET', 'POST'])
 #@teachingbee.response(500, 'Internal Server Error.')
-def send_person():
+def manage_person():    # muss später über die Businesslogik abgebildet werden
+    obj = PersonMapper()
+    
     if request.method == 'GET':
-        obj = PersonMapper()
-        obj = obj.find_by_key(1)
+        obj = obj.find_by_key(2)
         data = {}
         data['id'] = obj.get_id()
         data['fname'] = obj.get_fname()
@@ -39,6 +40,13 @@ def send_person():
         data['gender'] = obj.get_gender()
 
         return jsonify(data)
+
+    if request.method == 'POST':
+        data = request.get_json()
+        print(data)
+        p = Person.from_dict(api.payload)
+        obj.update(p)
+        return 'Success', 200
 
 '''
 @app.route('/api', methods=['POST', 'GET'])
