@@ -15,13 +15,13 @@ class PersonMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "SELECT id, fname, lname, birthdate, semester, gender, profileID FROM Person WHERE id={}".format(key)
+        command = "SELECT id, fname, lname, birthdate, semester, gender FROM Person WHERE id={}".format(key)    # don't forget ProfileID!!
         #command = "SELECT * FROM Person WHERE id={}".format(key)   # only when the timestamp is needed as well
         cursor.execute(command)
         tuples = cursor.fetchall()
         
         try:
-            (id, fname, lname, birthdate, semester, gender, profileID) = tuples[0]
+            (id, fname, lname, birthdate, semester, gender) = tuples[0] # include ProfileID!!
             person = Person()
             person.set_id(id)
             person.set_fname(fname)
@@ -44,9 +44,16 @@ class PersonMapper(Mapper):
         """Füge das folgende Objekt als Datensatz in die DB ein."""
         pass
 
-    def update(self, object):
-        """Ein Objekt auf einen bereits in der DB enthaltenen Datensatz abbilden."""
-        pass
+    def update(self, person):
+        ''' Einen Eintrag in der Datenbank mittels eines Objekts updaten '''
+        cursor = self._cnx.cursor()
+
+        command = "UPDATE Person " + "SET fname=%s, lname=%s, birthdate=%s, semester=%s, gender=%s WHERE id=%s"
+        data = (person.get_fname(), person.get_lname(), person.get_birthdate(), person.get_semester(), person.get_gender(), person.get_id())
+        cursor.execute(command, data)
+
+        self._cnx.commit()
+        cursor.close()
 
     def delete(self, object):
         """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""
