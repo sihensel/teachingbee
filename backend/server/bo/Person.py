@@ -43,3 +43,15 @@ class Person(bo.BusinessObject):
 
     def get_gender(self):
         return self._gender
+
+    @staticmethod
+    def from_dict(dictionary=dict()):
+        """Umwandeln eines Python dict() in eine Person()."""
+        obj = Person()
+        obj.set_id(dictionary["id"])  # eigentlich Teil von BusinessObject !
+        obj.set_fname(dictionary["fname"])
+        obj.set_lname(dictionary["lname"])
+        obj.set_birthdate(dictionary["birthdate"])
+        obj.set_semester(dictionary["semester"])
+        obj.set_gender(dictionary["gender"])
+        return obj
