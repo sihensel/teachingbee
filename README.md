@@ -10,12 +10,12 @@ Feature | Team
 Sign Up | Lisa, Tim
 Login | 
 Logout | 
-Create Profile | Kai & Tobi
+Create Profile | Kai, Tobi
 Manage Profile | Jacky, Simon
 Manage Person | Jacky, Simon
 Browse Recommendations |
 Request Contact |
-Chat |
+Chat | Kai, Tobi
 Join Group |
 Create Group | Lisa, Tim
 Leave Group |
