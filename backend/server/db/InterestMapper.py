@@ -17,13 +17,13 @@ class InterestMapper(Mapper):
 
         :return die Interessen
         """
-        interests = {}
+        interests = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from Interests")
+        cursor.execute("SELECT iname from Interests")
         tuples = cursor.fetchall()
 
-        for (id, iname) in tuples:
-            interests[id] = iname
+        for (iname) in tuples:
+            interests.append(iname[0])
 
            
         self._cnx.commit()
