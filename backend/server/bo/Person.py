@@ -51,11 +51,15 @@ class Person(bo.BusinessObject):
     def get_profileID(self):
         return self._profileID
 
+    def __str__(self):
+        ''' Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz. '''
+        return f'Profile: {self.get_id()}, {self._fname}, {self._lname}, {self._birthdate}, {self._semester}, {self._gender}, {self._profileID}'
+
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in eine Person()."""
         obj = Person()
-        obj.set_id(dictionary["id"])  # eigentlich Teil von BusinessObject !
+        obj.set_id(dictionary["id"])
         obj.set_fname(dictionary["fname"])
         obj.set_lname(dictionary["lname"])
         obj.set_birthdate(dictionary["birthdate"])

@@ -4,7 +4,7 @@ from server.bo.Person import Person
 class PersonMapper(Mapper):
     def __init__(self):
         super().__init__()
-    
+
     def find_all(self):
         """Lies alle Tupel aus und gib sie als Objekte zurück."""
         pass
@@ -14,14 +14,13 @@ class PersonMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-
-        command = "SELECT id, fname, lname, birthdate, semester, gender, profileID FROM Person WHERE id={}".format(key)    # don't forget ProfileID!!
-        #command = "SELECT * FROM Person WHERE id={}".format(key)   # only when the timestamp is needed as well
+        command = "SELECT id, fname, lname, birthdate, semester, gender, profileID FROM Person WHERE id={}".format(key)
+        # command = "SELECT * FROM Person WHERE id={}".format(key)   # only when the timestamp is needed as well
         cursor.execute(command)
         tuples = cursor.fetchall()
-        
+
         try:
-            (id, fname, lname, birthdate, semester, gender, profileID) = tuples[0] # include ProfileID!!
+            (id, fname, lname, birthdate, semester, gender, profileID) = tuples[0]
             person = Person()
             person.set_id(id)
             person.set_fname(fname)

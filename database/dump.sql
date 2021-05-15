@@ -21,7 +21,7 @@ CREATE TABLE Profile (
   studytype varchar(255) NOT NULL,  -- auditiv, visuell, kommunikativ, motorisch
   extroverted int NOT NULL,         -- value between 1 and 5
   frequency int NOT NULL,           -- value between 1 and 5
-  online varchar(100) NOT NULL,     -- online, offline, beides
+  online varchar(100) NOT NULL,     -- offline, online, beides
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

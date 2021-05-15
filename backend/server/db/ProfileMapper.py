@@ -15,13 +15,13 @@ class ProfileMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "SELECT course, studytype, extroverted, frequency, online FROM Profile WHERE id={}".format(key)    # don't forget ProfileID!!
+        command = "SELECT course, studytype, extroverted, frequency, online FROM Profile WHERE id={}".format(key)
         #command = "SELECT * FROM Profile WHERE id={}".format(key)   # only when the timestamp is needed as well
         cursor.execute(command)
         tuples = cursor.fetchall()
         
         try:
-            (course, studytype, extroverted, frequency, online) = tuples[0] # include ProfileID!!
+            (course, studytype, extroverted, frequency, online) = tuples[0]
             profile = Profile()
             profile.set_course(course)
             profile.set_studytype(studytype)
@@ -30,8 +30,7 @@ class ProfileMapper(Mapper):
             profile.set_online(online)
             result = profile
         except IndexError:
-            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
-            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
+            """ wenn der SELECT nichts zurück gibt """
             result = None
 
         self._cnx.commit()

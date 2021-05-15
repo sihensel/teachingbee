@@ -56,17 +56,14 @@ class Profile (bo.BusinessObject):
         self._online = value
 
     def __str__(self):
-        """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz.
-        
-        Diese besteht aus der ID der Superklasse ergänzt durch den Vor- und Nachnamen
-        des jeweiligen Kunden."""
+        ''' Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz. '''
         return f"Profile: {self.get_id()}, {self._course}, {self._studytype}, {self._extroverted}, {self._frequency}, {self._online}"
 
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in einen Customer()."""
         obj = Profile()
-        obj.set_id(dictionary["id"])  # eigentlich Teil von BusinessObject !
+        obj.set_id(dictionary["id"])
         obj.set_course(dictionary["course"])
         obj.set_studytype(dictionary["studytype"])
         obj.set_extroverted(dictionary["extroverted"])
