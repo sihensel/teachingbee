@@ -6,6 +6,8 @@ from flask_restx import Api, Resource, fields
 #import dbconnector
 from server.bo.Person import Person
 from server.db.PersonMapper import PersonMapper
+from server.bo.Profile import Profile
+from server.db.ProfileMapper import ProfileMapper
 
 
 app = Flask(__name__)
@@ -27,25 +29,36 @@ person = api.inherit('Person', bo, {
 @app.route('/person/', methods=['GET', 'POST'])
 #@teachingbee.response(500, 'Internal Server Error.')
 def manage_person():    # muss später über die Businesslogik abgebildet werden
-    obj = PersonMapper()
+    pers_obj = PersonMapper()
+    prof_obj = ProfileMapper()
     
     if request.method == 'GET':
-        obj = obj.find_by_key(2)
+        pers_obj = pers_obj.find_by_key(2)
         data = {}
-        data['id'] = obj.get_id()
-        data['fname'] = obj.get_fname()
-        data['lname'] = obj.get_lname()
-        data['birthdate'] = obj.get_birthdate()
-        data['semester'] = obj.get_semester()
-        data['gender'] = obj.get_gender()
+        data['id'] = pers_obj.get_id()
+        data['fname'] = pers_obj.get_fname()
+        data['lname'] = pers_obj.get_lname()
+        data['birthdate'] = pers_obj.get_birthdate()
+        data['semester'] = pers_obj.get_semester()
+        data['gender'] = pers_obj.get_gender()
+        data['profileID'] = pers_obj.get_profileID()
+
+        prof_obj = prof_obj.find_by_key(pers_obj.get_profileID())
+        data['course'] = prof_obj.get_course()
+        data['studytype'] = prof_obj.get_studytype()
+        data['extroverted'] = prof_obj.get_extroverted()
+        data['frequency'] = prof_obj.get_frequency()
+        data['online'] = prof_obj.get_online()
+
 
         return jsonify(data)
 
     if request.method == 'POST':
         data = request.get_json()
-        print(data)
-        p = Person.from_dict(api.payload)
-        obj.update(p)
+        pers = Person.from_dict(api.payload)
+        pers_obj.update(pers)
+        prof = Profile.from_dict(api.payload)
+        prof_obj.update(prof,pers)
         return 'Success', 200
 
 '''
