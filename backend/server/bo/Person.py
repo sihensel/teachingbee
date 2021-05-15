@@ -9,6 +9,7 @@ class Person(bo.BusinessObject):
         self._age = 0
         self._semester = 0
         self._gender = ''
+        self._profileID = 0
 
     def set_fname(self, fname):
         self._fname = fname
@@ -43,6 +44,12 @@ class Person(bo.BusinessObject):
 
     def get_gender(self):
         return self._gender
+        
+    def set_profileID(self, profileID):
+        self._profileID = profileID
+
+    def get_profileID(self):
+        return self._profileID
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -54,4 +61,5 @@ class Person(bo.BusinessObject):
         obj.set_birthdate(dictionary["birthdate"])
         obj.set_semester(dictionary["semester"])
         obj.set_gender(dictionary["gender"])
+        obj.set_profileID(dictionary["profileID"])
         return obj
