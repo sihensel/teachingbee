@@ -21,7 +21,7 @@ CREATE TABLE Profile (
   studytype varchar(255) NOT NULL,  -- auditiv, visuell, kommunikativ, motorisch
   extroverted int NOT NULL,         -- value between 1 and 5
   frequency int NOT NULL,           -- value between 1 and 5
-  online int NOT NULL,              -- online is either 0 (offline) or 1 (online) or 2 (both)
+  online varchar(100) NOT NULL,     -- online, offline, beides
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -126,11 +126,11 @@ INSERT INTO Interests (iname) VALUES ('Reisen');
 INSERT INTO Interests (iname) VALUES ('Gaming');
 INSERT INTO Interests (iname) VALUES ('Kreativität');
 
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 3, 3, 1);
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('OM', 'kommunikativ', 2, 4, 0);
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('ID', 'motorisch', 4, 4, 2);
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('IW', 'visuell', 3, 2, 1);
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 1, 2, 2);
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 3, 3, 'online');
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('OM', 'kommunikativ', 2, 4, 'offline');
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('ID', 'motorisch', 4, 4, 'beides');
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('IW', 'visuell', 3, 2, 'online');
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 1, 2, 'beides');
 
 INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paula', 'Pudding', '2000-01-01', 3, 'weiblich', 1);
 INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paul', 'Meier', '2000-01-01', 2, 'männlich', 2);
