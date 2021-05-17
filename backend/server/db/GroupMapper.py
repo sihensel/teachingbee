@@ -1,6 +1,6 @@
 from server.db.Mapper import Mapper
 import sys
-from server.bo.Person import Person
+from server.bo.Group import Group
 
 
 class PersonMapper(Mapper):
@@ -15,24 +15,21 @@ class PersonMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from person")
+        cursor.execute("SELECT * from studygroup")
         tuples = cursor.fetchall()
 
-        for (id, stamp, fname, lname, birthdate, semester, gender, profileID) in tuples:
-            person = Person()
-            person.set_birthdate(birthdate)
-            person.set_gender(gender)
-            person.set_semester(semester)
-            person.set_fname(fname)
-            person.set_lname(lname)
-            result.append(person)
+        for (id, stamp, gname, admin, profileID) in tuples:
+            group = Group()
+            group.set_name(gname)
+            group.set_admin(admin)
+            result.append(group)
 
         self._cnx.commit()
         cursor.close()
 
         return result
 
-    def find_by_name(self, fname, lname):
+    def find_by_name(self, gname):
         """Auslesen aller Benutzer anhand des Benutzernamens.
 
         :param name Name der zugehörigen Benutzer.
@@ -41,18 +38,15 @@ class PersonMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, fname, lname, birthdate, semester, gender FROM person WHERE fname LIKE '{}' AND lname LIKE '{}' ORDER BY fname".format(fname, lname)
+        command = "SELECT id, gname, admin, profileID FROM person WHERE gname LIKE '{}' ORDER BY fname".format(gname)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, fname, lname, birthdate, semester, gender) in tuples:
-            person = Person()
-            person.set_birthdate(birthdate)
-            person.set_gender(gender)
-            person.set_semester(semester)
-            person.set_fname(fname)
-            person.set_lname(lname)
-            result.append(person)
+        for (id, gname, admin, profileID) in tuples:
+            group = Group()
+            group.set_name(gname)
+            group.set_admin(admin)
+            result.append(group)
 
         self._cnx.commit()
         cursor.close()
@@ -71,19 +65,16 @@ class PersonMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM person WHERE id={}".format(key)
+        command = "SELECT * FROM studygroup WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, fname, lname, birthdate, semester, gender) = tuples[0]
-            person = Person()
-            person.set_birthdate(birthdate)
-            person.set_gender(gender)
-            person.set_semester(semester)
-            person.set_fname(fname)
-            person.set_lname(lname)
-            result = person
+            (id, gname, admin, profileID) = tuples[0]
+            group = Group()
+            group.set_name(gname)
+            group.set_admin(admin)
+            result = group
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
             keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
