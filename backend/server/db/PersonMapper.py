@@ -1,11 +1,9 @@
 from server.db.Mapper import Mapper
-import sys
 from server.bo.Person import Person
 
-
 class PersonMapper(Mapper):
-    #def __init__(self):
-        #super(self).__init__()
+    def __init__(self):
+        super(self).__init__()
 
     def find_all(self):
         """Auslesen aller Benutzer unseres Systems.
@@ -60,29 +58,23 @@ class PersonMapper(Mapper):
         return result
 
     def find_by_key(self, key):
-        """Suchen eines Benutzers mit vorgegebener User ID. Da diese eindeutig ist,
-        wird genau ein Objekt zurückgegeben.
-
-        :param key Primärschlüsselattribut (->DB)
-        :return User-Objekt, das dem übergebenen Schlüssel entspricht, None bei
-            nicht vorhandenem DB-Tupel.
-        """
-
+        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM users WHERE id={}".format(key)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
+        command = "SELECT id, fname, lname, birthdate, semester, gender, profileID FROM Person WHERE id={}".format(key)
+        # command = "SELECT * FROM Person WHERE id={}".format(key)   # only when the timestamp is needed as well
 
         try:
-            (id, fname, lname, birthdate, semester, gender) = tuples[0]
+            (id, fname, lname, birthdate, semester, gender, profileID) = tuples[0]
             person = Person()
-            person.set_birthdate(birthdate)
-            person.set_gender(gender)
-            person.set_semester(semester)
+            person.set_id(id)
             person.set_fname(fname)
             person.set_lname(lname)
+            person.set_birthdate(birthdate)
+            person.set_semester(semester)
+            person.set_gender(gender)
+            person.set_profileID(profileID)
             result = person
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
@@ -126,9 +118,7 @@ class PersonMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-
         return person
-
 
     def update(self, person):
         """Wiederholtes Schreiben eines Objekts in die Datenbank.
@@ -156,7 +146,6 @@ class PersonMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
-
 
 """Zu Testzwecken können wir diese Datei bei Bedarf auch ausführen, 
 um die grundsätzliche Funktion zu überprüfen.
