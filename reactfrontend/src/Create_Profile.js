@@ -2,24 +2,26 @@ import React, { Component } from "react";
 class Create_Profile extends React.Component {
   constructor(props) {
     super(props);
-    var testo = [];
-    fetch("http://localhost:5000/create_profile", {
-      method: "get",
-    })
-      .then((response) => response.json())
-      .then(function (data) {
-        testo = data;
-      });
     this.state = {
       frequency: "",
       online: "",
       course: "",
       semester: "",
-      interests: testo,
+      interests: [],
+      selectedinterests: [],
       studytype: "",
       extroverted: "",
     };
-    console.log(this.state.interests);
+  }
+
+  componentDidMount(){
+    fetch("http://localhost:5000/create_profile", {
+      method: "get",
+    })
+    .then((response) => response.json())
+    .then((data)  => 
+      this.setState({interests: data}),
+      ); 
   }
 
   //get methode reinmachen für interest mapper hier, vor render()
@@ -67,26 +69,16 @@ class Create_Profile extends React.Component {
             <option value="ID">Informationsdesign</option>
             <option value="IW">Informationswissenschaften</option>
           </select>
-          <br />v<label htmlFor="interests">Interessen:</label>
+          <br /><label htmlFor="interests">Interessen:</label>
           <br />
           <select
             id="interests"
-            value={this.state.interests}
+            multiple
+            value={this.state.selectedinterests}
             onChange={(evt) => this.updateInterests(evt)}
           >
-            {/*<option value ="1">Sport</option>
-                            <option value ="2">Technik</option>
-                            <option value ="3">Natur</option>
-                            <option value ="4">Sprachen</option>
-                            <option value ="5">Kultur</option>
-                            <option value ="6">Musik</option>
-                            <option value ="7">Reisen</option>
-                            <option value ="8">Gaming</option>
-                            <option value ="9">Kreativität</option>
-                             */}
-
             {this.state.interests.map((interest) => {
-              return <option> {interest}</option>;
+              return <option value={interest}> {interest}</option>;
             })}
           </select>
           <br />
@@ -110,10 +102,11 @@ class Create_Profile extends React.Component {
             value={this.state.frequency}
             onChange={(evt) => this.updateExtroverted(evt)}
           >
-            <option value="ex1">sehr wenig</option>
-            <option value="ex1">wenig</option>
-            <option value="ex1">neutral</option>
-            <option value="ex1">sehr</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
 
             {/* Likert Skala */}
           </select>
@@ -151,7 +144,7 @@ class Create_Profile extends React.Component {
         frequency: this.state.frequency,
         online: this.state.online,
         course: this.state.course,
-        interests: this.state.interests,
+        interests: this.state.selectedinterests,
         studytype: this.state.studytype,
         extroverted: this.state.extroverted,
       }),
@@ -176,9 +169,10 @@ class Create_Profile extends React.Component {
     });
   }
   updateInterests(evt) {
-    this.setState({
-      interests: evt.target.value,
-    });
+    var help = this.state.selectedinterests
+    help.push(evt.target.value)
+    this.setState({selectedinterests: help})
+    console.log(this.state.selectedinterests)
   }
   updateStudytype(evt) {
     this.setState({
