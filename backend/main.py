@@ -2,13 +2,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from flask_restx import Api, Resource, fields
+from server.bo.Person import Person
+from server.db.PersonMapper import PersonMapper as pm
 
 #import dbconnector
 from server.bo.Person import Person
 from server.db.PersonMapper import PersonMapper
 from server.bo.Profile import Profile
 from server.db.ProfileMapper import ProfileMapper
-
 
 app = Flask(__name__)
 CORS(app)
@@ -62,21 +63,5 @@ def manage_person():    # muss später über die Businesslogik abgebildet werden
         prof_obj.update(prof, pers)
 
         return 'Success', 200
-
-'''
-@app.route('/api', methods=['POST', 'GET'])
-def api_post():
-    if request.method == 'POST':
-        data = request.get_json()
-        print(data)
-
-        #dbconnector.insert(data)
-        
-        return 'Success', 200
-
-    if request.method == 'GET':
-        data = {'greeting':'Hello from Flask!'}
-        return jsonify(data)  # serialize and use JSON headers
-'''
 
 app.run(debug=True)

@@ -126,11 +126,13 @@ INSERT INTO Interests (iname) VALUES ('Reisen');
 INSERT INTO Interests (iname) VALUES ('Gaming');
 INSERT INTO Interests (iname) VALUES ('Kreativität');
 
+
 INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 3, 3, 'online');
 INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('OM', 'kommunikativ', 2, 4, 'offline');
 INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('ID', 'motorisch', 4, 4, 'beides');
 INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('IW', 'visuell', 3, 2, 'online');
 INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 1, 2, 'beides');
+
 
 INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paula', 'Pudding', '2000-01-01', 3, 'weiblich', 1);
 INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paul', 'Meier', '2000-01-01', 2, 'männlich', 2);
