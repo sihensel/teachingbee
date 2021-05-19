@@ -5,8 +5,11 @@ class CreateGroup extends React.Component {
       super(props);
       this.state = {
         members: [],
-        member = "",
-        name: ""
+        adminfname: "",
+        adminlname: "",
+        memberfname: "",
+        memberlname: "",
+        gname: ""
       };
     }
   
@@ -15,11 +18,14 @@ class CreateGroup extends React.Component {
             <div>
                 <h1>Create Group</h1>
                 <form>
-                    Name <br/>
-                    <input type="text" value={this.state.name} onChange={evt => this.update_name(evt)}></input> <br/>
-                    Nachname: <br/>
-                    <input type="text" value={this.state.member} onChange={evt => this.update_member(evt)}></input><br/>
-
+                    Gruppenname: <br/>
+                    <input type="text" value={this.state.gname} onChange={evt => this.update_gname(evt)}></input> <br/>
+                    Admin setzen: <br/>
+                    <input type="text" value={this.state.adminfname} onChange={evt => this.update_adminfname(evt)}></input><br/>
+                    <input type="text" value={this.state.adminlname} onChange={evt => this.update_adminlname(evt)}></input><br/>
+                    Mitglied hinzufügen: <br/>
+                    <input type="text" value={this.state.memberfname} onChange={evt => this.update_memberfname(evt)}></input><br/>
+                    <input type="text" value={this.state.memberlname} onChange={evt => this.update_memberlname(evt)}></input><br/>
                 </form>
                 <button onClick={this.add_member.bind(this)}>Member hinzufügen</button>
                 <button onClick={this.handleSubmit.bind(this)}>Absenden</button>
@@ -55,28 +61,56 @@ class CreateGroup extends React.Component {
             method: 'post',
             headers: {'content-type': 'application/json'},
             body: JSON.stringify({
-                "name": this.state.name,
-                "members": this.state.members
+                "gname": this.state.gname,
+                "members": this.state.members,
+                "adminfname": this.state.adminfname,
+                "adminlname": this.state.adminlname
                 })
             })
         }
         
     
 
-    update_name(evt) {
+    update_gname(evt) {
         this.setState({
-          name: evt.target.value
+          gname: evt.target.value
         });
       }
 
-    update_member(evt) {
+    update_adminfname(evt) {
+      this.setState({
+          adminfname: evt.target.value
+      });
+      }
+
+    update_adminlname(evt) {
+      this.setState({
+          adminlname: evt.target.value
+      });
+      }
+
+    update_memberfname(evt) {
         this.setState({
-            member: evt.target.value
+            memberfname: evt.target.value
         });
         }
 
+    update_memberlname(evt) {
+      this.setState({
+          memberlname: evt.target.value
+      });
+      }
+  
+
     add_member(evt) {
-        this.state.members.concat(evt.target.value)
+      
+      var memberlist = this.state.members.concat([this.state.memberlname + ", " + this.state.memberfname])
+
+        this.setState({
+          members: memberlist,
+          memberfname: "",
+          memberlname: ""
+        })
         }
 
   };

@@ -58,7 +58,3 @@ class Person(bo.BusinessObject):
     def get_lname(self):
         return self._lname
 
-
-hallo = Person()
-hallo.set_birthdate(datetime(2005,1,1))
-print(hallo.get_age())

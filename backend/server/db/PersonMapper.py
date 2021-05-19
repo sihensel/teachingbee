@@ -47,6 +47,7 @@ class PersonMapper(Mapper):
 
         for (id, fname, lname, birthdate, semester, gender) in tuples:
             person = Person()
+            person.set_id(id)
             person.set_birthdate(birthdate)
             person.set_gender(gender)
             person.set_semester(semester)

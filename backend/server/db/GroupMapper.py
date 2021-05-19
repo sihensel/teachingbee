@@ -3,7 +3,7 @@ import sys
 from server.bo.Group import Group
 
 
-class PersonMapper(Mapper):
+class GroupMapper(Mapper):
     #def __init__(self):
         #super(self).__init__()
 
@@ -38,12 +38,13 @@ class PersonMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, gname, admin, profileID FROM person WHERE gname LIKE '{}' ORDER BY fname".format(gname)
+        command = "SELECT id, gname, admin FROM studygroup WHERE gname LIKE '{}' ORDER BY gname".format(gname)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, gname, admin, profileID) in tuples:
+        for (id, gname, admin) in tuples:
             group = Group()
+            group.set_id(id)
             group.set_name(gname)
             group.set_admin(admin)
             result.append(group)
@@ -65,13 +66,14 @@ class PersonMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM studygroup WHERE id={}".format(key)
+        command = "SELECT id, gname, admin FROM studygroup WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, gname, admin, profileID) = tuples[0]
+            (id, gname, admin) = tuples[0]
             group = Group()
+            group.set_id(id)
             group.set_name(gname)
             group.set_admin(admin)
             result = group
@@ -85,64 +87,53 @@ class PersonMapper(Mapper):
 
         return result
 
-    def insert(self, person):
-        """Einfügen eines User-Objekts in die Datenbank.
+    def insert(self, group):
+        #Einfügen eines Group-Objekts in die Datenbank.
 
-        Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
-        berichtigt.
-
-        :param user das zu speichernde Objekt
-        :return das bereits übergebene Objekt, jedoch mit ggf. korrigierter ID.
-        """
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM person ")
-        tuples = cursor.fetchall()
 
-        for (maxid) in tuples:
-            if maxid[0] is not None:
-                """Wenn wir eine maximale ID festellen konnten, zählen wir diese
-                um 1 hoch und weisen diesen Wert als ID dem User-Objekt zu."""
-                person.set_id(maxid[0] + 1)
-            else:
-                """Wenn wir KEINE maximale ID feststellen konnten, dann gehen wir
-                davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
-                person.set_id(1)
-
-        print(person)
-
-        command = "INSERT INTO person (id, stamp, fname, lname, birthdate, semester, gender, profileID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        data = (person.get_id(), person.get_timestamp(), person.get_fname(), person.get_lname(), person.get_birthdate(), person.get_semester(), person.get_gender(), 5)
+        command = "INSERT INTO studygroup (gname, admin, profileID) VALUES (%s, %s, %s)"
+        data = (group.get_gname(), group.get_admin(), 1)
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
+    def insert_members(self, group):
+        #Einfügen eines Member-Objekts in die Datenbank.
 
-        return person
+        for i in group.get_members():
+            cursor = self._cnx.cursor()
+            command = "INSERT INTO r_person_group (groupID, personID) VALUES (%s, %s)"
+            data = (group.get_id(), i)
+            cursor.execute(command, data)
+
+            self._cnx.commit()
+            cursor.close()
 
 
-    def update(self, person):
+    def update(self, group):
         """Wiederholtes Schreiben eines Objekts in die Datenbank.
 
         :param user das Objekt, das in die DB geschrieben werden soll
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE person " + "SET fname=%s, lname=%s, birthdate=%s, semester=%s, gender=%s WHERE id=%s"
-        data = (person.get_fname(), person.get_lname(), person.get_birthdate(), person.get_semester(), person.get_gender(), person.get_id)
+        command = "UPDATE studygroup " + "SET gname=%s, admin=%s WHERE id=%s"
+        data = (group.get_gname(), group.get_admin())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, person):
+    def delete(self, group):
         """Löschen der Daten eines User-Objekts aus der Datenbank.
 
         :param user das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM person WHERE id={}".format(person.get_id())
+        command = "DELETE FROM studygroup WHERE id={}".format(group.get_id())
         cursor.execute(command)
 
         self._cnx.commit()

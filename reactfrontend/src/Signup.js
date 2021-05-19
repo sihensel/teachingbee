@@ -39,25 +39,6 @@ class UserSignup extends React.Component {
     }
   
     handleSubmit(){
-      // Simple POST request with a JSON body using fetch
-      /*
-      const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                fname: this.state.fname.valueOf(),
-                lname: this.state.lname.valueOf(),
-                date: this.state.date,
-                semester: this.state.semester.valueOf(),
-                gender: this.state.gender.valueOf()
-                })
-         };
-        fetch('https://localhost:5000/api', requestOptions)
-            .then(response => response.json())
-            //.then(data => this.setState({ postId: data.id }));
-            //console.log(response.json())
-            */
-
         fetch('http://127.0.0.1:5000/api', {
             method: 'post',
             headers: {'content-type': 'application/json'},

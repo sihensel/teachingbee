@@ -9,8 +9,9 @@ class Group(bo.BusinessObject):
         self._admin = ""
         self._recieved_requests = []
         self._chat = "missing"
-        self._name = ""
+        self._gname = ""
         self._id = 0
+        self._profileID = 0
 
     def set_id(self, id):
         self._id = id
@@ -36,18 +37,19 @@ class Group(bo.BusinessObject):
         self._recieved_requests.pop(self._recieved_requests.index(request))
 
     def set_admin(self, admin):     # admin is a Person-Object
-        self._admin = admin.get_id()
+        self._admin = admin
 
     def get_admin(self):
         return self._admin
 
-    def set_name(self, name):
-        self._name = name
+    def set_gname(self, name):
+        self._gname = name
 
-    def get_name(self):
-        return self._name
+    def get_gname(self):
+        return self._gname
 
-hallo = Group()
-hallo.add_member("Greta")
-print(hallo.get_members())
+    def set_profileID(self, id):
+        self._profileID = id
 
+    def get_profileID(self):
+        return 0
