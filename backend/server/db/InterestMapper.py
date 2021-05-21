@@ -23,9 +23,9 @@ class InterestMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (id, iname) in tuples:
-            interests = {}
-            interests['id'] = id
-            interests['iname'] = iname
+            interests = []
+            interests.append(id)
+            interests.append(iname)
             interestList.append(interests)
 
            
@@ -42,8 +42,18 @@ class InterestMapper(Mapper):
         pass
 
  
-    def insert(self, person):
-       pass
+    def insert(self, interests, lastID):
+        ''' Die Interessen in die Relationstabelle R_interests_profile eintragen '''
+        cursor = self._cnx.cursor()
+        command = "INSERT INTO R_interests_profile (profileID, interestID) VALUES (%s, %s)"
+        for i in range(len(interests)):
+            data = (lastID, interests[i])
+            cursor.execute(command, data)
+            self._cnx.commit()
+        cursor.close()
+        
+        return True
+
  
     def update(self, object):
         """Ein Objekt auf einen bereits in der DB enthaltenen Datensatz abbilden."""

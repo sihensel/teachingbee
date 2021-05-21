@@ -3,11 +3,11 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from flask_restx import Api, Resource, fields
 
-from server.db.InterestMapper import InterestMapper as IM
+from server.db.InterestMapper import InterestMapper
 from server.bo.Person import Person
 from server.db.PersonMapper import PersonMapper
 from server.bo.Profile import Profile
-from server.db.ProfileMapper import ProfileMapper as PM
+from server.db.ProfileMapper import ProfileMapper
 
 app = Flask(__name__)
 CORS(app)
@@ -52,7 +52,6 @@ def manage_person():    # muss später über die Businesslogik abgebildet werden
         return jsonify(data)
 
     if request.method == 'POST':
-        data = request.get_json()
 
         pers = Person.from_dict(api.payload)
         pers_obj.update(pers)
@@ -65,19 +64,26 @@ def manage_person():    # muss später über die Businesslogik abgebildet werden
 
 @app.route('/create_profile', methods=['POST', 'GET'])
 def create_profile_post():
+    i_mapper = InterestMapper()
+    prof_mapper = ProfileMapper()
+    
+    if request.method == 'GET':
+        interests = i_mapper.find_all()
+        return jsonify(interests)
+
     if request.method == 'POST':
         data = request.get_json()
-        mapper = PM()
         profile = Profile()
-        data["id"] = 0      
-        profile = profile.from_dict(data)
-        mapper.insert(profile)
-        
+        data["id"] = 0      # Placeholder, die ID wird von der Datenbank selbst gesetzt
+        profile = profile.from_dict(api.payload)
+
+        interests = []
+        for i in range(len(data['interests'])):
+            interests.append(data['interests'][i]['value'])
+        lastID = prof_mapper.insert(profile)
+        i_mapper.insert(interests, lastID)
+
         return 'Success', 200
 
-    if request.method == 'GET':
-        interest = IM()
-        interest_list = interest.find_all()
-        return jsonify(interest_list)
 
 app.run(debug=True)
