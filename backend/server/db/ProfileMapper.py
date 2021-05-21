@@ -1,8 +1,5 @@
-from server.bo.Profile import Profile
 from server.db.Mapper import Mapper
-import sys
-sys.path.append(".:/server/bo/Profile")
-
+from server.bo.Profile import Profile
 
 class ProfileMapper(Mapper):
     def __init__(self):
@@ -35,29 +32,22 @@ class ProfileMapper(Mapper):
         return result
 
     def find_by_name(self, fname, lname):
-
         pass
 
     def find_by_key(self, key):
-        """Suchen eines Benutzers mit vorgegebener User ID. Da diese eindeutig ist,
-        wird genau ein Objekt zurückgegeben.
-        :param key Primärschlüsselattribut (->DB)
-        :return User-Objekt, das dem übergebenen Schlüssel entspricht, None bei
-            nicht vorhandenem DB-Tupel.
-        """
-
+        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM users WHERE id={}".format(key)
+
+        command = "SELECT course, studytype, extroverted, frequency, online FROM Profile WHERE id={}".format(key)
+        #command = "SELECT * FROM Profile WHERE id={}".format(key)   # only when the timestamp is needed as well
         cursor.execute(command)
         tuples = cursor.fetchall()
-
+        
         try:
-
-            (id, course, studytype, extroverted, frequency, online) = tuples[0]
+            (course, studytype, extroverted, frequency, online) = tuples[0]
             profile = Profile()
-            profile.set_id(id)
             profile.set_course(course)
             profile.set_studytype(studytype)
             profile.set_extroverted(extroverted)
@@ -67,6 +57,7 @@ class ProfileMapper(Mapper):
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
             keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
+            """ wenn der SELECT nichts zurück gibt """
             result = None
 
         self._cnx.commit()
@@ -107,28 +98,17 @@ class ProfileMapper(Mapper):
 
         return profile
 
-    def update(self, profile):
-        """Wiederholtes Schreiben eines Objekts in die Datenbank.
-        :param user das Objekt, das in die DB geschrieben werden soll
-        """
+    def update(self, profile, person):
+        ''' Einen Eintrag in der Datenbank mittels eines Objekts updaten '''
         cursor = self._cnx.cursor()
 
-        command = "UPDATE profile " + \
-            "SET course=%s, studytype=%s, extroverted=%s, frequency=%s, online=%s WHERE id=%s"
-        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online(), profile.get_id)
+        command = "UPDATE Profile " + "SET course=%s, studytype=%s, extroverted=%s, frequency=%s, online=%s WHERE id=%s"
+        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online(), person.get_profileID())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, profile):
-        """Löschen der Daten eines User-Objekts aus der Datenbank.
-        :param user das aus der DB zu löschende "Objekt"
-        """
-        cursor = self._cnx.cursor()
-
-        command = "DELETE FROM profile WHERE id={}".format(profile.get_id())
-        cursor.execute(command)
-
-        self._cnx.commit()
-        cursor.close()
+    def delete(self, object):
+        """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""
+        pass

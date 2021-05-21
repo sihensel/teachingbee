@@ -21,7 +21,7 @@ CREATE TABLE Profile (
   studytype varchar(255) NOT NULL,  -- auditiv, visuell, kommunikativ, motorisch
   extroverted int NOT NULL,         -- value between 1 and 5
   frequency int NOT NULL,           -- value between 1 and 5
-  online int NOT NULL,              -- online is either 0 (offline) or 1 (online) or 2 (both)
+  online varchar(100) NOT NULL,     -- offline, online, beides
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -41,7 +41,7 @@ CREATE TABLE Person (
   stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   fname varchar(100) NOT NULL,    -- fname = first name
   lname varchar(100) NOT NULL,    -- lname = last name
-  birthdate date NOT NULL,
+  birthdate varchar(100) NOT NULL,
   semester int NOT NULL,
   gender varchar(100) NOT NULL,
   profileID int,
@@ -126,17 +126,19 @@ INSERT INTO Interests (iname) VALUES ('Reisen');
 INSERT INTO Interests (iname) VALUES ('Gaming');
 INSERT INTO Interests (iname) VALUES ('Kreativität');
 
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 3, 3, 1);
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('OM', 'kommunikativ', 2, 4, 0);
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('ID', 'motorisch', 4, 4, 2);
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('IW', 'visuell', 3, 2, 1);
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 1, 2, 2);
 
-INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paula', 'Pudding', '2000-01-01', 3, 'female', 1);
-INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paul', 'Meier', '2000-01-01', 2, 'female', 2);
-INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Petra', 'Müller', '2000-01-01', 1, 'male', 3);
-INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Sabine', 'Kurz', '2000-01-01', 4, 'female', 4);
-INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Hans', 'Lang', '2000-01-01', 6, 'male', 5);
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 3, 3, 'online');
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('OM', 'kommunikativ', 2, 4, 'offline');
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('ID', 'motorisch', 4, 4, 'beides');
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('IW', 'visuell', 3, 2, 'online');
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 1, 2, 'beides');
+
+
+INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paula', 'Pudding', '2000-01-01', 3, 'weiblich', 1);
+INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paul', 'Meier', '2000-01-01', 2, 'männlich', 2);
+INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Petra', 'Müller', '2000-01-01', 1, 'weiblich', 3);
+INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Sabine', 'Kurz', '2000-01-01', 4, 'weiblich', 4);
+INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Hans', 'Lang', '2000-01-01', 6, 'männlich', 5);
 
 INSERT INTO R_interests_profile (profileID, interestID) VALUES (1, 1);
 INSERT INTO R_interests_profile (profileID, interestID) VALUES (1, 2);
