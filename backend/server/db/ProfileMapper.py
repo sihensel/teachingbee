@@ -55,8 +55,6 @@ class ProfileMapper(Mapper):
             profile.set_online(online)
             result = profile
         except IndexError:
-            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
-            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
             """ wenn der SELECT nichts zurück gibt """
             result = None
 
@@ -73,30 +71,26 @@ class ProfileMapper(Mapper):
         :return das bereits übergebene Objekt, jedoch mit ggf. korrigierter ID.
         """
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM profile ")
+        command = "INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES (%s,%s,%s,%s,%s)"
+        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online())
+
+        cursor.execute(command, data)
+        self._cnx.commit()
+
+        # die ID von dem gerade geschriebenen Datensatz erhalten, um die Interessen speichern zu können
+        cursor.execute("SELECT LAST_INSERT_ID()")
         tuples = cursor.fetchall()
-
-
-        for (maxid) in tuples:
-            if maxid[0] is not None:
-                """Wenn wir eine maximale ID festellen konnten, zählen wir diese
-                um 1 hoch und weisen diesen Wert als ID dem User-Objekt zu."""
-                profile.set_id(maxid[0] + 1)
-            else:
-                """Wenn wir KEINE maximale ID feststellen konnten, dann gehen wir
-                davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
-                profile.set_id(1)
-
-        command = "INSERT INTO profile (course, studytype, extroverted, frequency, online) VALUES (%s,%s,%s,%s,%s)"
-
-        package = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online())
-
-        cursor.execute(command, package)
+        try:
+            (lastID) = tuples[0][0]
+            result = lastID
+        except IndexError:
+            """ wenn der SELECT nichts zurück gibt """
+            result = None
 
         self._cnx.commit()
         cursor.close()
 
-        return profile
+        return result
 
     def update(self, profile, person):
         ''' Einen Eintrag in der Datenbank mittels eines Objekts updaten '''
