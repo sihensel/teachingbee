@@ -17,19 +17,22 @@ class InterestMapper(Mapper):
 
         :return die Interessen
         """
-        interests = []
+        interestList = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT iname from Interests")
+        cursor.execute("SELECT * from Interests")
         tuples = cursor.fetchall()
 
-        for (iname) in tuples:
-            interests.append(iname[0])
+        for (id, iname) in tuples:
+            interests = {}
+            interests['id'] = id
+            interests['iname'] = iname
+            interestList.append(interests)
 
            
         self._cnx.commit()
         cursor.close()
 
-        return interests
+        return interestList
     
 
 
