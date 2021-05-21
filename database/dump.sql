@@ -19,8 +19,8 @@ CREATE TABLE Profile (
   stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   course varchar(255) NOT NULL,
   studytype varchar(255) NOT NULL,  -- auditiv, visuell, kommunikativ, motorisch
-  extroverted int NOT NULL,         -- value between 1 and 5
-  frequency int NOT NULL,           -- value between 1 and 5
+  extroverted int NOT NULL,         -- value between 1 and 3
+  frequency int NOT NULL,           -- value between 1 and 3
   online varchar(100) NOT NULL,     -- offline, online, beides
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -128,8 +128,8 @@ INSERT INTO Interests (iname) VALUES ('Kreativität');
 
 
 INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 3, 3, 'online');
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('OM', 'kommunikativ', 2, 4, 'offline');
-INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('ID', 'motorisch', 4, 4, 'beides');
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('OM', 'kommunikativ', 2, 1, 'offline');
+INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('ID', 'motorisch', 4, 1, 'beides');
 INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('IW', 'visuell', 3, 2, 'online');
 INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES ('WI', 'auditiv', 1, 2, 'beides');
 
