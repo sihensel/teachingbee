@@ -89,10 +89,12 @@ CREATE TABLE Message (
   stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   content varchar(255),
   sender int NOT NULL,
-  chatID int NOT NULL,
+  recipient int NOT NULL,
+  -- chatID int NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (sender) REFERENCES Person(id),
-  FOREIGN KEY (chatID) REFERENCES Chat(id)
+  FOREIGN KEY (recipient) REFERENCES Person(id)
+  -- FOREIGN KEY (chatID) REFERENCES Chat(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS R_person_chat;
@@ -139,6 +141,10 @@ INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES
 INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Petra', 'Müller', '2000-01-01', 1, 'weiblich', 3);
 INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Sabine', 'Kurz', '2000-01-01', 4, 'weiblich', 4);
 INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Hans', 'Lang', '2000-01-01', 6, 'männlich', 5);
+
+INSERT INTO Message(content, sender, recipient) VALUES ('Hallo Paula wie gehts', 2, 1);
+INSERT INTO Message(content, sender, recipient) VALUES ('Hi Paul mir gehts gut', 1, 2);
+
 
 INSERT INTO R_interests_profile (profileID, interestID) VALUES (1, 1);
 INSERT INTO R_interests_profile (profileID, interestID) VALUES (1, 2);

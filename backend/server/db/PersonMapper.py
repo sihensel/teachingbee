@@ -3,7 +3,7 @@ from server.bo.Person import Person
 
 class PersonMapper(Mapper):
     def __init__(self):
-        super(self).__init__()
+        super().__init__()
 
     def find_all(self):
         """Auslesen aller Benutzer unseres Systems.
@@ -45,6 +45,7 @@ class PersonMapper(Mapper):
 
         for (id, fname, lname, birthdate, semester, gender) in tuples:
             person = Person()
+            person.set_id(id)
             person.set_birthdate(birthdate)
             person.set_gender(gender)
             person.set_semester(semester)

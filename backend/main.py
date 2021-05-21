@@ -1,9 +1,11 @@
 #import flask
+from server.bo.Message import Message
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from flask_restx import Api, Resource, fields
 from server.bo.Person import Person
 from server.db.PersonMapper import PersonMapper as pm
+from server.db.ChatMapper import ChatMapper as cm
 
 #import dbconnector
 from server.bo.Person import Person
@@ -15,7 +17,8 @@ app = Flask(__name__)
 CORS(app)
 
 api = Api(app, version='0.1', title='Teachingbee', description='test')
-teachingbee = api.namespace('teachingbee', description='App zum finden von Lernpartnern')
+teachingbee = api.namespace(
+    'teachingbee', description='App zum finden von Lernpartnern')
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='_id', description='ID'),
 })
@@ -27,8 +30,9 @@ person = api.inherit('Person', bo, {
     'gender': fields.String(attribute='_gender'),
 })
 
+
 @app.route('/person/', methods=['GET', 'POST'])
-#@teachingbee.response(500, 'Internal Server Error.')
+# @teachingbee.response(500, 'Internal Server Error.')
 def manage_person():    # muss später über die Businesslogik abgebildet werden
     pers_obj = PersonMapper()   # person_object
     prof_obj = ProfileMapper()  # profile_object
@@ -63,5 +67,32 @@ def manage_person():    # muss später über die Businesslogik abgebildet werden
         prof_obj.update(prof, pers)
 
         return 'Success', 200
+
+
+@app.route('/chat', methods=['GET'])
+def chat():
+    if request.method == 'GET':
+        fname = request.args.get('fname')
+        lname = request.args.get('lname')
+
+        PM = pm()
+        user = PM.find_by_name(fname, lname)[0]
+        id = user.get_id()
+        CM = cm()
+        response = CM.find_by_sender(id)
+
+        answer = {}
+
+        for i in response:
+            answer[i.get_id()] = {
+                "content": i.get_content(),
+                "sender": i.get_sender(),
+                "recipient": i.get_recipient()
+            }
+
+        print(answer)
+
+        return jsonify(answer)
+
 
 app.run(debug=True)
