@@ -1,4 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
+import Select from 'react-select';
+
 class Create_Profile extends React.Component {
   constructor(props) {
     super(props);
@@ -6,27 +8,29 @@ class Create_Profile extends React.Component {
       frequency: "",
       online: "",
       course: "",
-      semester: "",
-      interests: [],
-      selectedinterests: [],
+      interests: [],          // Interessen aus der Datenbank
+      selectedinterests: [],  // in React selektierte Interessen
       studytype: "",
-      extroverted: "",
+      extroverted: ""
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     fetch("http://localhost:5000/create_profile", {
       method: "get",
     })
-    .then((response) => response.json())
-    .then((data)  => 
-      this.setState({interests: data}),
-      ); 
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({ interests: json })
+      });
   }
 
-  //get methode reinmachen für interest mapper hier, vor render()
 
   render() {
+    const selectoptions = this.state.interests.map(item => ({
+      "value": item[0],
+      "label": item[1]
+    }))
     return (
       <div>
         <h1>Profil erstellen</h1>
@@ -34,81 +38,61 @@ class Create_Profile extends React.Component {
         <form>
           <label htmlFor="frequency">Lernfrequenz:</label>
           <br />
-          <select
-            id="frequency"
-            value={this.state.frequency}
-            onChange={(evt) => this.updateFrequency(evt)}
-          >
+          <select id="frequency" value={this.state.frequency} onChange={(evt) => this.updateFrequency(evt)}>
+            <option value=""></option>
             <option value="1">1 mal die Woche</option>
             <option value="2">2-3 mal die Woche</option>
             <option value="3">4 mal oder mehr</option>
-            {/* Likert Skala oder so coole Bausteine zum durchklicken */}
           </select>
           <br />
           <label htmlFor="online">Online oder Offline lernen?:</label>
           <br />
-          <select
-            id="online"
-            value={this.state.online}
-            onChange={(evt) => this.updateOnline(evt)}
-          >
-            <option value="1">online</option>
-            <option value="2">offline</option>
-            <option value="3">egal</option>
+          <select id="online" value={this.state.online} onChange={(evt) => this.updateOnline(evt)}>
+            <option value=""></option>
+            <option value="online">online</option>
+            <option value="offline">offline</option>
+            <option value="beides">beides</option>
           </select>
           <br />
           <label htmlFor="course">Studiengang:</label>
           <br />
-          <select
-            id="course"
-            value={this.state.course}
-            onChange={(evt) => this.updateCourse(evt)}
-          >
+          <select id="course" value={this.state.course} onChange={(evt) => this.updateCourse(evt)}>
+            <option value=""></option>
             <option value="WI">Wirtschaftsinformatik</option>
-            <option value="OMM">Online Medien Management</option>
+            <option value="OM">Online Medien Management</option>
             <option value="ID">Informationsdesign</option>
             <option value="IW">Informationswissenschaften</option>
           </select>
-          <br /><label htmlFor="interests">Interessen:</label>
           <br />
-          <select
-            id="interests"
-            multiple
-            value={this.state.selectedinterests}
-            onChange={(evt) => this.updateInterests(evt)}
-          >
-            {this.state.interests.map((interest) => {
-              return <option value={interest}> {interest}</option>;
-            })}
-          </select>
+          <label htmlFor="interests">Interessen (bitte max. 2 auswählen):</label>
+          <br />
+          {/*}
+          {this.state.interests.map((item) => {
+            return (
+              <div><input type='checkbox' value={item} checked={this.state.checked} onChange={this.handleChange} />{item[1]}</div>)
+
+          })}
+        */}
+          <Select options={selectoptions} isMulti onChange={this.updateInterests.bind(this)} />
           <br />
           <label htmlFor="studytype">Wie lernst du lieber?:</label>
           <br />
-          <select
-            id="studytype"
-            value={this.state.studytype}
-            onChange={(evt) => this.updateStudytype(evt)}
-          >
-            <option value="audio">Auditiv</option>
-            <option value="visual">Visuell</option>
-            <option value="communicate">Kommunikativ</option>
-            <option value="motoric">Motorisch</option>
+          <select id="studytype" value={this.state.studytype} onChange={(evt) => this.updateStudytype(evt)}>
+            <option value=""></option>
+            <option value="auditiv">Auditiv</option>
+            <option value="kommunikativ">Kommunikativ</option>
+            <option value="motorisch">Motorisch</option>
+            <option value="visuell">Visuell</option>
           </select>
           <br />
           <label htmlFor="extroverted">Wie extrovertiert bist du?:</label>
           <br />
-          <select
-            id="extroverted"
-            value={this.state.frequency}
-            onChange={(evt) => this.updateExtroverted(evt)}
-          >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
+          <select id="extroverted" value={this.state.frequency} onChange={(evt) => this.updateExtroverted(evt)}>
+            <option value=""></option>
+            <option value="1">wenig</option>
+            <option value="2">mäßig</option>
+            <option value="3">sehr</option>
 
-            {/* Likert Skala */}
           </select>
           <br />
         </form>
@@ -118,37 +102,23 @@ class Create_Profile extends React.Component {
   }
 
   handleSubmit() {
-    // Simple POST request with a JSON body using fetch
-    /*
-      const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                fname: this.state.fname.valueOf(),
-                lname: this.state.lname.valueOf(),
-                date: this.state.date,
-                semester: this.state.semester.valueOf(),
-                gender: this.state.gender.valueOf()
-                })
-         };
-        fetch('https://localhost:5000/api', requestOptions)
-            .then(response => response.json())
-            //.then(data => this.setState({ postId: data.id }));
-            //console.log(response.json())
-            */
-
-    fetch("http://127.0.0.1:5000/create_profile", {
-      method: "post",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        frequency: this.state.frequency,
-        online: this.state.online,
-        course: this.state.course,
-        interests: this.state.selectedinterests,
-        studytype: this.state.studytype,
-        extroverted: this.state.extroverted,
-      }),
-    });
+    if (this.state.selectedinterests.length > 2) {
+      alert('bitte max. 2 interessen auswählen.');
+      // noch prüfen, ob alle Felder ausgefüllt wurden!
+    } else {
+      fetch("http://127.0.0.1:5000/create_profile", {
+        method: "post",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          frequency: this.state.frequency,
+          online: this.state.online,
+          course: this.state.course,
+          studytype: this.state.studytype,
+          extroverted: this.state.extroverted,
+          interests: this.state.selectedinterests,
+        }),
+      });
+    }
   }
 
   updateFrequency(evt) {
@@ -168,17 +138,17 @@ class Create_Profile extends React.Component {
       course: evt.target.value,
     });
   }
+
   updateInterests(evt) {
-    var help = this.state.selectedinterests
-    help.push(evt.target.value)
-    this.setState({selectedinterests: help})
-    console.log(this.state.selectedinterests)
+    this.setState({ selectedinterests: evt })
   }
+
   updateStudytype(evt) {
     this.setState({
       studytype: evt.target.value,
     });
   }
+
   updateExtroverted(evt) {
     this.setState({
       extroverted: evt.target.value,
