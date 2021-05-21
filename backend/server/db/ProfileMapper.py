@@ -1,13 +1,12 @@
 from server.bo.Profile import Profile
 from server.db.Mapper import Mapper
 import sys
-import sys
 sys.path.append(".:/server/bo/Profile")
 
 
 class ProfileMapper(Mapper):
     def __init__(self):
-        super.__init__()
+        super().__init__()
 
     def find_all(self):
         """Auslesen aller Benutzer unseres Systems.
@@ -86,6 +85,7 @@ class ProfileMapper(Mapper):
         cursor.execute("SELECT MAX(id) AS maxid FROM profile ")
         tuples = cursor.fetchall()
 
+
         for (maxid) in tuples:
             if maxid[0] is not None:
                 """Wenn wir eine maximale ID festellen konnten, zählen wir diese
@@ -96,9 +96,11 @@ class ProfileMapper(Mapper):
                 davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
                 profile.set_id(1)
 
-        command = "INSERT INTO profile (id, stamp, course, studytype, extroverted, frequency, online, profileID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        data = (profile.get_id(), profile.get_timestamp(), profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online())
-        cursor.execute(command, data)
+        command = "INSERT INTO profile (course, studytype, extroverted, frequency, online) VALUES (%s,%s,%s,%s,%s)"
+
+        package = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online())
+
+        cursor.execute(command, package)
 
         self._cnx.commit()
         cursor.close()
@@ -113,8 +115,7 @@ class ProfileMapper(Mapper):
 
         command = "UPDATE profile " + \
             "SET course=%s, studytype=%s, extroverted=%s, frequency=%s, online=%s WHERE id=%s"
-        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(
-        ), profile.get_frequency(), profile.get_online(), profile.get_id)
+        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online(), profile.get_id)
         cursor.execute(command, data)
 
         self._cnx.commit()
