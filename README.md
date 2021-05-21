@@ -18,9 +18,10 @@ Request Contact |
 Chat | Kai, Tobi
 Join Group |
 Create Group | Lisa, Tim
-Leave Group |
+Leave Group | Lisa, Tim
 Invite Student in Group |
 Kick Student from Group |
+Delete Person |
 
 
 ## Enable Imports in VSCode
