@@ -28,11 +28,13 @@ person = api.inherit('Person', bo, {
 @app.route('/person/', methods=['GET', 'POST'])
 #@teachingbee.response(500, 'Internal Server Error.')
 def manage_person():    # muss später über die Businesslogik abgebildet werden
-    pers_obj = PersonMapper()   # person_object
-    prof_obj = ProfileMapper()  # profile_object
+    pers_mapper = PersonMapper()   # person_object
+    prof_mapper = ProfileMapper()  # profile_object
+    int_mapper = InterestMapper()
+    pers_obj = pers_mapper.find_by_key(3)
 
     if request.method == 'GET':
-        pers_obj = pers_obj.find_by_key(2)
+        # Personendaten
         data = {}
         data['id'] = pers_obj.get_id()
         data['fname'] = pers_obj.get_fname()
@@ -42,25 +44,36 @@ def manage_person():    # muss später über die Businesslogik abgebildet werden
         data['gender'] = pers_obj.get_gender()
         data['profileID'] = pers_obj.get_profileID()
 
-        prof_obj = prof_obj.find_by_key(pers_obj.get_profileID())
+        # Profildaten
+        prof_obj = prof_mapper.find_by_key(pers_obj.get_profileID())
         data['course'] = prof_obj.get_course()
         data['studytype'] = prof_obj.get_studytype()
         data['extroverted'] = prof_obj.get_extroverted()
         data['frequency'] = prof_obj.get_frequency()
         data['online'] = prof_obj.get_online()
 
+        # Interessen
+        interestList = int_mapper.find_by_key(pers_obj.get_profileID())
+        data['interests'] = interestList
+
         return jsonify(data)
 
     if request.method == 'POST':
 
         pers = Person.from_dict(api.payload)
-        pers_obj.update(pers)
+        pers_mapper.update(pers)
 
         prof = Profile.from_dict(api.payload)
-        prof_obj.update(prof, pers)
+        prof_mapper.update(prof, pers)
+
+        # geänderte Interessen
+        new_interests = api.payload['interests']
+
+        # Interessen aus der Datenbank
+        old_interests = int_mapper.find_by_key(pers_obj.get_profileID())
+        int_mapper.update(old_interests, new_interests, prof)
 
         return 'Success', 200
-        
 
 @app.route('/create_profile', methods=['POST', 'GET'])
 def create_profile_post():
@@ -75,7 +88,7 @@ def create_profile_post():
         data = request.get_json()
         profile = Profile()
         data["id"] = 0      # Placeholder, die ID wird von der Datenbank selbst gesetzt
-        profile = profile.from_dict(api.payload)
+        profile = profile.from_dict(data)
 
         interests = []
         for i in range(len(data['interests'])):
