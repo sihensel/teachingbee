@@ -1,7 +1,5 @@
 from server.db.Mapper import Mapper
-from flask import jsonify
 
-##Habe noch Probleme das die Mysql datenbank einen error gibt 2005 Unknown MySQL server host obwohl alle Daten stimmen
 class InterestMapper(Mapper):
     """Mapper-Klasse, die Customer-Objekte auf eine relationale
     Datenbank abbildet. Hierzu wird eine Reihe von Methoden zur Verfügung
@@ -28,41 +26,49 @@ class InterestMapper(Mapper):
             interests.append(iname)
             interestList.append(interests)
 
-           
         self._cnx.commit()
         cursor.close()
 
         return interestList
-    
-
-
    
     def find_by_key(self, key):
-        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
-        pass
+        ''' Datensatz mit der jeweiligen profileID aus R_interests_profile auslesen
+        return die Liste mit den selektierte Interessen '''
+        interestList = []
+        cursor = self._cnx.cursor()
+        cursor.execute("SELECT interestID FROM R_interests_profile WHERE profileID={}".format(key))
+        tuples = cursor.fetchall()
 
- 
-    def insert(self, interests, lastID):
+        for i in tuples:
+            interestList.append(i[0])
+        return interestList
+
+    def insert(self, interests, profileID):
         ''' Die Interessen in die Relationstabelle R_interests_profile eintragen '''
         cursor = self._cnx.cursor()
         command = "INSERT INTO R_interests_profile (profileID, interestID) VALUES (%s, %s)"
         for i in range(len(interests)):
-            data = (lastID, interests[i])
+            data = (profileID, interests[i])
             cursor.execute(command, data)
             self._cnx.commit()
         cursor.close()
         
         return True
-
  
-    def update(self, object):
+    def update(self, old_interestList, new_interestList, profile):
         """Ein Objekt auf einen bereits in der DB enthaltenen Datensatz abbilden."""
-        pass
+        # quick and dirty-Lösung, sollte noch besser implementiert werden!
+        if old_interestList == new_interestList:
+            pass
+        else:
+            self.delete(profile.get_id())
+            self.insert(new_interestList, profile.get_id())
 
-    
-    def delete(self, object):
+    def delete(self, id):
         """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""
-        pass
+        cursor = self._cnx.cursor()
+        command = "DELETE FROM R_interests_profile WHERE profileID={}".format(id)
+        cursor.execute(command)
 
-
-
+        self._cnx.commit()
+        cursor.close()
