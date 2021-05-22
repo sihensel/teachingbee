@@ -64,12 +64,7 @@ class ProfileMapper(Mapper):
         return result
 
     def insert(self, profile):
-        """Einfügen eines User-Objekts in die Datenbank.
-        Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
-        berichtigt.
-        :param user das zu speichernde Objekt
-        :return das bereits übergebene Objekt, jedoch mit ggf. korrigierter ID.
-        """
+        """Einfügen eines User-Objekts in die Datenbank. """
         cursor = self._cnx.cursor()
         command = "INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES (%s,%s,%s,%s,%s)"
         data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online())
