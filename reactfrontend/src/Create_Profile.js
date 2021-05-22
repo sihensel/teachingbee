@@ -41,8 +41,8 @@ class Create_Profile extends React.Component {
           <select id="frequency" value={this.state.frequency} onChange={(evt) => this.updateFrequency(evt)}>
             <option value=""></option>
             <option value="1">1 mal die Woche</option>
-            <option value="2">2-3 mal die Woche</option>
-            <option value="3">4 mal oder mehr</option>
+            <option value="2">2 mal die Woche</option>
+            <option value="3">3 mal oder mehr</option>
           </select>
           <br />
           <label htmlFor="online">Online oder Offline lernen?:</label>
@@ -87,7 +87,7 @@ class Create_Profile extends React.Component {
           <br />
           <label htmlFor="extroverted">Wie extrovertiert bist du?:</label>
           <br />
-          <select id="extroverted" value={this.state.frequency} onChange={(evt) => this.updateExtroverted(evt)}>
+          <select id="extroverted" value={this.state.extroverted} onChange={(evt) => this.updateExtroverted(evt)}>
             <option value=""></option>
             <option value="1">wenig</option>
             <option value="2">mäßig</option>
