@@ -89,31 +89,10 @@ class PersonMapper(Mapper):
         return result
 
     def insert(self, person):
-        """Einfügen eines User-Objekts in die Datenbank.
-
-        Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
-        berichtigt.
-
-        :param user das zu speichernde Objekt
-        :return das bereits übergebene Objekt, jedoch mit ggf. korrigierter ID.
-        """
+        """Einfügen eines User-Objekts in die Datenbank. """
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM person ")
-        tuples = cursor.fetchall()
 
-        for (maxid) in tuples:
-            if maxid[0] is not None:
-                """Wenn wir eine maximale ID festellen konnten, zählen wir diese
-                um 1 hoch und weisen diesen Wert als ID dem User-Objekt zu."""
-                person.set_id(maxid[0] + 1)
-            else:
-                """Wenn wir KEINE maximale ID feststellen konnten, dann gehen wir
-                davon aus, dass die Tabelle leer ist und wir mit der ID 1 beginnen können."""
-                person.set_id(1)
-
-        print(person)
-
-        command = "INSERT INTO person (id, stamp, fname, lname, birthdate, semester, gender, profileID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO Person (id, stamp, fname, lname, birthdate, semester, gender, profileID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
         data = (person.get_id(), person.get_timestamp(), person.get_fname(), person.get_lname(), person.get_birthdate(), person.get_semester(), person.get_gender(), 5)
         cursor.execute(command, data)
 
@@ -129,8 +108,8 @@ class PersonMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE person " + "SET fname=%s, lname=%s, birthdate=%s, semester=%s, gender=%s WHERE id=%s"
-        data = (person.get_fname(), person.get_lname(), person.get_birthdate(), person.get_semester(), person.get_gender(), person.get_id)
+        command = "UPDATE Person " + "SET fname=%s, lname=%s, birthdate=%s, semester=%s, gender=%s WHERE id=%s"
+        data = (person.get_fname(), person.get_lname(), person.get_birthdate(), person.get_semester(), person.get_gender(), person.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -143,18 +122,8 @@ class PersonMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM person WHERE id={}".format(person.get_id())
+        command = "DELETE FROM Person WHERE id={}".format(person.get_id())
         cursor.execute(command)
 
         self._cnx.commit()
         cursor.close()
-
-"""Zu Testzwecken können wir diese Datei bei Bedarf auch ausführen, 
-um die grundsätzliche Funktion zu überprüfen.
-
-Anmerkung: Nicht professionell aber hilfreich..."""
-#if (__name__ == "__main__"):
-    #with PersonMapper() as mapper:
-        #result = mapper.find_all()
-        #for user in result:
-            #print(user)
