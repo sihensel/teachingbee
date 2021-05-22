@@ -3,7 +3,7 @@ from server.bo.Person import Person
 
 class PersonMapper(Mapper):
     def __init__(self):
-        super(self).__init__()
+        super().__init__()
 
     def find_all(self):
         """Auslesen aller Benutzer unseres Systems.
@@ -64,6 +64,8 @@ class PersonMapper(Mapper):
         cursor = self._cnx.cursor()
         command = "SELECT id, fname, lname, birthdate, semester, gender, profileID FROM Person WHERE id={}".format(key)
         # command = "SELECT * FROM Person WHERE id={}".format(key)   # only when the timestamp is needed as well
+        cursor.execute(command)
+        tuples = cursor.fetchall()
 
         try:
             (id, fname, lname, birthdate, semester, gender, profileID) = tuples[0]
