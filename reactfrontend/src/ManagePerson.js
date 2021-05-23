@@ -1,5 +1,4 @@
 import React from 'react';
-import Select from 'react-select';
 
 class ManagePerson extends React.Component {
     constructor(props) {
@@ -41,51 +40,13 @@ class ManagePerson extends React.Component {
     }
 
     render() {
-        /* Reihenfolge des Dropdown-Menüs mit den Geschlechtern festlegen
-        das Geschlecht aus der Datenbank soll immer als erstes angezeigt werden */
-        const genderList = ['weiblich', 'männlich', 'divers'];
-        // das Geschlecht aus der Datenbank aus der Liste entfernen
-        for (let i = 0; i < genderList.length; i++) {
-            if (genderList[i] === this.state.gender) {
-                genderList.splice(i, 1);
-                i--;
-            }
-        }
-
-        const courseList = ['WI', 'ID', 'IW', 'OM'];
-        // den Studiengang aus der Datenbank aus der Liste entfernen
-        for (let i = 0; i < courseList.length; i++) {
-            if (courseList[i] === this.state.course) {
-                courseList.splice(i, 1);
-                i--;
-            }
-        }
-
-        const studytypeList = ['auditiv', 'kommunikativ', 'motorisch', 'visuell'];
-        // den Lerntyp aus der Datenbank aus der Liste entfernen
-        for (let i = 0; i < studytypeList.length; i++) {
-            if (studytypeList[i] === this.state.studytype) {
-                studytypeList.splice(i, 1);
-                i--;
-            }
-        }
-
-        const onlineList = ['offline', 'online', 'beides'];
-        // den Lernort aus der Datenbank aus der Liste entfernen
-        for (let i = 0; i < onlineList.length; i++) {
-            if (onlineList[i] === this.state.online) {
-                onlineList.splice(i, 1);
-                i--;
-            }
-        }
-        const intList = this.state.interests;
+        /*const intList = this.state.interests;
         for (let i = 0; i < intList.length; i++) {
             if (intList[i][0] === this.state.selectedinterest[0]) {
                 intList.splice(i, 1);
                 i--;
             }
-        }
-        console.log(this.state.selectedinterest)
+        }*/
 
         return (
             < div >
@@ -101,29 +62,28 @@ class ManagePerson extends React.Component {
                     <input type="text" value={this.state.semester} onChange={evt => this.updateSemester(evt)}></input><br />
                     <label htmlFor="gender">Geschlecht:</label><br />
                     <select id="gender" value={this.state.gender} onChange={evt => this.updateGender(evt)}>
-                        <option value={this.state.gender}>{this.state.gender}</option>
-                        <option value={genderList[0]}>{genderList[0]}</option>
-                        <option value={genderList[1]}>{genderList[1]}</option>
+                        <option value="weiblich">weiblich</option>
+                        <option value="männlich">männlich</option>
+                        <option value="divers">divers</option>
                     </select><br />
                     <label htmlFor="course">Studiengang:</label><br />
                     <select id="course" value={this.state.course} onChange={evt => this.updateCourse(evt)}>
-                        <option value={this.state.course}>{this.state.course}</option>
-                        <option value={courseList[0]}>{courseList[0]}</option>
-                        <option value={courseList[1]}>{courseList[1]}</option>
-                        <option value={courseList[2]}>{courseList[2]}</option>
+                        <option value="WI">Wirtschaftsinformatik</option>
+                        <option value="OM">Onlinemedienmanagement</option>
+                        <option value="ID">Informationsdesign</option>
+                        <option value="IW">Informationswissenschaften</option>
                     </select><br />
-                    <label htmlFor="studytype">Lerntyp:</label><br />
+                    <label htmlFor="studytype" value={this.state.studytype}>Lerntyp:</label><br />
                     <select id="studytype" value={this.state.studytype} onChange={evt => this.updateStudytype(evt)}>
-                        <option value={this.state.studytype}>{this.state.studytype}</option>
-                        <option value={studytypeList[0]}>{studytypeList[0]}</option>
-                        <option value={studytypeList[1]}>{studytypeList[1]}</option>
-                        <option value={studytypeList[2]}>{studytypeList[2]}</option>
+                        <option value="auditiv">Auditiv</option>
+                        <option value="kommunikativ">Kommunikativ</option>
+                        <option value="motorisch">Motorisch</option>
+                        <option value="visuell">Visuell</option>
                     </select><br />
                     <label htmlFor="extroverted">Wie extrovertiert bist du?:</label>
                     <br />
-                    {/* noch was schlaues überlegen! */}
                     <select id="extroverted" value={this.state.extroverted} onChange={(evt) => this.updateExtroverted(evt)}>
-                        <option value={this.state.extroverted}>{this.state.extroverted}</option>
+                        <option value="1">wenig</option>
                         <option value="2">mäßig</option>
                         <option value="3">sehr</option>
                     </select>< br />
@@ -136,12 +96,13 @@ class ManagePerson extends React.Component {
                     </select><br />
                     Onlinelernen: <br />
                     <select id="online" value={this.state.online} onChange={evt => this.updateOnline(evt)}>
-                        <option value={this.state.online}>{this.state.online}</option>
-                        <option value={onlineList[0]}>{onlineList[0]}</option>
-                        <option value={onlineList[1]}>{onlineList[1]}</option>
+                        <option value="online">online</option>
+                        <option value="offline">offline</option>
+                        <option value="beides">beides</option>
                     </select><br />
                     <label htmlFor="interest">Interessen/Hobbies:</label>
                     <br />
+                    {/* passt noch nicht ganz! */}
                     <select id="interest" onChange={(evt) => this.updateInterest(evt)}>
                         <option value=''></option>
                         {this.state.interests.map(item => (
@@ -220,7 +181,6 @@ class ManagePerson extends React.Component {
     updateInterest(evt) {
         this.setState({ selectedinterest: evt.target.value })
     }
-
 };
 
 export default ManagePerson;
