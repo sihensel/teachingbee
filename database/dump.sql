@@ -141,11 +141,7 @@ INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES
 INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Hans', 'Lang', '2000-01-01', 6, 'männlich', 5);
 
 INSERT INTO R_interests_profile (profileID, interestID) VALUES (1, 1);
-INSERT INTO R_interests_profile (profileID, interestID) VALUES (1, 2);
 INSERT INTO R_interests_profile (profileID, interestID) VALUES (2, 4);
-INSERT INTO R_interests_profile (profileID, interestID) VALUES (2, 5);
 INSERT INTO R_interests_profile (profileID, interestID) VALUES (3, 7);
-INSERT INTO R_interests_profile (profileID, interestID) VALUES (4, 3);
 INSERT INTO R_interests_profile (profileID, interestID) VALUES (4, 8);
-INSERT INTO R_interests_profile (profileID, interestID) VALUES (5, 9);
 INSERT INTO R_interests_profile (profileID, interestID) VALUES (5, 3);
