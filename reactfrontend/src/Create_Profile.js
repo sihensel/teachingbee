@@ -9,7 +9,7 @@ class Create_Profile extends React.Component {
       online: "",
       course: "",
       interests: [],          // Interessen aus der Datenbank
-      selectedinterests: [],  // in React selektierte Interessen
+      selectedinterest: '',  // in React selektierte Interessen
       studytype: "",
       extroverted: ""
     };
@@ -64,16 +64,15 @@ class Create_Profile extends React.Component {
             <option value="IW">Informationswissenschaften</option>
           </select>
           <br />
-          <label htmlFor="interests">Interessen (bitte max. 2 auswählen):</label>
+          <label htmlFor="interests">Interessen/Hobbies:</label>
           <br />
-          {/*}
-          {this.state.interests.map((item) => {
-            return (
-              <div><input type='checkbox' value={item} checked={this.state.checked} onChange={this.handleChange} />{item[1]}</div>)
-
-          })}
-        */}
-          <Select options={selectoptions} isMulti onChange={this.updateInterests.bind(this)} />
+          <select id="interests" value={this.state.selectedinterest} onChange={(evt) => this.updateInterest(evt)}>
+            <option value=""></option>
+            {this.state.interests.map(item => (
+              <option value={item[0]}>{item[1]}</option>
+            ))}
+          </select>
+          {/*<Select options={selectoptions} isMulti onChange={this.updateInterests.bind(this)} />*/}
           <br />
           <label htmlFor="studytype">Wie lernst du lieber?:</label>
           <br />
@@ -92,7 +91,6 @@ class Create_Profile extends React.Component {
             <option value="1">wenig</option>
             <option value="2">mäßig</option>
             <option value="3">sehr</option>
-
           </select>
           <br />
         </form>
@@ -102,57 +100,43 @@ class Create_Profile extends React.Component {
   }
 
   handleSubmit() {
-    if (this.state.selectedinterests.length > 2) {
-      alert('bitte max. 2 interessen auswählen.');
-      // noch prüfen, ob alle Felder ausgefüllt wurden!
-    } else {
-      fetch("http://127.0.0.1:5000/create_profile", {
-        method: "post",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          frequency: this.state.frequency,
-          online: this.state.online,
-          course: this.state.course,
-          studytype: this.state.studytype,
-          extroverted: this.state.extroverted,
-          interests: this.state.selectedinterests,
-        }),
-      });
-    }
+    fetch("http://127.0.0.1:5000/create_profile", {
+      method: "post",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        frequency: this.state.frequency,
+        online: this.state.online,
+        course: this.state.course,
+        studytype: this.state.studytype,
+        extroverted: this.state.extroverted,
+        interest: this.state.selectedinterest,
+      }),
+    });
   }
 
   updateFrequency(evt) {
-    this.setState({
-      frequency: evt.target.value,
-    });
+    this.setState({ frequency: evt.target.value });
   }
 
   updateOnline(evt) {
-    this.setState({
-      online: evt.target.value,
-    });
+
+    this.setState({ online: evt.target.value });
   }
 
   updateCourse(evt) {
-    this.setState({
-      course: evt.target.value,
-    });
+    this.setState({ course: evt.target.value });
   }
 
-  updateInterests(evt) {
-    this.setState({ selectedinterests: evt })
+  updateInterest(evt) {
+    this.setState({ selectedinterest: evt.target.value })
   }
 
   updateStudytype(evt) {
-    this.setState({
-      studytype: evt.target.value,
-    });
+    this.setState({ studytype: evt.target.value });
   }
 
   updateExtroverted(evt) {
-    this.setState({
-      extroverted: evt.target.value,
-    });
+    this.setState({ extroverted: evt.target.value });
   }
 }
 

@@ -34,35 +34,38 @@ class InterestMapper(Mapper):
     def find_by_key(self, key):
         ''' Datensatz mit der jeweiligen profileID aus R_interests_profile auslesen
         return die Liste mit den selektierte Interessen '''
-        interestList = []
         cursor = self._cnx.cursor()
         cursor.execute("SELECT interestID FROM R_interests_profile WHERE profileID={}".format(key))
         tuples = cursor.fetchall()
 
-        for i in tuples:
-            interestList.append(i[0])
-        return interestList
+        interest = tuples[0][0]
 
-    def insert(self, interests, profileID):
+        cursor.execute("SELECT iname FROM Interests WHERE id={}".format(interest))
+        tuples = cursor.fetchall()
+        iname = tuples[0][0]
+        return interest
+
+    def insert(self, interest, profileID):
         ''' Die Interessen in die Relationstabelle R_interests_profile eintragen '''
         cursor = self._cnx.cursor()
         command = "INSERT INTO R_interests_profile (profileID, interestID) VALUES (%s, %s)"
-        for i in range(len(interests)):
-            data = (profileID, interests[i])
-            cursor.execute(command, data)
-            self._cnx.commit()
+        data = (profileID, interest)
+        cursor.execute(command, data)
+        self._cnx.commit()
         cursor.close()
         
         return True
  
-    def update(self, old_interestList, new_interestList, profile):
+    def update(self, interestID, profileID):
         """Ein Objekt auf einen bereits in der DB enthaltenen Datensatz abbilden."""
-        # quick and dirty-Lösung, sollte noch besser implementiert werden!
-        if old_interestList == new_interestList:
-            pass
-        else:
-            self.delete(profile.get_id())
-            self.insert(new_interestList, profile.get_id())
+        cursor = self._cnx.cursor()
+
+        command = "UPDATE R_interests_profile " + "SET interestID=%s WHERE profileID=%s"
+        data = (interestID, profileID)
+        cursor.execute(command, data)
+
+        self._cnx.commit()
+        cursor.close()
 
     def delete(self, id):
         """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""

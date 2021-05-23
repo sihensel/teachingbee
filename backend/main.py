@@ -1,4 +1,3 @@
-#import flask
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from flask_restx import Api, Resource, fields
@@ -53,8 +52,8 @@ def manage_person():    # muss später über die Businesslogik abgebildet werden
         data['online'] = prof_obj.get_online()
 
         # Interessen
-        interestList = int_mapper.find_by_key(pers_obj.get_profileID())
-        data['interests'] = interestList
+        interest = int_mapper.find_by_key(pers_obj.get_profileID())
+        data['interest'] = interest
 
         return jsonify(data)
 
@@ -66,22 +65,17 @@ def manage_person():    # muss später über die Businesslogik abgebildet werden
         prof = Profile.from_dict(api.payload)
         prof_mapper.update(prof, pers)
 
-        # geänderte Interessen
-        new_interests = api.payload['interests']
-
-        # Interessen aus der Datenbank
-        old_interests = int_mapper.find_by_key(pers_obj.get_profileID())
-        int_mapper.update(old_interests, new_interests, prof)
+        int_mapper.update(api.payload['interest'], pers.get_id())
 
         return 'Success', 200
 
 @app.route('/create_profile', methods=['POST', 'GET'])
 def create_profile_post():
-    i_mapper = InterestMapper()
+    int_mapper = InterestMapper()
     prof_mapper = ProfileMapper()
     
     if request.method == 'GET':
-        interests = i_mapper.find_all()
+        interests = int_mapper.find_all()
         return jsonify(interests)
 
     if request.method == 'POST':
@@ -90,11 +84,9 @@ def create_profile_post():
         data["id"] = 0      # Placeholder, die ID wird von der Datenbank selbst gesetzt
         profile = profile.from_dict(data)
 
-        interests = []
-        for i in range(len(data['interests'])):
-            interests.append(data['interests'][i]['value'])
+        # die ID von dem gerade gespeicherten Profil erhalten
         lastID = prof_mapper.insert(profile)
-        i_mapper.insert(interests, lastID)
+        int_mapper.insert(data['interest'], lastID)
 
         return 'Success', 200
 
