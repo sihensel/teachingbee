@@ -7,6 +7,7 @@ class Chat extends React.Component {
             fname: "",
             lname: "",
             messages: {}
+            
         };
     }
 
@@ -24,11 +25,13 @@ class Chat extends React.Component {
                 Nachrichten:<br />
                 <ul>
                     {
-                        Object.keys(this.state.messages).map(function (key, index) {
-                            <li>this.state.messages[key]['content']</li>
-                        })
+                       // Object.keys(this.state.messages).map(function (key, index) {
+                         //   <li>this.state.messages[key]['content']</li>
+                        //})
 
-                    }
+                        this.state.messages.map((message) => {
+                            return <option value={message}> {messages}</option>;
+                    })}
 
                 </ul>
 
@@ -48,8 +51,9 @@ class Chat extends React.Component {
             .then((response) => response.json())
             .then((data) =>
                 this.setState({ messages: data }),
+                console.log(this.state.messages)
             );
-        console.log(this.state.messages)
+        
         //Hier kommen keine Daten an. Der State bleibt leer
     }
 

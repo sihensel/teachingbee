@@ -13,7 +13,7 @@ class Mapper (AbstractContextManager, ABC):
         if sys.platform == 'darwin':
             # Mac
             USER = 'root'
-            PASSWD = 'L.15aL.13nie'
+            PASSWD = 'password'
             HOST = 'localhost'
             DB = 'teachingbee'
         elif sys.platform == 'win32':
