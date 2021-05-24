@@ -17,11 +17,21 @@ class ManagePerson extends React.Component {
             online: '',
             profileID: '',
             interests: [],          // Interessen aus der Datenbank
-            selectedinterest: ''  // in React selektierte Interessen
+            selectedinterest: ''  // in React selektierte Interesse
         };
     }
 
     componentDidMount() {
+        // Profildaten
+        fetch('http://localhost:5000/person/', {
+            method: 'get'
+        })
+            .then(response => response.json())
+            .then(data => this.setState({
+                id: data.id, fname: data.fname, lname: data.lname, birthdate: data.birthdate, semester: data.semester, gender: data.gender,
+                course: data.course, studytype: data.studytype, extroverted: data.extroverted, frequency: data.frequency, online: data.online, profileID: data.profileID, selectedinterest: data.interest
+            }));
+        // Interessen aus der Datenbank
         fetch("http://localhost:5000/create_profile", {
             method: "get",
         })
@@ -29,25 +39,9 @@ class ManagePerson extends React.Component {
             .then((json) => {
                 this.setState({ interests: json })
             });
-        fetch('http://localhost:5000/person/', {
-            method: 'get'
-        })
-            .then(response => response.json())
-            .then(data => this.setState({
-                id: data.id, fname: data.fname, lname: data.lname, birthdate: data.birthdate, semester: data.semester, gender: data.gender,
-                course: data.course, studytype: data.studytype, extroverted: data.extroverted, frequency: data.frequency, online: data.online, profileID: data.profileID    //, selectedinterest: data.interest
-            }));
     }
 
     render() {
-        /*const intList = this.state.interests;
-        for (let i = 0; i < intList.length; i++) {
-            if (intList[i][0] === this.state.selectedinterest[0]) {
-                intList.splice(i, 1);
-                i--;
-            }
-        }*/
-
         return (
             < div >
                 <h1>Profil bearbeiten</h1>
@@ -102,11 +96,9 @@ class ManagePerson extends React.Component {
                     </select><br />
                     <label htmlFor="interest">Interessen/Hobbies:</label>
                     <br />
-                    {/* passt noch nicht ganz! */}
-                    <select id="interest" onChange={(evt) => this.updateInterest(evt)}>
-                        <option value=''></option>
+                    <select id="interest" value={this.state.selectedinterest} onChange={(evt) => this.updateInterest(evt)}>
                         {this.state.interests.map(item => (
-                            <option value={item[0]}>{item[1]}</option>
+                            <option value={item[1]}>{item[1]}</option>
                         ))}
                     </select>
                     <br />

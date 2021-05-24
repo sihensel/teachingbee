@@ -37,13 +37,12 @@ class InterestMapper(Mapper):
         cursor = self._cnx.cursor()
         cursor.execute("SELECT interestID FROM R_interests_profile WHERE profileID={}".format(key))
         tuples = cursor.fetchall()
+        int_id = tuples[0][0]
 
-        interest = tuples[0][0]
-
-        cursor.execute("SELECT iname FROM Interests WHERE id={}".format(interest))
+        cursor.execute("SELECT iname FROM Interests WHERE id={}".format(int_id))
         tuples = cursor.fetchall()
         iname = tuples[0][0]
-        return interest
+        return iname
 
     def insert(self, interest, profileID):
         ''' Die Interessen in die Relationstabelle R_interests_profile eintragen '''

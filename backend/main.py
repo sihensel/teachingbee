@@ -24,16 +24,19 @@ person = api.inherit('Person', bo, {
     'gender': fields.String(attribute='_gender'),
 })
 
+# werden von manage_person und create_profile benötigt
+int_mapper = InterestMapper()
+interests = int_mapper.find_all()
+
 @app.route('/person/', methods=['GET', 'POST'])
 #@teachingbee.response(500, 'Internal Server Error.')
 def manage_person():    # muss später über die Businesslogik abgebildet werden
     pers_mapper = PersonMapper()   # person_object
     prof_mapper = ProfileMapper()  # profile_object
-    int_mapper = InterestMapper()
-    pers_obj = pers_mapper.find_by_key(3)
 
     if request.method == 'GET':
         # Personendaten
+        pers_obj = pers_mapper.find_by_key(3)
         data = {}
         data['id'] = pers_obj.get_id()
         data['fname'] = pers_obj.get_fname()
@@ -65,17 +68,19 @@ def manage_person():    # muss später über die Businesslogik abgebildet werden
         prof = Profile.from_dict(api.payload)
         prof_mapper.update(prof, pers)
 
-        int_mapper.update(api.payload['interest'], pers.get_id())
+        #int_mapper.update(api.payload['interest'], pers.get_id())
+        for i in interests:
+            if i[1] == api.payload['interest']:
+                int_mapper.update(i[0], pers.get_id())
+                break
 
         return 'Success', 200
 
 @app.route('/create_profile', methods=['POST', 'GET'])
-def create_profile_post():
-    int_mapper = InterestMapper()
+def create_profile():
     prof_mapper = ProfileMapper()
-    
+
     if request.method == 'GET':
-        interests = int_mapper.find_all()
         return jsonify(interests)
 
     if request.method == 'POST':
