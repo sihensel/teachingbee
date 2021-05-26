@@ -1,5 +1,6 @@
 from server.db.Mapper import Mapper
 from server.bo.Person import Person
+from datetime import datetime
 
 class PersonMapper(Mapper):
     def __init__(self):
@@ -16,13 +17,14 @@ class PersonMapper(Mapper):
         cursor.execute("SELECT * from person")
         tuples = cursor.fetchall()
 
-        for (id, stamp, fname, lname, birthdate, semester, gender, profileID) in tuples:
+        for (id, fname, lname, birthdate, semester, gender, profileID) in tuples:
             person = Person()
             person.set_birthdate(birthdate)
             person.set_gender(gender)
             person.set_semester(semester)
             person.set_fname(fname)
             person.set_lname(lname)
+            person.set_profileID(profileID)
             result.append(person)
 
         self._cnx.commit()
@@ -69,11 +71,15 @@ class PersonMapper(Mapper):
 
         try:
             (id, fname, lname, birthdate, semester, gender, profileID) = tuples[0]
+            date_format = '%Y-%m-%d'    # Format des Datums aus der Datenbank
+            # String aus der DB in ein Datum umwandeln
+            age = datetime.now().year - datetime.strptime(birthdate, date_format).year
             person = Person()
             person.set_id(id)
             person.set_fname(fname)
             person.set_lname(lname)
             person.set_birthdate(birthdate)
+            person.set_age(age)
             person.set_semester(semester)
             person.set_gender(gender)
             person.set_profileID(profileID)

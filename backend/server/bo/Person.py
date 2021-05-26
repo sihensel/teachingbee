@@ -30,8 +30,10 @@ class Person(bo.BusinessObject):
     def get_birthdate(self):
         return self._birthdate
 
+    def set_age(self, age):
+        self._age = age
+
     def get_age(self):
-        self._age = datetime.now().year - self._birthdate.year
         return self._age
 
     def set_semester(self, semester):
