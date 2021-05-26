@@ -2,7 +2,7 @@ import mysql.connector as connector
 #import os
 from contextlib import AbstractContextManager
 from abc import ABC, abstractmethod
-import sys
+from sys import platform
 
 
 class Mapper (AbstractContextManager, ABC):
@@ -10,13 +10,13 @@ class Mapper (AbstractContextManager, ABC):
 
     def __init__(self):
 
-        if sys.platform == 'darwin':
+        if platform == 'darwin':
             # Mac
             USER = 'root'
             PASSWD = 'L.15aL.13nie'
             HOST = 'localhost'
             DB = 'teachingbee'
-        elif sys.platform == 'win32':
+        elif platform == 'win32' or platform == "linux" or platform == "linux2":
             # Windows
             USER = 'me'
             PASSWD = 'password'
