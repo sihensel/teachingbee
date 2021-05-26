@@ -2,11 +2,11 @@ import './App.css';
 import Create_Profile from './Create_Profile';
 import Signup from './Signup.js';
 import ManagePerson from './ManagePerson.js';
+import AccountDetail from './components/AccountDetail';
 
 function App() {
   return (
-      //<Create_Profile/>
-      <ManagePerson/>
+    <AccountDetail personID="1" profileID='1'/>
   );
 }
 
