@@ -40,14 +40,15 @@ class ProfileMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "SELECT course, studytype, extroverted, frequency, online FROM Profile WHERE id={}".format(key)
+        command = "SELECT id, course, studytype, extroverted, frequency, online FROM Profile WHERE id={}".format(key)
         #command = "SELECT * FROM Profile WHERE id={}".format(key)   # only when the timestamp is needed as well
         cursor.execute(command)
         tuples = cursor.fetchall()
         
         try:
-            (course, studytype, extroverted, frequency, online) = tuples[0]
+            (id, course, studytype, extroverted, frequency, online) = tuples[0]
             profile = Profile()
+            profile.set_id(id)
             profile.set_course(course)
             profile.set_studytype(studytype)
             profile.set_extroverted(extroverted)
