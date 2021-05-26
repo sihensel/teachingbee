@@ -1,5 +1,4 @@
 import React from "react";
-import Select from 'react-select';
 
 class Create_Profile extends React.Component {
   constructor(props) {
@@ -72,7 +71,6 @@ class Create_Profile extends React.Component {
               <option value={item[0]}>{item[1]}</option>
             ))}
           </select>
-          {/*<Select options={selectoptions} isMulti onChange={this.updateInterests.bind(this)} />*/}
           <br />
           <label htmlFor="studytype">Wie lernst du lieber?:</label>
           <br />
