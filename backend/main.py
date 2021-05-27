@@ -10,8 +10,8 @@ from server.bo.Profile import Profile
 from server.db.ProfileMapper import ProfileMapper
 
 app = Flask(__name__)
-#CORS(app)
-CORS(app, resources=r'/teachingbee/*')
+CORS(app)
+#CORS(app, resources=r'/teachingbee/*')
 
 api = Api(app, version='0.1', title='Teachingbee', description='App um Lernpartner zu finden.')
 teachingbee = api.namespace('teachingbee', description='App zum finden von Lernpartnern')
@@ -131,14 +131,17 @@ def manage_person():    # muss später über die Businesslogik abgebildet werden
         pers = Person.from_dict(api.payload)
         pers_mapper.update(pers)
 
-        prof = Profile.from_dict(api.payload)
-        prof_mapper.update(prof, pers)
+        data = request.get_json()
 
-        #int_mapper.update(api.payload['interest'], pers.get_id())
+        # den Interessen-String auf den Key zurückmappen
         for i in interests:
             if i[1] == api.payload['interest']:
-                int_mapper.update(i[0], pers.get_id())
+                data['interest'] = i[0]
                 break
+        prof = Profile.from_dict(data)
+        prof_mapper.update(prof, pers)
+
+
 
         return 'Success', 200
 

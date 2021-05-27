@@ -10,26 +10,7 @@ class ProfileMapper(Mapper):
         :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
                 des Systems repräsentieren.
         """
-        result = []
-        cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from profile")
-        tuples = cursor.fetchall()
-
-        for (id, stamp, course, studytype, extroverted, frequency, online) in tuples:
-            profile = Profile()
-            profile.set_id(id)
-            profile.set_stamp(stamp)
-            profile.set_course(course)
-            profile.set_studytype(studytype)
-            profile.set_extroverted(extroverted)
-            profile.set_frequency(frequency)
-            profile.set_online(online)
-            result.append(profile)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
+        pass
 
     def find_by_name(self, fname, lname):
         pass
@@ -40,13 +21,13 @@ class ProfileMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "SELECT id, course, studytype, extroverted, frequency, online FROM Profile WHERE id={}".format(key)
+        command = "SELECT id, course, studytype, extroverted, frequency, online, interest FROM Profile WHERE id={}".format(key)
         #command = "SELECT * FROM Profile WHERE id={}".format(key)   # only when the timestamp is needed as well
         cursor.execute(command)
         tuples = cursor.fetchall()
         
         try:
-            (id, course, studytype, extroverted, frequency, online) = tuples[0]
+            (id, course, studytype, extroverted, frequency, online, interest) = tuples[0]
             profile = Profile()
             profile.set_id(id)
             profile.set_course(course)
@@ -54,6 +35,7 @@ class ProfileMapper(Mapper):
             profile.set_extroverted(extroverted)
             profile.set_frequency(frequency)
             profile.set_online(online)
+            profile.set_interest(interest)
             result = profile
         except IndexError:
             """ wenn der SELECT nichts zurück gibt """
@@ -67,8 +49,8 @@ class ProfileMapper(Mapper):
     def insert(self, profile):
         """Einfügen eines User-Objekts in die Datenbank. """
         cursor = self._cnx.cursor()
-        command = "INSERT INTO Profile (course, studytype, extroverted, frequency, online) VALUES (%s,%s,%s,%s,%s)"
-        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online())
+        command = "INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES (%s,%s,%s,%s,%s, %s)"
+        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online(), profile.get_interest())
 
         cursor.execute(command, data)
         self._cnx.commit()
@@ -92,8 +74,8 @@ class ProfileMapper(Mapper):
         ''' Einen Eintrag in der Datenbank mittels eines Objekts updaten '''
         cursor = self._cnx.cursor()
 
-        command = "UPDATE Profile " + "SET course=%s, studytype=%s, extroverted=%s, frequency=%s, online=%s WHERE id=%s"
-        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online(), person.get_profileID())
+        command = "UPDATE Profile " + "SET course=%s, studytype=%s, extroverted=%s, frequency=%s, online=%s, interest=%s WHERE id=%s"
+        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online(), profile.get_interest(), person.get_profileID())
         cursor.execute(command, data)
 
         self._cnx.commit()

@@ -14,6 +14,7 @@ class Profile (bo.BusinessObject):
         self._extroverted = 0
         self._frequency = 0
         self._online = 0
+        self._interest = 0
 
     def get_course(self):
         """Auslesen des Studiengangs."""
@@ -55,9 +56,15 @@ class Profile (bo.BusinessObject):
         """Setzen, ob man online lernen will."""
         self._online = value
 
+    def get_interest(self):
+        return self._interest
+
+    def set_interest(self, value):
+        self._interest = value
+
     def __str__(self):
         ''' Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz. '''
-        return f"Profile: {self.get_id()}, {self._course}, {self._studytype}, {self._extroverted}, {self._frequency}, {self._online}"
+        return f"Profile: {self.get_id()}, {self._course}, {self._studytype}, {self._extroverted}, {self._frequency}, {self._online}, {self._interest}"
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -69,4 +76,5 @@ class Profile (bo.BusinessObject):
         obj.set_extroverted(dictionary["extroverted"])
         obj.set_frequency(dictionary["frequency"])
         obj.set_online(dictionary["online"])
+        obj.set_interest(dictionary['interest'])
         return obj
