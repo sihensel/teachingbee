@@ -17,7 +17,15 @@ class BusinessLogic:
     def get_person(self, id):
         with PersonMapper() as mapper:
             return mapper.find_by_key(id)
+    
+    def save_person(self, person):
+        with PersonMapper() as mapper:
+            mapper.update(person)
 
     def get_profile(self, id):
         with ProfileMapper() as mapper:
             return mapper.find_by_key(id)
+    
+    def save_profile(self, profile):
+        with ProfileMapper() as mapper:
+            mapper.update(profile)
