@@ -8,13 +8,12 @@ export default class ProfileBO extends BusinessObject {
   /**
    * Constructs a CustomerBO object with a given firstname and lastname.
    * 
-   * @param {String} fname - the firstname of this CustomerBO.
-   * @param {String} lanme - the firstname of this CustomerBO.
-   * @param {String} birthdate - the firstname of this CustomerBO.
-   * @param {String} age - the firstname of this CustomerBO.
-   * @param {String} semester - the firstname of this CustomerBO.
-   * @param {String} gender - the firstname of this CustomerBO.
-   * @param {String} profileID - the firstname of this CustomerBO.
+   * @param {String} course - the firstname of this CustomerBO.
+   * @param {String} studytype - the firstname of this CustomerBO.
+   * @param {String} extroverted - the firstname of this CustomerBO.
+   * @param {String} frequency - the firstname of this CustomerBO.
+   * @param {String} online - the firstname of this CustomerBO.
+   * @param {String} interest - the firstname of this CustomerBO.
    */
   constructor(course, studytype, extroverted, frequency, online, interest) {
     super();
