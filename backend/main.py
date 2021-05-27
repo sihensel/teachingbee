@@ -10,8 +10,8 @@ from server.bo.Profile import Profile
 from server.db.ProfileMapper import ProfileMapper
 
 app = Flask(__name__)
-CORS(app)
-#CORS(app, resources=r'/teachingbee/*')
+#CORS(app)
+CORS(app, resources=r'/teachingbee/*')
 
 api = Api(app, version='0.1', title='Teachingbee', description='App um Lernpartner zu finden.')
 teachingbee = api.namespace('teachingbee', description='App zum finden von Lernpartnern')
@@ -39,6 +39,7 @@ profile = api.inherit('Profile', bo, {
     'extroverted': fields.String(attribute='_extroverted', description='Extrovertiertheit'),
     'frequency': fields.String(attribute='_frequency', description='Lernhäufigkeit'),
     'online': fields.String(attribute='_online', description='Online/Offline lernen'),
+    'interest': fields.String(attribute='_interest', description='Interessen'),
 })
 
 # POST: create

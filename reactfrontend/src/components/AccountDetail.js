@@ -138,6 +138,7 @@ class AccountDetail extends Component {
                         Extrovertiertheit: {profile.getExtroverted()} <br />
                         Lernhäufigkeit: {profile.getFrequency()} <br />
                         Online: {profile.getOnline()} <br />
+                        Interesse: {profile.getInterest()} <br />
                         </Typography>
                         : null}
                 </Paper>

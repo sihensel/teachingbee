@@ -16,13 +16,14 @@ export default class ProfileBO extends BusinessObject {
    * @param {String} gender - the firstname of this CustomerBO.
    * @param {String} profileID - the firstname of this CustomerBO.
    */
-  constructor(course, studytype, extroverted, frequency, online) {
+  constructor(course, studytype, extroverted, frequency, online, interest) {
     super();
     this.course = course;
     this.studytype = studytype;
     this.extroverted = extroverted;
     this.frequency = frequency;
     this.online = online;
+    this.interest = interest;
   }
 
   /**
@@ -77,6 +78,13 @@ export default class ProfileBO extends BusinessObject {
   }
   getOnline() {
       return this.online;
+  }
+
+  setInterest(interest) {
+    this.interest = interest;
+  }
+  getInterest() {
+    return this.interest;
   }
 
   /** 
