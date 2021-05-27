@@ -27,6 +27,7 @@ export default class TeachingbeeAPI {
   #deletePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   //#searchPersonURL = (personName) => `${this.#bankServerBaseURL}/customers-by-name/${personName}`;
   #getProfileURL = (id) => `${this.#ServerBaseURL}/profile/${id}`;
+  #updateProfileURL = (id) => `${this.#ServerBaseURL}/profile/${id}`;
   #InterestsURL = () => `${this.#ServerBaseURL}/interests`;
 
 
@@ -73,6 +74,17 @@ export default class TeachingbeeAPI {
       })
     })
   }
+  // Person speichern
+  updatePerson(personBO) {
+    return this.#fetchAdvanced(this.#updatePersonURL(personBO.getID()), {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(personBO)
+    })
+  }
 
   getProfile(profileID) {
     return this.#fetchAdvanced(this.#getProfileURL(profileID)).then((responseJSON) => {
@@ -83,6 +95,17 @@ export default class TeachingbeeAPI {
     })
   }
 
+  // Profil speichern
+  updateProfile(profileBO) {
+    return this.#fetchAdvanced(this.#updateProfileURL(profileBO.getID()), {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(profileBO)
+    })
+  }
   getInterests() {
     return this.#fetchAdvanced(this.#InterestsURL()).then((response) => {
       return new Promise(function (resolve) {

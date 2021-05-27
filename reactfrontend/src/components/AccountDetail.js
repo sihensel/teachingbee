@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, Typography, Paper } from '@material-ui/core';
+import { withStyles, Typography, Paper, Button } from '@material-ui/core';
 import { TeachingbeeAPI } from '../api';
+import PersonForm from './dialogs/PersonForm';
+import ProfileForm from './dialogs/ProfileForm';
 //import ContextErrorMessage from './ContextErrorMessage';
 //import LoadingProgress from './LoadingProgress';
 
@@ -27,10 +29,12 @@ class AccountDetail extends Component {
         // Init the state
         this.state = {
             person: null,
-            interests: null,
             profile: null,
+            interests: null,
             loadingInProgress: false,
             loadingError: null,
+            showPerson: false,
+            showProfile: false
         };
     }
 
@@ -98,10 +102,40 @@ class AccountDetail extends Component {
         });
     }
 
+    // handle PersonDialog
+    showPersonDialog = () => {
+        this.setState({ showPerson: true });
+    }
+    closePersonDialog = person => {
+        if (person) {
+            this.setState({
+                person: person,     // update PersonBO
+                showPerson: false
+            });
+        } else {
+            this.setState({ showPerson: false });
+        }
+    }
+
+    // handle ProfileDialog
+    showProfileDialog = () => {
+        this.setState({ showProfile: true });
+    }
+    closeProfileDialog = profile => {
+        if (profile) {
+            this.setState({
+                profile: profile,     // update PersonBO
+                showProfile: false
+            });
+        } else {
+            this.setState({ showProfile: false });
+        }
+    }
+
     /** Renders the component */
     render() {
         const { classes, personID, profileID } = this.props;
-        const { person, interests, profile, loadingInProgress, loadingError } = this.state
+        const { person, profile, interests, loadingInProgress, loadingError, showPerson, showProfile } = this.state
 
         return (
             <div>
@@ -117,13 +151,20 @@ class AccountDetail extends Component {
                             Vorname: {person.getFname()}<br />
                         Nachname: {person.getLname()} <br />
                         Geburtsdatum: {person.getBirthdate()} <br />
-                        Alter: {person.getAge()} <br />
                         Semester: {person.getSemester()} <br />
                         Geschlecht: {person.getGender()} <br />
                         Profil-ID: {person.getProfileID()} <br />
                         </Typography>
                         : null}
+                    <br />
+                    <Button variant='contained' color='primary' onClick={this.showPersonDialog}>
+                        Bearbeiten
+                </Button>
                 </Paper>
+                { person ?
+                    <PersonForm show={showPerson} onClose={this.closePersonDialog} person={person} />
+                    : null}
+
                 <Paper variant='outlined' className={classes.root}>
                     <Typography variant='h4'>
                         Profil
@@ -141,7 +182,15 @@ class AccountDetail extends Component {
                         Interesse: {profile.getInterest()} <br />
                         </Typography>
                         : null}
+                    <br />
+                    <Button variant='contained' color='primary' onClick={this.showProfileDialog}>
+                        Bearbeiten
+                </Button>
                 </Paper>
+                { profile ?
+                    <ProfileForm show={showProfile} onClose={this.closeProfileDialog} profile={profile} interests={interests} />
+                    : null}
+
                 <Paper variant='outlined' className={classes.root}>
                     <Typography variant='h4'>
                         Interessen
@@ -157,7 +206,7 @@ class AccountDetail extends Component {
                             </ul>
                         </Typography>
                         : null}
-                </Paper>
+                </Paper>/
             </div>
         );
     }
@@ -169,11 +218,12 @@ const styles = theme => ({
         padding: theme.spacing(1),
         marginTop: theme.spacing(1)
     },
-    accountEntry: {
-        fontSize: theme.typography.pxToRem(15),
-        flexBasis: '33.33%',
-        flexShrink: 0,
-    }
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+        color: theme.palette.grey[500],
+    },
 });
 
 AccountDetail.propTypes = {
