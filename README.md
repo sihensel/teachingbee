@@ -24,7 +24,7 @@ Kick Student from Group |
 Delete Person |
 
 
-## Enable Imports in VSCode
+## Set source directory for Python
 
 ```json
 "terminal.integrated.env.osx": {
@@ -38,3 +38,13 @@ Delete Person |
 },
 "python.envFile": "${workspaceFolder}/.env"
 ```
+
+## Used Node Modules
+
+Install via `npm i <module>`.
+
+- @material-ui/core
+- @material-ui/icons
+- @material-ui/pickers
+- @material-ui/lab
+- @date-io/date-fns@1.x date-fns
