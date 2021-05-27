@@ -7,7 +7,6 @@ class Person(bo.BusinessObject):
         self._fname = ''
         self._lname = ''
         self._birthdate = ''
-        self._age = 0
         self._semester = 0
         self._gender = ''
         self._profileID = 0
@@ -30,12 +29,6 @@ class Person(bo.BusinessObject):
     def get_birthdate(self):
         return self._birthdate
 
-    def set_age(self, age):
-        self._age = age
-
-    def get_age(self):
-        return self._age
-
     def set_semester(self, semester):
         self._semester = semester
 
@@ -56,7 +49,7 @@ class Person(bo.BusinessObject):
 
     def __str__(self):
         ''' Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz. '''
-        return f'Profile: {self.get_id()}, {self._fname}, {self._lname}, {self._birthdate}, {self._semester}, {self._gender}, {self._profileID}'
+        return f'Person: {self.get_id()}, {self._fname}, {self._lname}, {self._birthdate}, {self._semester}, {self._gender}, {self._profileID}'
 
     @staticmethod
     def from_dict(dictionary=dict()):

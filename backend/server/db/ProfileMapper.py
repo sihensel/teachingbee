@@ -70,12 +70,12 @@ class ProfileMapper(Mapper):
 
         return result
 
-    def update(self, profile, person):
+    def update(self, profile):
         ''' Einen Eintrag in der Datenbank mittels eines Objekts updaten '''
         cursor = self._cnx.cursor()
 
         command = "UPDATE Profile " + "SET course=%s, studytype=%s, extroverted=%s, frequency=%s, online=%s, interest=%s WHERE id=%s"
-        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online(), profile.get_interest(), person.get_profileID())
+        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online(), profile.get_interest(), profile.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()

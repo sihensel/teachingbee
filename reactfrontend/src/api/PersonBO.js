@@ -11,17 +11,15 @@ export default class PersonBO extends BusinessObject {
    * @param {String} fname - the firstname of this CustomerBO.
    * @param {String} lanme - the firstname of this CustomerBO.
    * @param {String} birthdate - the firstname of this CustomerBO.
-   * @param {String} age - the firstname of this CustomerBO.
    * @param {String} semester - the firstname of this CustomerBO.
    * @param {String} gender - the firstname of this CustomerBO.
    * @param {String} profileID - the firstname of this CustomerBO.
    */
-  constructor(fname, lname, birthdate, age, semester, gender, profileID) {
+  constructor(fname, lname, birthdate, semester, gender, profileID) {
     super();
     this.fname = fname;
     this.lname = lname;
     this.birthdate = birthdate;
-    this.age = age;
     this.semester = semester;
     this.gender = gender;
     this.profileID = profileID;
@@ -64,11 +62,6 @@ export default class PersonBO extends BusinessObject {
   }
   getBirthdate() {
       return this.birthdate;
-  }
-
-  // das Alter kann nicht gesetzt werden, sondern wird vom Backend anhand des Datums berechnet
-  getAge() {
-      return this.age;
   }
 
   setSemester(semester) {
