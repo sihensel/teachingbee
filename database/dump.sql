@@ -109,20 +109,16 @@ CREATE TABLE Request (
 
 -- insert values into tables
 INSERT INTO Interests (iname) VALUES ('Sport');
-INSERT INTO Interests (iname) VALUES ('Technik');
-INSERT INTO Interests (iname) VALUES ('Natur');
-INSERT INTO Interests (iname) VALUES ('Sprachen');
-INSERT INTO Interests (iname) VALUES ('Kultur');
+INSERT INTO Interests (iname) VALUES ('Technologie');
 INSERT INTO Interests (iname) VALUES ('Musik');
 INSERT INTO Interests (iname) VALUES ('Reisen');
 INSERT INTO Interests (iname) VALUES ('Gaming');
-INSERT INTO Interests (iname) VALUES ('Kreativität');
 
 
 INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES ('WI', 'auditiv', 3, 3, 'online', 1);
 INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES ('OM', 'kommunikativ', 2, 1, 'offline', 4);
-INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES ('ID', 'motorisch', 2, 1, 'beides', 7);
-INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES ('IW', 'visuell', 3, 2, 'online', 8);
+INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES ('ID', 'motorisch', 2, 1, 'beides', 3);
+INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES ('IW', 'visuell', 3, 2, 'online', 2);
 INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES ('WI', 'auditiv', 1, 2, 'beides', 3);
 
 
