@@ -3,11 +3,8 @@ from flask_cors import CORS, cross_origin
 from flask_restx import Api, Resource, fields
 
 from server.BusinessLogic import BusinessLogic
-from server.db.InterestMapper import InterestMapper
 from server.bo.Person import Person
-from server.db.PersonMapper import PersonMapper
 from server.bo.Profile import Profile
-from server.db.ProfileMapper import ProfileMapper
 
 app = Flask(__name__)
 #CORS(app)
