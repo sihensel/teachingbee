@@ -6,8 +6,10 @@ class Chat extends React.Component {
         this.state = {
             fname: "",
             lname: "",
-            messages: {}
-            
+            messages: [],
+            recipientf: "",
+            recipientl: "",
+            content: ""
         };
     }
 
@@ -18,28 +20,48 @@ class Chat extends React.Component {
                     fname:
                     <input value={this.state.fname} type="text" onChange={evt => this.updateFname(evt)}></input>
                     lname:
-                    <input value={this.state.lname} type="text" onChange={evt => this.updateLname(evt)}></input><br />
+                    <input value={this.state.lname} type="text" onChange={evt => this.updateLname(evt)}></input><br/>
                 </form>
-                <button onClick={this.loadChat.bind(this)}>Absenden</button>
+                <button onClick={this.loadChat.bind(this)}>Anfragen</button><br/>
 
                 Nachrichten:<br />
                 <ul>
                     {
-                       // Object.keys(this.state.messages).map(function (key, index) {
-                         //   <li>this.state.messages[key]['content']</li>
-                        //})
-
-                        this.state.messages.map((message) => {
-                            return <option value={message}> {messages}</option>;
-                    })}
+                       this.state.messages.map((entry) =>
+                       <li>{entry["content"]}</li>
+                       )
+                    }
 
                 </ul>
 
-
+                Nachricht Verfassen:<br/>
+                <form>
+                    Empfänger:<br/>
+                    fname:<input value={this.state.recipientf} type="text" onChange={evt => this.updateRecipientf(evt)}></input>
+                    lname<input value={this.state.recipientl} type="text" onChange={evt => this.updateRecipientl(evt)}></input><br/>
+                    Nachricht:<br/>
+                    <input value={this.state.content} type="text" onChange={evt => this.updateContent(evt)}></input><br/>
+                </form>
+                <button onClick={this.sendMessage.bind(this)}>Absenden</button>
             </div>
 
 
         );
+    }
+
+
+    sendMessage(){
+        fetch('http://127.0.0.1:5000/chat', {
+            method: 'post',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+                "senderf": this.state.fname,
+                "senderl": this.state.lname,
+                "recipientf": this.state.recipientf,
+                "recipientl": this.state.recipientl,
+                "content": this.state.content,
+            })
+        })
     }
 
     loadChat() {
@@ -49,15 +71,30 @@ class Chat extends React.Component {
             headers: { 'content-type': 'application/json' },
         })
             .then((response) => response.json())
-            .then((data) =>
-                this.setState({ messages: data }),
-                console.log(this.state.messages)
-            );
-        
+            .then((data) => 
+                this.setState({messages: data})
+            );        
         //Hier kommen keine Daten an. Der State bleibt leer
     }
 
 
+    updateRecipientf(evt) {
+        this.setState({
+            recipientf: evt.target.value
+        });
+    }    
+
+    updateRecipientl(evt) {
+        this.setState({
+            recipientl: evt.target.value
+        });
+    }    
+    
+    updateContent(evt) {
+        this.setState({
+            content: evt.target.value
+        });
+    }
 
     updateFname(evt) {
         this.setState({
