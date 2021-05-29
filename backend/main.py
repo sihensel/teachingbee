@@ -42,6 +42,7 @@ profile = api.inherit('Profile', bo, {
 # PUT: update
 # DELETE: delete
 
+# interessen aus der Datenbank auslesen
 @teachingbee.route('/interests')
 @teachingbee.response(500, 'Internal Server Error')
 class Interests(Resource):
@@ -69,13 +70,29 @@ class PersonOperations(Resource):
         bl = BusinessLogic()
         pers = Person.from_dict(api.payload)
         if pers:
-            bl.save_person(pers)
-            return '', 200
+            p = bl.save_person(pers)
+            return p, 200
         else:
             return '', 500
 
-    def delete(self):
-        pass
+    def delete(self, id):
+        bl = BusinessLogic()
+        pers = Person.from_dict(api.payload)
+        bl.delete_person(pers)
+        return '', 200
+
+@teachingbee.route('/persons')
+@teachingbee.response(500, 'Internal Server Error')
+class AddPerson(Resource):
+    @teachingbee.marshal_with(person)
+    def post(self):
+        bl = BusinessLogic()
+        pers = Person.from_dict(api.payload)
+        if pers:
+            p = bl.add_person(pers)
+            return p, 200
+        else:
+            return '', 500
 
 
 @teachingbee.route('/profile/<int:id>')
@@ -93,16 +110,37 @@ class ProfileOperations(Resource):
     @teachingbee.expect(profile, validate=True)
     def put(self, id):
         ''' Profil updaten '''
-        print(api.payload)
         bl = BusinessLogic()
         prof = Profile.from_dict(api.payload)
         if prof:
-            bl.save_profile(prof)
-            return '', 200
+            p = bl.save_profile(prof)
+            return p, 200
         else:
             return '', 500
 
-    def delete(self):
-        pass
+@teachingbee.route('/profiles')
+@teachingbee.response(500, 'Internal Server Error')
+class AddProfile(Resource):
+    @teachingbee.marshal_with(profile)
+    def post(self):
+        bl = BusinessLogic()
+        prof = Profile.from_dict(api.payload)
+        if prof:
+            p = bl.add_profile(prof)
+            return p, 200
+        else:
+            return '', 500
+
+@teachingbee.route('/link')
+@teachingbee.response(500, 'Internal Server Error')
+class LinkPersonProfile(Resource):
+    def put(self):
+        if api.payload:
+            bl = BusinessLogic()
+            bl.link_person_profile(api.payload['personID'], api.payload['profileID'])
+            return 'successfull', 200
+        else:
+            return '', 500
+
 
 app.run(debug=True)

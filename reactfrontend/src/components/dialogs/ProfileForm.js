@@ -57,14 +57,13 @@ class ProfileForm extends Component {
   }
 
   /** Adds the customer */
-  /*
-  addCustomer = () => {
-    let newPerson = new PersonBO(this.state.fname, this.state.lname, this.state.birthdate, this.state.semester, this.state.gender);
-    TeachingbeeAPI.getAPI().addPerson(newPerson).then(person => {
+  addProfile = () => {
+    let newProfile = new ProfileBO(this.state.course, this.state.studytype, this.state.extroverted, this.state.frequency, this.state.online, this.state.interest);
+    TeachingbeeAPI.getAPI().addProfile(newProfile).then(profile => {
       // Backend call sucessfull
       // reinit the dialogs state for a new empty customer
-      this.setState(this.baseState);
-      this.props.onClose(person); // call the parent with the customer object from backend
+      this.setState(this.initialState);
+      this.props.onClose(profile); // call the parent with the customer object from backend
     }).catch(e =>
       this.setState({
         updatingInProgress: false,    // disable loading indicator 
@@ -78,7 +77,6 @@ class ProfileForm extends Component {
       updatingError: null             // disable error message
     });
   }
-  */
 
   /** Updates the customeastr */
   
@@ -92,7 +90,6 @@ class ProfileForm extends Component {
     updatedProfile.setFrequency(this.state.frequency);
     updatedProfile.setOnline(this.state.online);
     updatedProfile.setInterest(this.state.interest);
-    console.log(updatedProfile)
     TeachingbeeAPI.getAPI().updateProfile(updatedProfile).then(profile => {
       this.setState({
         updatingInProgress: false,              // disable loading indicator  
@@ -105,7 +102,7 @@ class ProfileForm extends Component {
       this.initialState.frequency = this.state.frequency;
       this.initialState.online = this.state.online;
       this.initialState.interest = this.state.interest;
-      this.props.onClose(updatedProfile);      // call the parent with the new customer
+      this.props.onClose(profile);      // call the parent with the new customer
     }).catch(e =>
       this.setState({
         updatingInProgress: false,              // disable loading indicator 
@@ -170,19 +167,16 @@ class ProfileForm extends Component {
     const { course, fnameValidationFailed, fnameEdited, studytype, lnameValidationFailed, lnameEdited, extroverted, frequency, online, interest, addingInProgress,
       addingError, updatingInProgress, updatingError } = this.state;
     
-      console.log(interest)
-      console.log('state:', this.state.interest)
-
     let title = '';
     let header = '';
 
     if (profile) {
       // customer defindet, so ist an edit dialog
-      title = `Profil bearbeiten (ID: ${profile.getID()})`;
-      //header = `Person ID: ${profile.getID()}`;
+      title = 'Profil bearbeiten';
+      header = `Proil-ID: ${profile.getID()}`;
     } else {
-      title = 'Person anlegen';
-      //header = 'Bitte Daten eingeben';
+      title = 'Lernprofil anlegen';
+      header = 'Bitte alle Felder ausfüllen';
     }
 
     return (
@@ -196,9 +190,9 @@ class ProfileForm extends Component {
             </IconButton>
             </DialogTitle>
             <DialogContent>
-                {/*<DialogContentText>
+                <DialogContentText>
                     {header}
-                </DialogContentText>*/}
+                </DialogContentText>
                 <form className={classes.root} noValidate autoComplete='off'>
                 <InputLabel id='course-label'>Studiengang</InputLabel>
                 <Select labelId='course-label' id='course' value={course} onChange={this.handleCourseChange}>
@@ -259,8 +253,8 @@ class ProfileForm extends Component {
                     <Button variant='contained' color='primary' onClick={this.updateProfile}>
                         Speichern
                     </Button>
-                    : <Button variant='contained' color='primary'>
-                        Hinzufügen
+                    : <Button variant='contained' color='primary' onClick={this.addProfile}>
+                        Anlegen
                     </Button>
                 }
             </DialogActions>
@@ -285,7 +279,7 @@ const styles = theme => ({
 
 ProfileForm.propTypes = {
   profile: PropTypes.object,
-  interests: PropTypes.array,
+  interests: PropTypes.array.isRequired,
   show: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   children: PropTypes.node

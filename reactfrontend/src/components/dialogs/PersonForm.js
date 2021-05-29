@@ -29,7 +29,7 @@ class PersonForm extends Component {
   constructor(props) {
     super(props);
 
-    let fn = '', ln = '', bd = '', sem = '', gend = '', pid = '';
+    let fn = '', ln = '', bd = 0, sem = 0, gend = '', pid = null;
     if (props.person) {
       fn = props.person.getFname();
       ln = props.person.getLname();
@@ -61,8 +61,9 @@ class PersonForm extends Component {
   }
 
   /** Adds the customer */
-  /*addCustomer = () => {
-    let newPerson = new PersonBO(this.state.fname, this.state.lname, this.state.birthdate, this.state.semester, this.state.gender);
+  addPerson = () => {
+    const bdate = format(this.state.birthdate, 'yyyy-MM-dd');
+    let newPerson = new PersonBO(this.state.fname, this.state.lname, bdate, this.state.semester, this.state.gender, this.state.profileID)
     TeachingbeeAPI.getAPI().addPerson(newPerson).then(person => {
       // Backend call sucessfull
       // reinit the dialogs state for a new empty customer
@@ -80,7 +81,7 @@ class PersonForm extends Component {
       updatingInProgress: true,       // show loading indicator
       updatingError: null             // disable error message
     });
-  }*/
+  }
 
   /** Updates the person
    * @todo !!!ERROR HANDLING IS STILL MISSING!!!
@@ -102,7 +103,7 @@ class PersonForm extends Component {
     updatedPerson.setSemester(this.state.semester);
     updatedPerson.setGender(this.state.gender);
 
-    TeachingbeeAPI.getAPI().updatePerson(updatedPerson).then(customer => {
+    TeachingbeeAPI.getAPI().updatePerson(updatedPerson).then(person => {
       this.setState({
         updatingInProgress: false,              // disable loading indicator  
         updatingError: null                     // no error message
@@ -110,6 +111,7 @@ class PersonForm extends Component {
       // keep the new state as base state
       this.baseState.fname = this.state.fname;
       this.baseState.lname = this.state.lname;
+      // Datumsformat beachten
       if (this.state.birthdate === this.baseState.birthdate) {
         this.baseState.birthdate = this.state.birthdate;
       } else {
@@ -118,7 +120,7 @@ class PersonForm extends Component {
       }
       this.baseState.semester = this.state.semester;
       this.baseState.gender = this.state.gender;
-      this.props.onClose(updatedPerson);      // call the parent with the new customer
+      this.props.onClose(person);      // call the parent with the new person
     }).catch(e =>
       this.setState({
         updatingInProgress: false,              // disable loading indicator 
@@ -171,12 +173,12 @@ class PersonForm extends Component {
     let header = '';
 
     if (person) {
-      // customer defindet, so ist an edit dialog
-      title = `Person bearbeiten (ID: ${person.getID()})`;
-      //header = `Person ID: ${person.getID()}`;
+      // Person bereits vorhanden, bearbeiten
+      title = 'Person bearbeiten';
+      header = `Person ID: ${person.getID()}`;
     } else {
       title = 'Person anlegen';
-      //header = 'Bitte Daten eingeben';
+      header = 'Bitte Daten eingeben';
     }
     return (
       show ?
@@ -189,9 +191,9 @@ class PersonForm extends Component {
               </IconButton>
             </DialogTitle>
             <DialogContent>
-              {/*<DialogContentText>
+              <DialogContentText>
                     {header}
-                </DialogContentText>*/}
+                </DialogContentText>
               <form className={classes.root} noValidate autoComplete='off'>
                 <TextField autoFocus type='text' required fullWidth margin='normal' id='fname' label='Vorname:' value={fname} onChange={this.textFieldValueChange} error={fnameValidationFailed} />
                 <TextField type='text' required fullWidth margin='normal' id='lname' label='Nachname:' value={lname} onChange={this.textFieldValueChange} error={lnameValidationFailed} />
@@ -219,8 +221,8 @@ class PersonForm extends Component {
                 <Button variant='contained' color='primary' onClick={this.updatePerson}>
                   Speichern
                     </Button>
-                : <Button variant='contained' color='primary'>
-                  Hinzufügen
+                : <Button variant='contained' color='primary' onClick={this.addPerson}>
+                  Anlegen
                     </Button>
               }
             </DialogActions>

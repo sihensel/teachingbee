@@ -4,6 +4,7 @@ import { withStyles, Typography, Paper, Button } from '@material-ui/core';
 import { TeachingbeeAPI } from '../api';
 import PersonForm from './dialogs/PersonForm';
 import ProfileForm from './dialogs/ProfileForm';
+import DeleteDialog from './dialogs/DeleteDialog';
 //import ContextErrorMessage from './ContextErrorMessage';
 //import LoadingProgress from './LoadingProgress';
 
@@ -12,7 +13,7 @@ import ProfileForm from './dialogs/ProfileForm';
  * Shows a modal form dialog for a CustomerBO in prop customer. If the customer is set, the dialog is configured 
  * as an edit dialog and the text fields of the form are filled from the given CustomerBO object. 
  * If the customer is null, the dialog is configured as a new customer dialog and the textfields are empty.
- * In dependency of the edit/new state, the respective backend calls are made to update or create a customer. 
+ * In dependency of the edit/new state, the respective backend calls are made to update or create a customer.
  * After that, the function of the onClose prop is called with the created/update CustomerBO object as parameter.  
  * When the dialog is canceled, onClose is called with null.
  * 
@@ -28,44 +29,24 @@ class AccountDetail extends Component {
 
         // Init the state
         this.state = {
-            person: null,
-            profile: null,
-            interests: null,
+            person: props.person,
+            profile: props.profile,
+            interests: props.interests,
             loadingInProgress: false,
             loadingError: null,
             showPerson: false,
-            showProfile: false
+            showProfile: false,
+            showDelete: false
         };
     }
-
     componentDidMount() {
-        this.getPerson();
-        this.getProfile();
-        this.getInterests();
-    }
-    getPerson = () => {
-        // noch dynamisch gestalten
-        TeachingbeeAPI.getAPI().getPerson(this.props.personID).then(person =>
-            this.setState({
-                person: person,
-                loadingInProgress: false,
-                loadingError: null
-            })).catch(e =>
-                this.setState({
-                    person: null,
-                    loadingInProgress: false,
-                    loadingError: e
-                })
-            );
-        this.setState({
-            loadingInProgress: true,
-            loadingError: null
-        });
+        if (!this.state.profile) {
+            this.getProfile();
+        }
     }
 
     getProfile = () => {
-        // noch dynamisch gestalten
-        TeachingbeeAPI.getAPI().getProfile(this.props.profileID).then(profile =>
+        TeachingbeeAPI.getAPI().getProfile(this.state.person.getProfileID()).then(profile =>
             this.setState({
                 profile: profile,
                 loadingInProgress: false,
@@ -101,7 +82,6 @@ class AccountDetail extends Component {
             loadingError: null
         });
     }
-
     // handle PersonDialog
     showPersonDialog = () => {
         this.setState({ showPerson: true });
@@ -124,7 +104,7 @@ class AccountDetail extends Component {
     closeProfileDialog = profile => {
         if (profile) {
             this.setState({
-                profile: profile,     // update PersonBO
+                profile: profile,     // update ProfileBO
                 showProfile: false
             });
         } else {
@@ -132,54 +112,53 @@ class AccountDetail extends Component {
         }
     }
 
+    toggleDelete = () => {
+        this.setState({ showDelete: !this.state.showDelete})
+    }
+
     /** Renders the component */
     render() {
-        const { classes, personID, profileID } = this.props;
-        const { person, profile, interests, loadingInProgress, loadingError, showPerson, showProfile } = this.state
+        const { classes, interests } = this.props;
+        const { person, profile, loadingInProgress, loadingError, showPerson, showProfile, showDelete } = this.state
 
         return (
             <div>
                 <Paper variant='outlined'>
-                    <Typography variant='h4'>
-                        Person
+                    <Typography variant='h6'>
+                        Personendaten
                </Typography>
-                    <Typography>
-                        ID: {personID}
-                    </Typography>
                     {person ?
-                        <Typography>
-                            Vorname: {person.getFname()}<br />
-                        Nachname: {person.getLname()} <br />
-                        Geburtsdatum: {person.getBirthdate()} <br />
-                        Semester: {person.getSemester()} <br />
-                        Geschlecht: {person.getGender()} <br />
-                        Profil-ID: {person.getProfileID()} <br />
-                        </Typography>
-                        : null}
-                    <br />
-                    <Button variant='contained' color='primary' onClick={this.showPersonDialog}>
-                        Bearbeiten
-                </Button>
+                        <div>
+                            <Typography>
+                                Vorname: {person.getFname()}<br />
+                            Nachname: {person.getLname()} <br />
+                            Geburtsdatum: {person.getBirthdate()} <br />
+                            Semester: {person.getSemester()} <br />
+                            Geschlecht: {person.getGender()} <br />
+                            Profil-ID: {person.getProfileID()} <br />
+                            </Typography>
+                            <br />
+                            <Button variant='contained' color='primary' onClick={this.showPersonDialog}>
+                                Bearbeiten
+                            </Button></div>
+                        : <div>
+                            <p>Keine Personendaten verfügbar</p><Button variant='contained' color='primary' onClick={this.showPersonDialog}>
+                                Anlegen
+                </Button></div>}
                 </Paper>
-                { person ?
-                    <PersonForm show={showPerson} onClose={this.closePersonDialog} person={person} />
-                    : null}
 
                 <Paper variant='outlined' className={classes.root}>
-                    <Typography variant='h4'>
-                        Profil
+                    <Typography variant='h6'>
+                        Lernprofil
                </Typography>
-                    <Typography>
-                        ID: {profileID}
-                    </Typography>
                     {profile ?
                         <Typography>
                             Studiengang: {profile.getCourse()}<br />
-                        Lerntyp: {profile.getStudytype()} <br />
-                        Extrovertiertheit: {profile.getExtroverted()} <br />
-                        Lernhäufigkeit: {profile.getFrequency()} <br />
-                        Online: {profile.getOnline()} <br />
-                        Interesse: {profile.getInterest()} <br />
+                            Lerntyp: {profile.getStudytype()} <br />
+                            Extrovertiertheit: {profile.getExtroverted()} <br />
+                            Lernhäufigkeit: {profile.getFrequency()} mal die Woche <br />
+                            Online: {profile.getOnline()} <br />
+                            Interesse: {interests[profile.getInterest()-1][1]}
                         </Typography>
                         : null}
                     <br />
@@ -189,9 +168,9 @@ class AccountDetail extends Component {
                 </Paper>
                 { profile ?
                     <ProfileForm show={showProfile} onClose={this.closeProfileDialog} profile={profile} interests={interests} />
-                    : null}
+                    : null }
 
-                <Paper variant='outlined' className={classes.root}>
+                {/* <Paper variant='outlined' className={classes.root}>
                     <Typography variant='h4'>
                         Interessen
                     </Typography>
@@ -206,7 +185,14 @@ class AccountDetail extends Component {
                             </ul>
                         </Typography>
                         : null}
-                </Paper>/
+                </Paper> */}
+                
+                <br />
+                <Button variant='contained' color='secondary' onClick={this.toggleDelete}>
+                    Account löschen
+                </Button>
+                <PersonForm show={showPerson} onClose={this.closePersonDialog} person={person} />
+                <DeleteDialog show={showDelete} onClose={this.toggleDelete} person={person} />
             </div>
         );
     }
@@ -228,9 +214,9 @@ const styles = theme => ({
 
 AccountDetail.propTypes = {
     classes: PropTypes.object.isRequired,
-    personID: PropTypes.string.isRequired,
-    profileID: PropTypes.string.isRequired,
+    person: PropTypes.object.isRequired,
+    profile: PropTypes.object.isRequired,
+    interests: PropTypes.object.isRequired,
 }
 
 export default withStyles(styles)(AccountDetail);
-//export default AccountDetail;

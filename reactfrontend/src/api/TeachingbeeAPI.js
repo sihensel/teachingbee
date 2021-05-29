@@ -20,15 +20,16 @@ export default class TeachingbeeAPI {
   //#bankServerBaseURL = '/api/bank';
 
   // Person related
-  #getPersonsURL = () => `${this.#ServerBaseURL}/persons`;
   #addPersonURL = () => `${this.#ServerBaseURL}/persons`;
   #getPersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   #updatePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   #deletePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   //#searchPersonURL = (personName) => `${this.#bankServerBaseURL}/customers-by-name/${personName}`;
+  #addProfileURL = () => `${this.#ServerBaseURL}/profiles`;
   #getProfileURL = (id) => `${this.#ServerBaseURL}/profile/${id}`;
   #updateProfileURL = (id) => `${this.#ServerBaseURL}/profile/${id}`;
   #InterestsURL = () => `${this.#ServerBaseURL}/interests`;
+  #LinkURL = () => `${this.#ServerBaseURL}/link`;
 
 
   /** 
@@ -83,6 +84,27 @@ export default class TeachingbeeAPI {
         'Content-type': 'application/json',
       },
       body: JSON.stringify(personBO)
+    }).then((responseJSON) => {
+      let responsePersonBO = PersonBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve (responsePersonBO);
+      })
+    })
+  }
+
+  addPerson(personBO) {
+    return this.#fetchAdvanced(this.#addPersonURL(), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(personBO)
+    }).then((responseJSON) => {
+      let responsePersonBO = PersonBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve (responsePersonBO);
+      })
     })
   }
 
@@ -104,13 +126,62 @@ export default class TeachingbeeAPI {
         'Content-type': 'application/json',
       },
       body: JSON.stringify(profileBO)
+    }).then((responseJSON) => {
+      let responseProfileBO = ProfileBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve (responseProfileBO);
+      })
     })
   }
+
+  addProfile(profileBO) {
+    return this.#fetchAdvanced(this.#addProfileURL(), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(profileBO)
+    }).then((responseJSON) => {
+      let responseProfileBO = ProfileBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve (responseProfileBO);
+      })
+    })
+  }
+
   getInterests() {
     return this.#fetchAdvanced(this.#InterestsURL()).then((response) => {
       return new Promise(function (resolve) {
         resolve(response)
       })
+    })
+  }
+
+  link_person_profile(personID, profileID) {
+    return this.#fetchAdvanced(this.#LinkURL(), {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({'personID': personID, 'profileID': profileID})
+    }).then((responseJSON) => {
+      //let responsePersonBO = PersonBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve (responseJSON);
+      })
+    })
+  }
+
+  deletePerson(personBO) {
+    return this.#fetchAdvanced(this.#deletePersonURL(personBO.getID()), {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(personBO)
     })
   }
 
@@ -126,80 +197,10 @@ export default class TeachingbeeAPI {
 
 
 
-  /**
-   * Returns a Promise, which resolves to an Array of PersonBOs
-   * 
-   * @public
-   */
-  getPersons() {
-    return this.#fetchAdvanced(this.#getPersonsURL()).then((responseJSON) => {
-      let personBOs = PersonBO.fromJSON(responseJSON);
-      // console.info(customerBOs);
-      return new Promise(function (resolve) {
-        resolve(personBOs);
-      })
-    })
-  }
 
 
 
 
-
-
-
-
-  /**
-   * Adds a customer and returns a Promise, which resolves to a new CustomerBO object with the 
-   * firstName and lastName of the parameter customerBO object.
-   * 
-   * @param {CustomerBO} customerBO to be added. The ID of the new customer is set by the backend
-   * @public
-   */
-  /*
-  addCustomer(customerBO) {
-    return this.#fetchAdvanced(this.#addCustomerURL(), {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json, text/plain',
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(customerBO)
-    }).then((responseJSON) => {
-      // We always get an array of CustomerBOs.fromJSON, but only need one object
-      let responseCustomerBO = CustomerBO.fromJSON(responseJSON)[0];
-      // console.info(accountBOs);
-      return new Promise(function (resolve) {
-        resolve(responseCustomerBO);
-      })
-    })
-  }
-  */
-
-  /**
-   * Updates a customer and returns a Promise, which resolves to a CustomerBO.
-   * 
-   * @param {CustomerBO} customerBO to be updated
-   * @public
-   */
-  /*
-  updateCustomer(customerBO) {
-    return this.#fetchAdvanced(this.#updateCustomerURL(customerBO.getID()), {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json, text/plain',
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(customerBO)
-    }).then((responseJSON) => {
-      // We always get an array of CustomerBOs.fromJSON
-      let responseCustomerBO = CustomerBO.fromJSON(responseJSON)[0];
-      // console.info(accountBOs);
-      return new Promise(function (resolve) {
-        resolve(responseCustomerBO);
-      })
-    })
-  }
-  */
 
   /**
    * Returns a Promise, which resolves to an Array of AccountBOs

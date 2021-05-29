@@ -20,7 +20,21 @@ class BusinessLogic:
     
     def save_person(self, person):
         with PersonMapper() as mapper:
-            mapper.update(person)
+            return mapper.update(person)
+    
+    def add_person(self, person):
+        with PersonMapper() as mapper:
+            return mapper.insert(person)
+    
+    def delete_person(self, person):
+        # es müssen natürlich auch noch aus allen anderen Tabellen die Einträge gelöscht werden!
+        with PersonMapper() as mapper:
+            mapper.delete(person.get_id())
+        self.delete_profile(person)
+
+    def link_person_profile(self, personID, profileID):
+        with PersonMapper() as mapper:
+            mapper.link_person_profile(personID, profileID)
 
     def get_profile(self, id):
         with ProfileMapper() as mapper:
@@ -28,4 +42,12 @@ class BusinessLogic:
     
     def save_profile(self, profile):
         with ProfileMapper() as mapper:
-            mapper.update(profile)
+            return mapper.update(profile)
+
+    def add_profile(self, profile):
+        with ProfileMapper() as mapper:
+            return mapper.insert(profile)
+    
+    def delete_profile(self, person):
+        with ProfileMapper() as mapper:
+            mapper.delete(person.get_profileID())

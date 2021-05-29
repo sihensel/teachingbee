@@ -55,20 +55,14 @@ class ProfileMapper(Mapper):
         cursor.execute(command, data)
         self._cnx.commit()
 
-        # die ID von dem gerade geschriebenen Datensatz erhalten, um die Interessen speichern zu können
         cursor.execute("SELECT LAST_INSERT_ID()")
         tuples = cursor.fetchall()
-        try:
-            (lastID) = tuples[0][0]
-            result = lastID
-        except IndexError:
-            """ wenn der SELECT nichts zurück gibt """
-            result = None
+        profile.set_id(tuples[0][0])
 
         self._cnx.commit()
         cursor.close()
 
-        return result
+        return profile
 
     def update(self, profile):
         ''' Einen Eintrag in der Datenbank mittels eines Objekts updaten '''
@@ -81,6 +75,16 @@ class ProfileMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, object):
-        """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""
-        pass
+        return profile
+
+    def delete(self, profileID):
+        """Löschen der Daten eines User-Objekts aus der Datenbank.
+
+        :param user das aus der DB zu löschende "Objekt"
+        """
+        cursor = self._cnx.cursor()
+
+        cursor.execute("DELETE FROM Profile WHERE id={}".format(profileID))
+
+        self._cnx.commit()
+        cursor.close()

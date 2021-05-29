@@ -58,29 +58,32 @@ export default class PersonBO extends BusinessObject {
   }
 
   setBirthdate(birthdate) {
-      this.birthdate = birthdate;
+    this.birthdate = birthdate;
   }
   getBirthdate() {
-      return this.birthdate;
+    return this.birthdate;
   }
 
   setSemester(semester) {
-      this.semester = semester;
+    this.semester = semester;
   }
   getSemester() {
-      return this.semester;
+    return this.semester;
   }
 
   setGender(gender) {
-      this.gender = gender;
+    this.gender = gender;
   }
   getGender() {
-      return this.gender;
+    return this.gender;
   }
 
-  // die ProfileID kann nur ausgelesen werden
+  setProfileID(profileID) {
+    this.profileID = profileID;
+  }
+
   getProfileID() {
-      return this.profileID;
+    return this.profileID;
   }
   /** 
    * Returns an Array of CustomerBOs from a given JSON structure.

@@ -6,57 +6,10 @@ class PersonMapper(Mapper):
         super().__init__()
 
     def find_all(self):
-        """Auslesen aller Benutzer unseres Systems.
-
-        :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
-                des Systems repräsentieren.
-        """
-        result = []
-        cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from person")
-        tuples = cursor.fetchall()
-
-        for (id, fname, lname, birthdate, semester, gender, profileID) in tuples:
-            person = Person()
-            person.set_birthdate(birthdate)
-            person.set_gender(gender)
-            person.set_semester(semester)
-            person.set_fname(fname)
-            person.set_lname(lname)
-            person.set_profileID(profileID)
-            result.append(person)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
+        pass
 
     def find_by_name(self, fname, lname):
-        """Auslesen aller Benutzer anhand des Benutzernamens.
-
-        :param name Name der zugehörigen Benutzer.
-        :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
-            mit dem gewünschten Namen enthält.
-        """
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, fname, lname, birthdate, semester, gender FROM person WHERE fname LIKE '{}' AND lname LIKE '{}' ORDER BY fname".format(fname, lname)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, fname, lname, birthdate, semester, gender) in tuples:
-            person = Person()
-            person.set_birthdate(birthdate)
-            person.set_gender(gender)
-            person.set_semester(semester)
-            person.set_fname(fname)
-            person.set_lname(lname)
-            result.append(person)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
+        pass
 
     def find_by_key(self, key):
         """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
@@ -93,11 +46,18 @@ class PersonMapper(Mapper):
         """Einfügen eines User-Objekts in die Datenbank. """
         cursor = self._cnx.cursor()
 
-        command = "INSERT INTO Person (id, stamp, fname, lname, birthdate, semester, gender, profileID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        data = (person.get_id(), person.get_timestamp(), person.get_fname(), person.get_lname(), person.get_birthdate(), person.get_semester(), person.get_gender(), 5)
+        command = "INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES (%s,%s,%s,%s,%s,%s)"
+        data = (person.get_fname(), person.get_lname(), person.get_birthdate(), person.get_semester(), person.get_gender(), person.get_profileID())
         cursor.execute(command, data)
 
         self._cnx.commit()
+
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        tuples = cursor.fetchall()
+
+        person.set_id(tuples[0][0])
+
+        #self._cnx.commit()
         cursor.close()
 
         return person
@@ -116,15 +76,26 @@ class PersonMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, person):
+        return person
+
+    def delete(self, personID):
         """Löschen der Daten eines User-Objekts aus der Datenbank.
 
         :param user das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM Person WHERE id={}".format(person.get_id())
-        cursor.execute(command)
+        cursor.execute("DELETE FROM Person WHERE id={}".format(personID))
+
+        self._cnx.commit()
+        cursor.close()
+    
+    def link_person_profile(self, personID, profileID):
+        cursor = self._cnx.cursor()
+
+        command = "UPDATE Person " + "SET profileID=%s WHERE id=%s"
+        data = (profileID, personID)
+        cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
