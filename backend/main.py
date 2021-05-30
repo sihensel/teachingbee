@@ -7,7 +7,6 @@ from server.bo.Person import Person
 from server.bo.Profile import Profile
 
 app = Flask(__name__)
-#CORS(app)
 CORS(app, resources=r'/teachingbee/*')
 
 api = Api(app, version='0.1', title='Teachingbee', description='App um Lernpartner zu finden.')
@@ -51,7 +50,7 @@ class Interests(Resource):
         interests = bl.get_all_interests()
         return interests
 
-# eine einzelne Person auslesen
+# eine einzelne Person bearbeiten
 @teachingbee.route('/person/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
@@ -78,9 +77,10 @@ class PersonOperations(Resource):
     def delete(self, id):
         bl = BusinessLogic()
         pers = Person.from_dict(api.payload)
-        bl.delete_person(pers)
-        return '', 200
+        result = bl.delete_person(pers)
+        return result, 200
 
+# Person neu speichern
 @teachingbee.route('/persons')
 @teachingbee.response(500, 'Internal Server Error')
 class AddPerson(Resource):
@@ -94,7 +94,7 @@ class AddPerson(Resource):
         else:
             return '', 500
 
-
+# Profil bearbeiten
 @teachingbee.route('/profile/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Profils')
@@ -118,6 +118,7 @@ class ProfileOperations(Resource):
         else:
             return '', 500
 
+# Profil neu speichern
 @teachingbee.route('/profiles')
 @teachingbee.response(500, 'Internal Server Error')
 class AddProfile(Resource):
@@ -131,6 +132,7 @@ class AddProfile(Resource):
         else:
             return '', 500
 
+# Profil und Person verknüpfen
 @teachingbee.route('/link')
 @teachingbee.response(500, 'Internal Server Error')
 class LinkPersonProfile(Resource):

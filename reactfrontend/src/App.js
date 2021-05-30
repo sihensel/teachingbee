@@ -10,7 +10,7 @@ class App extends Component {
 
     // Init the state
     this.state = {
-      currentUser: '',   // später die ID von Firebase
+      currentUser: 1,   // später die ID von Firebase
       person: null,
       interests: null,
       loadingInProgress: false,
@@ -59,16 +59,14 @@ class App extends Component {
     });
   }
 
-
-
   render() {
     const { person, interests } = this.state;
     return (
       <div>
-        { interests ?
-          person ?
-            <AccountDetail person={person} interests={interests} profile={null} />
-            : <SignUp interests={interests} />
+        { interests
+          ? person
+          ?  <AccountDetail person={person} interests={interests} profile={null} />
+          : <SignUp interests={interests} />
           : null}
       </div>
     );

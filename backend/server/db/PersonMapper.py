@@ -91,6 +91,7 @@ class PersonMapper(Mapper):
         cursor.close()
     
     def link_person_profile(self, personID, profileID):
+        ''' Verknüpft ein Profilobjekt mit einem Personenobjekt '''
         cursor = self._cnx.cursor()
 
         command = "UPDATE Person " + "SET profileID=%s WHERE id=%s"

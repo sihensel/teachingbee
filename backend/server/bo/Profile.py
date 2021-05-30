@@ -2,11 +2,7 @@ import server.bo.BusinessObject as bo
 
 
 class Profile (bo.BusinessObject):
-    """Realisierung einer exemplarischen Kundenklasse.
-
-    Aus Gründen der Vereinfachung besitzt der Kunden in diesem Demonstrator
-    lediglich einen Vornamen und einen Nachnamen.
-    """
+    ''' Lernprofil einer Person oder Lerngruppe '''
     def __init__(self):
         super().__init__()
         self._course = ''

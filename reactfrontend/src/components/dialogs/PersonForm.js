@@ -11,19 +11,6 @@ import { TeachingbeeAPI, PersonBO } from '../../api';
 //import LoadingProgress from './LoadingProgress';
 
 
-/**
- * Shows a modal form dialog for a CustomerBO in prop customer. If the customer is set, the dialog is configured 
- * as an edit dialog and the text fields of the form are filled from the given CustomerBO object. 
- * If the customer is null, the dialog is configured as a new customer dialog and the textfields are empty.
- * In dependency of the edit/new state, the respective backend calls are made to update or create a customer. 
- * After that, the function of the onClose prop is called with the created/update CustomerBO object as parameter.  
- * When the dialog is canceled, onClose is called with null.
- * 
- * @see See Material-UIs [Dialog](https://material-ui.com/components/dialogs)
- * @see See Material-UIs [TextField](https://material-ui.com/components/text-fields//)
- * 
- * @author [Christoph Kunz](https://github.com/christophkunz)
- */
 class PersonForm extends Component {
 
   constructor(props) {
@@ -57,18 +44,20 @@ class PersonForm extends Component {
       updatingError: null
     };
     // save this state for canceling
-    this.baseState = this.state;
+    this.initialState = this.state;
   }
 
-  /** Adds the customer */
+  /** Adds the customer
+   * @todo Error handling/verification still missing
+   */
   addPerson = () => {
     const bdate = format(this.state.birthdate, 'yyyy-MM-dd');
     let newPerson = new PersonBO(this.state.fname, this.state.lname, bdate, this.state.semester, this.state.gender, this.state.profileID)
     TeachingbeeAPI.getAPI().addPerson(newPerson).then(person => {
       // Backend call sucessfull
       // reinit the dialogs state for a new empty customer
-      this.setState(this.baseState);
-      this.props.onClose(person); // call the parent with the customer object from backend
+      this.setState(this.initialState);
+      this.props.onClose(person); // call the parent with the object from backend
     }).catch(e =>
       this.setState({
         updatingInProgress: false,    // disable loading indicator 
@@ -92,9 +81,8 @@ class PersonForm extends Component {
     // set the new attributes from our dialog
     updatedPerson.setFname(this.state.fname);
     updatedPerson.setLname(this.state.lname);
-    // das Datum muss noch in das Format 'yyyy-MM-dd' gebracht werden
-    // wenn das Datum gleich bleibt, muss nichts formatiert werden
-    if (this.state.birthdate === this.baseState.birthdate) {
+    // das Datum muss bei Änderung noch in das Format 'yyyy-MM-dd' gebracht werden
+    if (this.state.birthdate === this.initialState.birthdate) {
       updatedPerson.setBirthdate(this.state.birthdate)
     } else {
       const bdate = format(this.state.birthdate, 'yyyy-MM-dd');
@@ -109,17 +97,17 @@ class PersonForm extends Component {
         updatingError: null                     // no error message
       });
       // keep the new state as base state
-      this.baseState.fname = this.state.fname;
-      this.baseState.lname = this.state.lname;
-      // Datumsformat beachten
-      if (this.state.birthdate === this.baseState.birthdate) {
-        this.baseState.birthdate = this.state.birthdate;
+      this.initialState.fname = this.state.fname;
+      this.initialState.lname = this.state.lname;
+      // Datumsformat beachten (s.o.)
+      if (this.state.birthdate === this.initialState.birthdate) {
+        this.initialState.birthdate = this.state.birthdate;
       } else {
         const bdate = format(this.state.birthdate, 'yyyy-MM-dd');
-        this.baseState.birthdate = bdate;
+        this.initialState.birthdate = bdate;
       }
-      this.baseState.semester = this.state.semester;
-      this.baseState.gender = this.state.gender;
+      this.initialState.semester = this.state.semester;
+      this.initialState.gender = this.state.gender;
       this.props.onClose(person);      // call the parent with the new person
     }).catch(e =>
       this.setState({
@@ -153,7 +141,7 @@ class PersonForm extends Component {
 
   // Close the Dialog
   handleClose = () => {
-    this.setState(this.baseState);
+    this.setState(this.initialState);
     this.props.onClose();
   }
 
@@ -173,7 +161,7 @@ class PersonForm extends Component {
     let header = '';
 
     if (person) {
-      // Person bereits vorhanden, bearbeiten
+      // Person bereits vorhanden => bearneiten
       title = 'Person bearbeiten';
       header = `Person ID: ${person.getID()}`;
     } else {
@@ -197,7 +185,6 @@ class PersonForm extends Component {
               <form className={classes.root} noValidate autoComplete='off'>
                 <TextField autoFocus type='text' required fullWidth margin='normal' id='fname' label='Vorname:' value={fname} onChange={this.textFieldValueChange} error={fnameValidationFailed} />
                 <TextField type='text' required fullWidth margin='normal' id='lname' label='Nachname:' value={lname} onChange={this.textFieldValueChange} error={lnameValidationFailed} />
-                {/*<TextField type='text' required fullWidth margin='normal' id='gender' label='Geschlecht:' value={gender} onChange={this.textFieldValueChange} error={fnameValidationFailed} />*/}
                 <br />
                 <InputLabel id='gender-label'>Geschlecht</InputLabel>
                 <Select labelId='gender-label' id='gender' value={gender} onChange={this.handleChange}>
@@ -253,4 +240,3 @@ PersonForm.propTypes = {
 }
 
 export default withStyles(styles)(PersonForm);
-

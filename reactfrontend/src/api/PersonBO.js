@@ -1,7 +1,7 @@
 import BusinessObject from './BusinessObject';
 
 /**
- * Represents a customer of the bank.
+ * Represents a person
  */
 export default class PersonBO extends BusinessObject {
 
@@ -9,7 +9,7 @@ export default class PersonBO extends BusinessObject {
    * Constructs a CustomerBO object with a given firstname and lastname.
    * 
    * @param {String} fname - the firstname of this CustomerBO.
-   * @param {String} lanme - the firstname of this CustomerBO.
+   * @param {String} lname - the firstname of this CustomerBO.
    * @param {String} birthdate - the firstname of this CustomerBO.
    * @param {String} semester - the firstname of this CustomerBO.
    * @param {String} gender - the firstname of this CustomerBO.
@@ -25,34 +25,18 @@ export default class PersonBO extends BusinessObject {
     this.profileID = profileID;
   }
 
-  /**
-   * Sets a new firstname.
-   * 
-   * @param {String} fname - the new firstname of this CustomerBO.
-   */
   setFname(fname) {
     this.fname = fname;
   }
 
-  /**
-   * Gets the firstname.
-   */
   getFname() {
     return this.fname;
   }
 
-  /**
-   * Sets a new lastname.
-   * 
-   * @param {String} lname - the new lastname of this CustomerBO.
-   */
   setLname(lname) {
     this.lname = lname;
   }
 
-  /**
-   * Gets the lastname.
-   */
   getLname() {
     return this.lname;
   }
@@ -86,7 +70,7 @@ export default class PersonBO extends BusinessObject {
     return this.profileID;
   }
   /** 
-   * Returns an Array of CustomerBOs from a given JSON structure.
+   * Returns an Object from a JSON
    */
   static fromJSON(person) {
     let p = Object.setPrototypeOf(person, PersonBO.prototype);

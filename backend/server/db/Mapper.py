@@ -1,5 +1,4 @@
 import mysql.connector as connector
-#import os
 from contextlib import AbstractContextManager
 from abc import ABC, abstractmethod
 from sys import platform
@@ -10,13 +9,14 @@ class Mapper (AbstractContextManager, ABC):
 
     def __init__(self):
 
+        # zu Testzwecken auf der lokalen Installation
         if platform == 'darwin':
             # Mac
             USER = 'root'
             PASSWD = 'L.15aL.13nie'
             HOST = 'localhost'
             DB = 'teachingbee'
-        elif platform == 'win32' or platform == "linux" or platform == "linux2":
+        elif platform == 'win32' or platform == "linux":
             # Windows
             USER = 'me'
             PASSWD = 'password'
@@ -31,8 +31,6 @@ class Mapper (AbstractContextManager, ABC):
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Was soll geschehen, wenn wir (evtl. vorübergehend) aufhören, mit dem Mapper zu arbeiten?"""
         self._cnx.close()
-
-    """Formuliere nachfolgend sämtliche Auflagen, die instanzierbare Mapper-Subklassen mind. erfüllen müssen."""
 
     @abstractmethod
     def find_all(self):

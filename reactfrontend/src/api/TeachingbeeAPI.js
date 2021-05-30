@@ -4,39 +4,29 @@ import ProfileBO from './ProfileBO';
 /**
  * Abstracts the REST interface of the Python backend with convenient access methods.
  * The class is implemented as a singleton. 
- * 
- * @author [lala lulu](https://github.com/lalalulu)
  */
 export default class TeachingbeeAPI {
 
   // Singelton instance
   static #api = null;
 
-
   // Local Python backend
   #ServerBaseURL = '/teachingbee';
 
-  // Local http-fake-backend 
-  //#bankServerBaseURL = '/api/bank';
-
-  // Person related
   #addPersonURL = () => `${this.#ServerBaseURL}/persons`;
   #getPersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   #updatePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   #deletePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
-  //#searchPersonURL = (personName) => `${this.#bankServerBaseURL}/customers-by-name/${personName}`;
+
+  #LinkURL = () => `${this.#ServerBaseURL}/link`;
+
   #addProfileURL = () => `${this.#ServerBaseURL}/profiles`;
   #getProfileURL = (id) => `${this.#ServerBaseURL}/profile/${id}`;
   #updateProfileURL = (id) => `${this.#ServerBaseURL}/profile/${id}`;
+
   #InterestsURL = () => `${this.#ServerBaseURL}/interests`;
-  #LinkURL = () => `${this.#ServerBaseURL}/link`;
 
 
-  /** 
-   * Get the Singelton instance 
-   * 
-   * @public
-   */
   static getAPI() {
     if (this.#api == null) {
       this.#api = new TeachingbeeAPI();
@@ -56,7 +46,6 @@ export default class TeachingbeeAPI {
         throw Error(`${res.status} ${res.statusText}`);
       }
       return res.json();
-      //return res.text();
     }
     )
 
@@ -117,6 +106,17 @@ export default class TeachingbeeAPI {
     })
   }
 
+  deletePerson(personBO) {
+    return this.#fetchAdvanced(this.#deletePersonURL(personBO.getID()), {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(personBO)
+    })
+  }
+
   // Profil speichern
   updateProfile(profileBO) {
     return this.#fetchAdvanced(this.#updateProfileURL(profileBO.getID()), {
@@ -173,71 +173,4 @@ export default class TeachingbeeAPI {
       })
     })
   }
-
-  deletePerson(personBO) {
-    return this.#fetchAdvanced(this.#deletePersonURL(personBO.getID()), {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json, text/plain',
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(personBO)
-    })
-  }
-
-  // --- ab hier alter Krempel ---
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /**
-   * Returns a Promise, which resolves to an Array of AccountBOs
-   * 
-   * @param {Number} customerID to be deleted
-   * @public
-   */
-  /*
-  deleteCustomer(customerID) {
-    return this.#fetchAdvanced(this.#deleteCustomerURL(customerID), {
-      method: 'DELETE'
-    }).then((responseJSON) => {
-      // We always get an array of CustomerBOs.fromJSON
-      let responseCustomerBO = CustomerBO.fromJSON(responseJSON)[0];
-      // console.info(accountBOs);
-      return new Promise(function (resolve) {
-        resolve(responseCustomerBO);
-      })
-    })
-  }
-  */
-
-  /**
-   * Returns a Promise, which resolves to an Array of AccountBOs
-   * 
-   * @param {Number} customerID to be deleted
-   * @public
-   */
-  /*
-  searchCustomer(customerName) {
-    return this.#fetchAdvanced(this.#searchCustomerURL(customerName)).then((responseJSON) => {
-      let customerBOs = CustomerBO.fromJSON(responseJSON);
-      // console.info(customerBOs);
-      return new Promise(function (resolve) {
-        resolve(customerBOs);
-      })
-    })
-  }
-  */
 }

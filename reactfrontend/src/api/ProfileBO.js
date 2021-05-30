@@ -1,7 +1,7 @@
 import BusinessObject from './BusinessObject';
 
 /**
- * Represents a customer of the bank.
+ * Represents a Profile of a Person
  */
 export default class ProfileBO extends BusinessObject {
 
@@ -25,18 +25,10 @@ export default class ProfileBO extends BusinessObject {
     this.interest = interest;
   }
 
-  /**
-   * Sets a new firstname.
-   * 
-   * @param {String} fname - the new firstname of this CustomerBO.
-   */
   setCourse(course) {
     this.course = course;
   }
 
-  /**
-   * Gets the firstname.
-   */
   getCourse() {
     return this.course;
   }
@@ -48,22 +40,13 @@ export default class ProfileBO extends BusinessObject {
       return this.studytype;
   }
 
-  /**
-   * Sets a new lastname.
-   * 
-   * @param {String} lname - the new lastname of this CustomerBO.
-   */
   setExtroverted(extroverted) {
     this.extroverted = extroverted;
   }
 
-  /**
-   * Gets the lastname.
-   */
   getExtroverted() {
     return this.extroverted;
   }
-
 
   setFrequency(frequency) {
       this.frequency = frequency;
@@ -87,7 +70,7 @@ export default class ProfileBO extends BusinessObject {
   }
 
   /** 
-   * Returns an Array of CustomerBOs from a given JSON structure.
+   * Returns an Object from a JSON
    */
   static fromJSON(profile) {
     let p = Object.setPrototypeOf(profile, ProfileBO.prototype);

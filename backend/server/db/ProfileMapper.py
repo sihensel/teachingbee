@@ -6,10 +6,6 @@ class ProfileMapper(Mapper):
         super().__init__()
 
     def find_all(self):
-        """Auslesen aller Benutzer unseres Systems.
-        :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
-                des Systems repräsentieren.
-        """
         pass
 
     def find_by_name(self, fname, lname):
@@ -22,7 +18,6 @@ class ProfileMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "SELECT id, course, studytype, extroverted, frequency, online, interest FROM Profile WHERE id={}".format(key)
-        #command = "SELECT * FROM Profile WHERE id={}".format(key)   # only when the timestamp is needed as well
         cursor.execute(command)
         tuples = cursor.fetchall()
         
@@ -55,7 +50,7 @@ class ProfileMapper(Mapper):
         cursor.execute(command, data)
         self._cnx.commit()
 
-        cursor.execute("SELECT LAST_INSERT_ID()")
+        cursor.execute("SELECT LAST_INSERT_ID()")   # die ID des gerade geschriebenen Datensatzen auslesen
         tuples = cursor.fetchall()
         profile.set_id(tuples[0][0])
 
@@ -78,10 +73,8 @@ class ProfileMapper(Mapper):
         return profile
 
     def delete(self, profileID):
-        """Löschen der Daten eines User-Objekts aus der Datenbank.
+        """Löschen der Daten eines User-Objekts aus der Datenbank. """
 
-        :param user das aus der DB zu löschende "Objekt"
-        """
         cursor = self._cnx.cursor()
 
         cursor.execute("DELETE FROM Profile WHERE id={}".format(profileID))

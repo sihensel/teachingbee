@@ -116,7 +116,6 @@ class ProfileForm extends Component {
       updatingError: null                       // disable error message
     });
   }
-  
 
   /** Handles value changes of the forms textfields and validates them */
   textFieldValueChange = (event) => {
@@ -133,7 +132,7 @@ class ProfileForm extends Component {
       [event.target.id + 'Edited']: true
     });
   }
-  
+
   // Änderungen der Dropdowns
   handleCourseChange = (event) => {
     this.setState({ course: event.target.value });
@@ -166,12 +165,12 @@ class ProfileForm extends Component {
     const { classes, profile, interests, show } = this.props;
     const { course, fnameValidationFailed, fnameEdited, studytype, lnameValidationFailed, lnameEdited, extroverted, frequency, online, interest, addingInProgress,
       addingError, updatingInProgress, updatingError } = this.state;
-    
+
     let title = '';
     let header = '';
 
     if (profile) {
-      // customer defindet, so ist an edit dialog
+      // Profil vorhanden => bearbeiten
       title = 'Profil bearbeiten';
       header = `Proil-ID: ${profile.getID()}`;
     } else {
@@ -286,5 +285,3 @@ ProfileForm.propTypes = {
 }
 
 export default withStyles(styles)(ProfileForm);
-
-

@@ -1,7 +1,7 @@
 import server.bo.BusinessObject as bo
-from datetime import datetime
 
 class Person(bo.BusinessObject):
+    ''' Personendaten eines Accounts '''
     def __init__(self):
         super().__init__()
         self._fname = ''

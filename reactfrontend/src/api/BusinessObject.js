@@ -3,27 +3,16 @@
  */
 export default class BusinessObject {
 
-  /**
-   * The null constructor.
-   */
   constructor() {
     this.id = 0;
     this.stamp = 0;
     this.name = '';
   }
 
-  /**
-   * Sets the ID of this BusinessObject.
-   * 
-   * @param {*} aId - the new ID of this BusinessObject
-   */
   setID(id) {
     this.id = id;
   }
 
-  /**
-   * Returns the ID of this BusinessObject.
-   */
   getID() {
     return this.id;
   }

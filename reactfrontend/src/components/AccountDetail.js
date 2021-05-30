@@ -8,20 +8,6 @@ import DeleteDialog from './dialogs/DeleteDialog';
 //import ContextErrorMessage from './ContextErrorMessage';
 //import LoadingProgress from './LoadingProgress';
 
-
-/**
- * Shows a modal form dialog for a CustomerBO in prop customer. If the customer is set, the dialog is configured 
- * as an edit dialog and the text fields of the form are filled from the given CustomerBO object. 
- * If the customer is null, the dialog is configured as a new customer dialog and the textfields are empty.
- * In dependency of the edit/new state, the respective backend calls are made to update or create a customer.
- * After that, the function of the onClose prop is called with the created/update CustomerBO object as parameter.  
- * When the dialog is canceled, onClose is called with null.
- * 
- * @see See Material-UIs [Dialog](https://material-ui.com/components/dialogs)
- * @see See Material-UIs [TextField](https://material-ui.com/components/text-fields//)
- * 
- * @author [Christoph Kunz](https://github.com/christophkunz)
- */
 class AccountDetail extends Component {
 
     constructor(props) {
@@ -64,24 +50,6 @@ class AccountDetail extends Component {
         });
     }
 
-    getInterests = () => {
-        TeachingbeeAPI.getAPI().getInterests().then(interests =>
-            this.setState({
-                interests: interests,
-                loadingInProgress: false,
-                loadingError: null
-            })).catch(e =>
-                this.setState({
-                    interests: null,
-                    loadingInProgress: false,
-                    loadingError: e
-                })
-            );
-        this.setState({
-            loadingInProgress: true,
-            loadingError: null
-        });
-    }
     // handle PersonDialog
     showPersonDialog = () => {
         this.setState({ showPerson: true });
@@ -169,24 +137,6 @@ class AccountDetail extends Component {
                 { profile ?
                     <ProfileForm show={showProfile} onClose={this.closeProfileDialog} profile={profile} interests={interests} />
                     : null }
-
-                {/* <Paper variant='outlined' className={classes.root}>
-                    <Typography variant='h4'>
-                        Interessen
-                    </Typography>
-                    {interests ?
-                        <Typography>
-                            <ul>
-                                {interests ?
-                                    interests.map(item =>
-                                        <li key={item[0]}>{item[0]}: {item[1]}</li>)
-                                    : null
-                                }
-                            </ul>
-                        </Typography>
-                        : null}
-                </Paper> */}
-                
                 <br />
                 <Button variant='contained' color='secondary' onClick={this.toggleDelete}>
                     Account löschen
