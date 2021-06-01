@@ -1,66 +1,191 @@
-#import flask
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
-import logging
+from flask_restx import Api, Resource, fields
+
+from server.BusinessLogic import BusinessLogic
 from server.bo.Person import Person
-from server.db.PersonMapper import PersonMapper as pm
-from server.bo.Group import Group
-from server.db.GroupMapper import GroupMapper as gm
+from server.bo.Profile import Profile
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources=r'/teachingbee/*')
 
-data = {}
 
-@app.route('/api', methods=['POST', 'GET'])
-def api_post():
+api = Api(app, version='0.1', title='Teachingbee', description='App um Lernpartner zu finden.')
+teachingbee = api.namespace('teachingbee', description='App zum finden von Lernpartnern')
+
+# Business Object
+bo = api.model('BusinessObject', {
+    'id': fields.Integer(attribute='_id', description='ID'),
+})
+
+# Personenobjekt
+person = api.inherit('Person', bo, {
+    'fname': fields.String(attribute='_fname', description='Vorname'),
+    'lname': fields.String(attribute='_lname', description='Nachname'),
+    'birthdate': fields.String(attribute='_birthdate', description='Geburtsdatum'),
+    'semester': fields.String(attribute='_semester', description='Semester'),  # vllt als String lassen?
+    'gender': fields.String(attribute='_gender', description='Geschlecht'),
+    'profileID': fields.Integer(attribute='_profileID', description='ID des Profils'),
+})
+
+# Profilobjekt
+profile = api.inherit('Profile', bo, {
+    'course': fields.String(attribute='_course', description='Studiengang'),
+    'studytype': fields.String(attribute='_studytype', description='Lerntyp'),
+    'extroverted': fields.String(attribute='_extroverted', description='Extrovertiertheit'),
+    'frequency': fields.String(attribute='_frequency', description='Lernhäufigkeit'),
+    'online': fields.String(attribute='_online', description='Online/Offline lernen'),
+    'interest': fields.Integer(attribute='_interest', description='Interessen'),
+})
+
+# POST: create
+# PUT: update
+# DELETE: delete
+
+# interessen aus der Datenbank auslesen
+@teachingbee.route('/interests')
+@teachingbee.response(500, 'Internal Server Error')
+class Interests(Resource):
+    def get(self):
+        bl = BusinessLogic()
+        interests = bl.get_all_interests()
+        return interests
+
+# eine einzelne Person bearbeiten
+@teachingbee.route('/person/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID der Person')
+class PersonOperations(Resource):
+    @teachingbee.marshal_with(person)
+    def get(self, id):
+        ''' Person aus der DB auslesen '''
+        bl = BusinessLogic()
+        pers = bl.get_person(id)
+        return pers
+
+    @teachingbee.marshal_with(person)
+    @teachingbee.expect(person, validate=True)
+    def put(self, id):
+        ''' Person updaten '''
+        bl = BusinessLogic()
+        pers = Person.from_dict(api.payload)
+        if pers:
+            p = bl.save_person(pers)
+            return p, 200
+        else:
+            return '', 500
+
+    def delete(self, id):
+        bl = BusinessLogic()
+        pers = Person.from_dict(api.payload)
+        result = bl.delete_person(pers)
+        return result, 200
+
+# Person neu speichern
+@teachingbee.route('/persons')
+@teachingbee.response(500, 'Internal Server Error')
+class AddPerson(Resource):
+    @teachingbee.marshal_with(person)
+    def post(self):
+        bl = BusinessLogic()
+        pers = Person.from_dict(api.payload)
+        if pers:
+            p = bl.add_person(pers)
+            return p, 200
+        else:
+            return '', 500
+
+# Profil bearbeiten
+@teachingbee.route('/profile/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID des Profils')
+class ProfileOperations(Resource):
+    @teachingbee.marshal_with(profile)
+    def get(self, id):
+        ''' Profil aus der DB auslesen '''
+        bl = BusinessLogic()
+        prof = bl.get_profile(id)
+        return prof
+
+    @teachingbee.marshal_with(profile)
+    @teachingbee.expect(profile, validate=True)
+    def put(self, id):
+        ''' Profil updaten '''
+        bl = BusinessLogic()
+        prof = Profile.from_dict(api.payload)
+        if prof:
+            p = bl.save_profile(prof)
+            return p, 200
+        else:
+            return '', 500
+
+# Profil neu speichern
+@teachingbee.route('/profiles')
+@teachingbee.response(500, 'Internal Server Error')
+class AddProfile(Resource):
+    @teachingbee.marshal_with(profile)
+    def post(self):
+        bl = BusinessLogic()
+        prof = Profile.from_dict(api.payload)
+        if prof:
+            p = bl.add_profile(prof)
+            return p, 200
+        else:
+            return '', 500
+
+# Profil und Person verknüpfen
+@teachingbee.route('/link')
+@teachingbee.response(500, 'Internal Server Error')
+class LinkPersonProfile(Resource):
+    def put(self):
+        if api.payload:
+            bl = BusinessLogic()
+            bl.link_person_profile(api.payload['personID'], api.payload['profileID'])
+            return 'successfull', 200
+        else:
+            return '', 500
+
+
+
+@app.route('/chat', methods=['GET', 'POST'])
+def chat():
+    if request.method == 'GET':
+        fname = request.args.get('fname')
+        lname = request.args.get('lname')
+
+        PM = pm()
+        user = PM.find_by_name(fname, lname)[0]
+        id = user.get_id()
+        CM = cm()
+        response = CM.find_by_sender(id)
+
+        answer = []
+
+        for i in response:
+            answer.append({
+                "content": i.get_content(),
+                "sender": i.get_sender(),
+                "recipient": i.get_recipient()
+            })
+
+        return jsonify(answer)
     if request.method == 'POST':
         data = request.get_json()
-        person = Person()
-        person.set_birthdate(data["birthdate"])
-        person.set_gender(data["gender"])
-        person.set_semester(data["semester"])
-        person.set_fname(data["fname"])
-        person.set_lname(data["lname"])
-        mapper = pm()
-        mapper.insert(person)
+        msg = Message()
+        CM = cm()
+        PM = pm()
+        sender = PM.find_by_name(data["senderf"], data["senderl"])
+        recipient = PM.find_by_name(data["recipientf"], data["recipientl"])
+
+        msg.set_content(data["content"])
+        msg.set_sender(sender[0].get_id())
+        msg.set_recipient(recipient[0].get_id())
+
+        CM.insert(msg)
+        
+
         return 'Success', 200
 
-    if request.method == 'GET':
-        data = request.get_json()
-        return 'Success', 200
 
 
-@app.route('/create-group', methods=['POST'])
-def create_group():
-    data = request.get_json()
-    group = Group()
-    group.set_gname(data["gname"])
-
-    PM = pm()
-
-    for i in data["members"]:
-        lname, fname = i.split(', ')[0:2]
-        person = PM.find_by_name(fname, lname)[0]
-        id = person.get_id()
-        group.add_member(id)
-
-    fname = data["adminfname"]
-    lname = data["adminlname"]
-    admin = PM.find_by_name(fname, lname)[0]
-    id = admin.get_id()
-    group.set_admin(id)
-
-    GM = gm()
-
-    GM.insert(group)
-
-    group.set_id(GM.find_by_name(group.get_gname())[0].get_id())
-
-    GM.insert_members(group)
-
-    return 'Success', 200
-
-
-logging.getLogger('flask_cors').level = logging.DEBUG
 app.run(debug=True)

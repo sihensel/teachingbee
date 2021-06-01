@@ -2,14 +2,13 @@ from abc import ABC, abstractmethod
 
 
 class BusinessObject(ABC):
-    """Gemeinsame Basisklasse aller in diesem Projekt für die Umsetzung des Fachkonzepts relevanten Klassen.
+    """Gemeinsame Basisklasse aller Businessobjekte
 
-    Zentrales Merkmal ist, dass jedes BusinessObject eine Nummer besitzt, die man in
-    einer relationalen Datenbank auch als Primärschlüssel bezeichnen würde.
+    Jedes Objekt hat eine eindeutige ID (Primärschlüssel)
     """
     def __init__(self):
-        self._id = 0   # Die eindeutige Identifikationsnummer einer Instanz dieser Klasse.
-        self._stamp = None
+        self._id = 0
+        self._stamp = 0
         self._name = ''
 
     def get_id(self):
@@ -33,5 +32,5 @@ class BusinessObject(ABC):
         return self._name
     
     def set_name(self, value):
-        """Setzen der ID."""
+        """Setzen des Namens."""
         self._name = value
