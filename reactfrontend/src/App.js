@@ -1,5 +1,5 @@
 import './App.css';
-import AccountDetail from './components/AccountDetail';
+import GroupDetail from './components/GroupDetail';
 import SignUp from './components/SignUp';
 import { TeachingbeeAPI } from './api';
 import { Component } from 'react';
@@ -65,7 +65,7 @@ class App extends Component {
       <div>
         { interests
           ? person
-          ?  <AccountDetail person={person} interests={interests} profile={null} />
+          ?  <GroupDetail person={person} />
           : <SignUp interests={interests} />
           : null}
       </div>
