@@ -34,8 +34,6 @@ class Person(bo.BusinessObject):
     def set_birthdate(self, birthdate):
         self._birthdate = birthdate
 
-<<<<<<< HEAD
-=======
     def get_birthdate(self):
         return self._birthdate
 
@@ -73,4 +71,3 @@ class Person(bo.BusinessObject):
         obj.set_gender(dictionary["gender"])
         obj.set_profileID(dictionary["profileID"])
         return obj
->>>>>>> main

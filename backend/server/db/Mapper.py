@@ -18,9 +18,9 @@ class Mapper (AbstractContextManager, ABC):
             DB = 'teachingbee'
         elif platform == 'win32' or platform == "linux":
             # Windows
-            USER = 'root'
-            PASSWD = 'Passwort'
-            HOST = '127.0.0.1'
+            USER = 'me'
+            PASSWD = 'password'
+            HOST = '192.168.0.105'
             DB = 'teachingbee'
 
         self._cnx = connector.connect(user=USER, password=PASSWD,

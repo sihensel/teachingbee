@@ -9,48 +9,15 @@ class PersonMapper(Mapper):
         pass
 
     def find_by_name(self, fname, lname):
-<<<<<<< HEAD
-        """Auslesen aller Benutzer anhand des Benutzernamens.
-
-        :param name Name der zugehörigen Benutzer.
-        :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
-            mit dem gewünschten Namen enthält.
-        """
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, fname, lname, birthdate, semester, gender FROM person WHERE fname LIKE '{}' AND lname LIKE '{}' ORDER BY fname".format(fname, lname)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, fname, lname, birthdate, semester, gender) in tuples:
-            person = Person()
-            person.set_id(id)
-            person.set_birthdate(birthdate)
-            person.set_gender(gender)
-            person.set_semester(semester)
-            person.set_fname(fname)
-            person.set_lname(lname)
-            result.append(person)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-=======
         pass
->>>>>>> main
 
     def find_by_key(self, key):
         """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
         result = None
 
         cursor = self._cnx.cursor()
-<<<<<<< HEAD
-        command = "SELECT * FROM person WHERE id={}".format(key)
-=======
         command = "SELECT id, fname, lname, birthdate, semester, gender, profileID FROM Person WHERE id={}".format(key)
         # command = "SELECT * FROM Person WHERE id={}".format(key)   # only when the timestamp is needed as well
->>>>>>> main
         cursor.execute(command)
         tuples = cursor.fetchall()
 
