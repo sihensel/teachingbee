@@ -1,5 +1,6 @@
 import PersonBO from './PersonBO';
 import ProfileBO from './ProfileBO';
+import GroupBO from './GroupBO';
 
 /**
  * Abstracts the REST interface of the Python backend with convenient access methods.
@@ -25,6 +26,12 @@ export default class TeachingbeeAPI {
   #updateProfileURL = (id) => `${this.#ServerBaseURL}/profile/${id}`;
 
   #InterestsURL = () => `${this.#ServerBaseURL}/interests`;
+
+  #addGroupURL = () => `${this.#ServerBaseURL}/groups`;
+  #getGroupByMemberURL = (id) => `${this.#ServerBaseURL}/groups/${id}`;
+  #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
+  #updateGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
+  #deleteGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
 
 
   static getAPI() {
@@ -156,7 +163,7 @@ export default class TeachingbeeAPI {
         resolve(response)
       })
     })
-  }
+  } 
 
   link_person_profile(personID, profileID) {
     return this.#fetchAdvanced(this.#LinkURL(), {
@@ -170,6 +177,71 @@ export default class TeachingbeeAPI {
       //let responsePersonBO = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
         resolve (responseJSON);
+      })
+    })
+  }
+
+  getGroup(groupID) {
+    return this.#fetchAdvanced(this.#getGroupURL(groupID)).then((responseJSON) => {
+      let group = GroupBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve(group)
+      })
+    })
+  }
+
+  getGroupByMember(personID) {
+    return this.#fetchAdvanced(this.#getGroupByMemberURL(personID)).then((response) => {
+      var groups = [];
+      for (let i of response){
+        groups.push(GroupBO.fromJSON(i));
+      }
+      return new Promise(function (resolve) {
+        resolve(groups)
+      })
+    })
+  }
+
+  deleteGroup(groupBO) {
+    return this.#fetchAdvanced(this.#deleteGroupURL(groupBO.getID()), {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(groupBO)
+    })
+  }
+
+  // Profil speichern
+  updateGroup(groupBO) {
+    return this.#fetchAdvanced(this.#updateGroupURL(groupBO.getID()), {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(groupBO)
+    }).then((responseJSON) => {
+      let responseGroupBO = GroupBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve (responseGroupBO);
+      })
+    })
+  }
+
+  addGroup(groupBO) {
+    return this.#fetchAdvanced(this.#addGroupURL(), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(groupBO)
+    }).then((responseJSON) => {
+      let responseGroupBO = GroupBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve (responseGroupBO);
       })
     })
   }
