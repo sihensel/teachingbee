@@ -5,8 +5,28 @@ class ChatMapper(Mapper):
     def __init__(self):
         super().__init__()
 
-    def find_all(self):
-        pass
+    def find_all(self, senderID):
+        ''' Auslesen aller Chatpartner eines Users '''
+        result = []
+        cursor = self._cnx.cursor()
+        command = "SELECT DISTINCT recipient FROM Message WHERE sender = '{}'".format(senderID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for i in tuples:
+            result.append(i[0])
+        
+        command = "SELECT DISTINCT sender FROM Message WHERE recipient = '{}'".format(senderID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for i in tuples:
+            if i[0] not in result:
+                result.append(i[0])
+
+        self._cnx.commit()
+        cursor.close()
+        return result
 
     def find_by_sender(self, sender, recipient):
         """Auslesen aller Benutzer anhand des Benutzernamens.
@@ -20,8 +40,6 @@ class ChatMapper(Mapper):
         command = "SELECT * FROM Message WHERE sender = '{}' AND recipient = '{}' ORDER BY stamp".format(sender, recipient)
         cursor.execute(command)
         tuples = cursor.fetchall()
-
-      
         
         for (id, stamp, content, sender, recipient) in tuples:
             message = Message()
@@ -33,7 +51,6 @@ class ChatMapper(Mapper):
             message.set_recipient(recipient)
 
             result.append(message)
-
 
         command = "SELECT * FROM Message WHERE sender = '{}' AND recipient = '{}' ORDER BY stamp".format(recipient, sender)
         cursor.execute(command)
@@ -76,9 +93,6 @@ class ChatMapper(Mapper):
             message.set_recipient(recipient)
 
             result = message
-
-
-
 
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
@@ -136,9 +150,3 @@ class ChatMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
-
-
-
-
-cm = ChatMapper()
-print(cm.find_by_sender(1,2))

@@ -176,7 +176,20 @@ class ChatOperations(Resource):
     def put(self, id):
         pass
 
-   
+# eine Liste von Chats verwalten
+@teachingbee.route('/chatList/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID des Users')
+class ChatListOperations(Resource):
+
+    def get(self, id):
+        ''' Nachricht aus der DB auslesen '''
+        bl = BusinessLogic()
+        chatList = bl.get_chatList(id)
+        return chatList
+
+    def put(self, id):
+        pass
 
 
 
