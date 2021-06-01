@@ -81,10 +81,12 @@ CREATE TABLE Message (
   stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   content varchar(255),
   sender int NOT NULL,
-  chatID int NOT NULL,
+  recipient int NOT NULL,
+  -- chatID int NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (sender) REFERENCES Person(id),
-  FOREIGN KEY (chatID) REFERENCES Chat(id)
+  FOREIGN KEY (recipient) REFERENCES Person(id)
+  -- FOREIGN KEY (chatID) REFERENCES Chat(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS R_person_chat;

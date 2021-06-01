@@ -4,12 +4,20 @@ class Person(bo.BusinessObject):
     ''' Personendaten eines Accounts '''
     def __init__(self):
         super().__init__()
+        self._id = 0
         self._fname = ''
         self._lname = ''
         self._birthdate = ''
         self._semester = 0
         self._gender = ''
         self._profileID = 0
+
+    def set_id(self, id):
+        self._id = id
+
+    def get_id(self):
+        return self._id
+
 
     def set_fname(self, fname):
         self._fname = fname

@@ -19,6 +19,7 @@ Chat | Kai, Tobi
 Join Group |
 Create Group | Lisa, Tim
 Leave Group | Lisa, Tim
+Delete Group | Lisa, Tim
 Invite Student in Group |
 Kick Student from Group |
 Delete Person |

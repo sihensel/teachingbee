@@ -9,6 +9,7 @@ from server.bo.Profile import Profile
 app = Flask(__name__)
 CORS(app, resources=r'/teachingbee/*')
 
+
 api = Api(app, version='0.1', title='Teachingbee', description='App um Lernpartner zu finden.')
 teachingbee = api.namespace('teachingbee', description='App zum finden von Lernpartnern')
 
@@ -143,6 +144,48 @@ class LinkPersonProfile(Resource):
             return 'successfull', 200
         else:
             return '', 500
+
+
+
+@app.route('/chat', methods=['GET', 'POST'])
+def chat():
+    if request.method == 'GET':
+        fname = request.args.get('fname')
+        lname = request.args.get('lname')
+
+        PM = pm()
+        user = PM.find_by_name(fname, lname)[0]
+        id = user.get_id()
+        CM = cm()
+        response = CM.find_by_sender(id)
+
+        answer = []
+
+        for i in response:
+            answer.append({
+                "content": i.get_content(),
+                "sender": i.get_sender(),
+                "recipient": i.get_recipient()
+            })
+
+        return jsonify(answer)
+    if request.method == 'POST':
+        data = request.get_json()
+        msg = Message()
+        CM = cm()
+        PM = pm()
+        sender = PM.find_by_name(data["senderf"], data["senderl"])
+        recipient = PM.find_by_name(data["recipientf"], data["recipientl"])
+
+        msg.set_content(data["content"])
+        msg.set_sender(sender[0].get_id())
+        msg.set_recipient(recipient[0].get_id())
+
+        CM.insert(msg)
+        
+
+        return 'Success', 200
+
 
 
 app.run(debug=True)

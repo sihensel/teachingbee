@@ -13,14 +13,14 @@ class Mapper (AbstractContextManager, ABC):
         if platform == 'darwin':
             # Mac
             USER = 'root'
-            PASSWD = 'L.15aL.13nie'
+            PASSWD = 'password'
             HOST = 'localhost'
             DB = 'teachingbee'
         elif platform == 'win32' or platform == "linux":
             # Windows
-            USER = 'me'
-            PASSWD = 'password'
-            HOST = '192.168.0.105'
+            USER = 'root'
+            PASSWD = 'Passwort'
+            HOST = '127.0.0.1'
             DB = 'teachingbee'
 
         self._cnx = connector.connect(user=USER, password=PASSWD,
