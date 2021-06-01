@@ -4,7 +4,6 @@ CREATE DATABASE teachingbee;
 
 USE teachingbee;
 
-
 -- create tables
 DROP TABLE IF EXISTS Interests;
 CREATE TABLE Interests (
@@ -75,14 +74,6 @@ CREATE TABLE Message (
   FOREIGN KEY (recipient) REFERENCES Person(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS R_person_chat;
-CREATE TABLE R_person_chat (
-  id int NOT NULL AUTO_INCREMENT,
-  personID int NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (personID) REFERENCES Person(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS Request;
 CREATE TABLE Request (
   id int NOT NULL,
@@ -121,5 +112,8 @@ INSERT INTO Message (content, sender, recipient) VALUES ('Mir geht es sehr gut u
 INSERT INTO Message (content, sender, recipient) VALUES ('Wann treffen wir uns heute?', 1, 2);
 INSERT INTO Message (content, sender, recipient) VALUES ('Mit dir treffe ich mich nicht', 2, 1);
 INSERT INTO Message (content, sender, recipient) VALUES ('Machso okay, schade', 1, 2);
-
-
+INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 1-3', 1, 3);
+INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 3-1', 3, 1);
+INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 1-4', 1, 4);
+INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 4-1', 4, 1);
+INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 5-1', 5, 1);
