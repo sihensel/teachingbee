@@ -6,32 +6,9 @@ class ChatMapper(Mapper):
         super().__init__()
 
     def find_all(self):
-        """Auslesen aller Benutzer unseres Systems.
+        pass
 
-        :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
-                des Systems repräsentieren.
-        """
-        result = []
-        cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from Message")
-        tuples = cursor.fetchall()
-
-        for (id, stamp, content, sender, recipient) in tuples:
-            message = Message()
-            message.set_id(id)
-            message.set_stamp(stamp)
-            message.set_content(content)
-            message.set_sender(sender)
-            message.set_recipient(recipient)
-
-            result.append(message)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
-    def find_by_sender(self, sender):
+    def find_by_sender(self, sender, recipient):
         """Auslesen aller Benutzer anhand des Benutzernamens.
 
         :param name Name der zugehörigen Benutzer.
@@ -40,7 +17,25 @@ class ChatMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM Message WHERE sender LIKE '{}'ORDER BY sender".format(sender)
+        command = "SELECT * FROM Message WHERE sender = '{}' AND recipient = '{}' ORDER BY stamp".format(sender, recipient)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+      
+        
+        for (id, stamp, content, sender, recipient) in tuples:
+            message = Message()
+
+            message.set_id(id)
+            message.set_stamp(stamp)
+            message.set_content(content)
+            message.set_sender(sender)
+            message.set_recipient(recipient)
+
+            result.append(message)
+
+
+        command = "SELECT * FROM Message WHERE sender = '{}' AND recipient = '{}' ORDER BY stamp".format(recipient, sender)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -54,11 +49,12 @@ class ChatMapper(Mapper):
             message.set_recipient(recipient)
 
             result.append(message)
+
         self._cnx.commit()
         cursor.close()
 
         return result
-
+        
     def find_by_key(self, key):
         """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
         result = None
@@ -140,3 +136,9 @@ class ChatMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
+
+
+
+
+cm = ChatMapper()
+print(cm.find_by_sender(1,2))

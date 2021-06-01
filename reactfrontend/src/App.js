@@ -3,6 +3,7 @@ import AccountDetail from './components/AccountDetail';
 import SignUp from './components/SignUp';
 import { TeachingbeeAPI } from './api';
 import { Component } from 'react';
+import Chat from './components/Chat';
 
 class App extends Component {
   constructor(props) {
@@ -63,14 +64,21 @@ class App extends Component {
     const { person, interests } = this.state;
     return (
       <div>
-        { interests
-          ? person
-          ?  <AccountDetail person={person} interests={interests} profile={null} />
-          : <SignUp interests={interests} />
-          : null}
+        {person ?
+        <Chat sender={person}/>
+        : null}
       </div>
     );
   }
 }
 
 export default App;
+
+/* 
+{ interests
+          ? person
+          ?  <AccountDetail person={person} interests={interests} profile={null} />
+          : <SignUp interests={interests} />
+        : null
+      }
+*/

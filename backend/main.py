@@ -38,6 +38,17 @@ profile = api.inherit('Profile', bo, {
     'interest': fields.Integer(attribute='_interest', description='Interessen'),
 })
 
+# Nachrichtenobjekt
+message = api.inherit('Message', bo, {
+    'stamp': fields.String(attribute='_stamp', description='Timestamp'),
+    'content': fields.String(attribute='_content', description='Inhalt'),
+    'sender': fields.Integer(attribute='_sender', description='Sender'),
+    'recipient': fields.Integer(attribute='_recipient', description='Empfänger'),
+})
+
+
+
+
 # POST: create
 # PUT: update
 # DELETE: delete
@@ -147,6 +158,34 @@ class LinkPersonProfile(Resource):
 
 
 
+# eine einzelne Nachricht bearbeiten
+@teachingbee.route('/chat/<int:sender>/<int:recipient>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('sender', 'Sender')
+@teachingbee.param('recipient', 'Empfänger')
+class ChatOperations(Resource):
+    @teachingbee.marshal_with(message)
+    def get(self, sender, recipient):
+        ''' Nachricht aus der DB auslesen '''
+        bl = BusinessLogic()
+        chat = bl.get_message(sender, recipient)
+        return chat
+
+    @teachingbee.marshal_with(message)
+    @teachingbee.expect(message, validate=True)
+    def put(self, id):
+        pass
+
+   
+
+
+
+
+
+
+
+
+"""
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
     if request.method == 'GET':
@@ -185,7 +224,7 @@ def chat():
         
 
         return 'Success', 200
-
+"""
 
 
 app.run(debug=True)

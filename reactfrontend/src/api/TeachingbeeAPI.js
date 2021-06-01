@@ -1,5 +1,6 @@
 import PersonBO from './PersonBO';
 import ProfileBO from './ProfileBO';
+import MessageBO from './MessageBO';
 
 /**
  * Abstracts the REST interface of the Python backend with convenient access methods.
@@ -18,6 +19,7 @@ export default class TeachingbeeAPI {
   #updatePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   #deletePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
 
+
   #LinkURL = () => `${this.#ServerBaseURL}/link`;
 
   #addProfileURL = () => `${this.#ServerBaseURL}/profiles`;
@@ -25,6 +27,10 @@ export default class TeachingbeeAPI {
   #updateProfileURL = (id) => `${this.#ServerBaseURL}/profile/${id}`;
 
   #InterestsURL = () => `${this.#ServerBaseURL}/interests`;
+
+  #getMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
+  #addMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
+
 
 
   static getAPI() {
@@ -76,7 +82,7 @@ export default class TeachingbeeAPI {
     }).then((responseJSON) => {
       let responsePersonBO = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve (responsePersonBO);
+        resolve(responsePersonBO);
       })
     })
   }
@@ -92,7 +98,7 @@ export default class TeachingbeeAPI {
     }).then((responseJSON) => {
       let responsePersonBO = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve (responsePersonBO);
+        resolve(responsePersonBO);
       })
     })
   }
@@ -129,7 +135,7 @@ export default class TeachingbeeAPI {
     }).then((responseJSON) => {
       let responseProfileBO = ProfileBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve (responseProfileBO);
+        resolve(responseProfileBO);
       })
     })
   }
@@ -145,7 +151,7 @@ export default class TeachingbeeAPI {
     }).then((responseJSON) => {
       let responseProfileBO = ProfileBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve (responseProfileBO);
+        resolve(responseProfileBO);
       })
     })
   }
@@ -165,12 +171,33 @@ export default class TeachingbeeAPI {
         'Accept': 'application/json, text/plain',
         'Content-type': 'application/json',
       },
-      body: JSON.stringify({'personID': personID, 'profileID': profileID})
+      body: JSON.stringify({ 'personID': personID, 'profileID': profileID })
     }).then((responseJSON) => {
       //let responsePersonBO = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve (responseJSON);
+        resolve(responseJSON);
       })
     })
   }
+
+
+  getMessage(sender, recipient) {
+    return this.#fetchAdvanced(this.#getMessageURL(sender, recipient)).then((responseJSON) => {
+      //let person = PersonBO.fromJSON(responseJSON);
+     // return new Promise(function (resolve) {
+       // resolve(person)
+      //})
+      let messageList = []
+      responseJSON.map(item => {
+        let message = MessageBO.fromJSON(item)
+        messageList.push(message)
+
+      })
+      return new Promise(function (resolve) {
+         resolve(messageList)
+       })
+    })
+  }
+
+
 }

@@ -3,23 +3,10 @@ import server.bo.BusinessObject as bo
 class Message(bo.BusinessObject):
     def __init__(self):
         super().__init__()
-        self._id = 0
-        self._stamp = ""
         self._content = ""
         self._sender = 0
         self._receiver = 0
 
-    def set_id(self, id):
-        self._id = id
-
-    def get_id(self):
-        return self._id
-
-    def set_stamp(self, stamp):
-        self._stamp = stamp
-
-    def get_stamp(self):
-        return self._stamp
 
     def set_content(self, content):
         self._content = content
