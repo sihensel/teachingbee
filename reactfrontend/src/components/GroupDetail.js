@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Typography, Paper, Button } from '@material-ui/core';
 import { TeachingbeeAPI } from '../api';
-import PersonForm from './dialogs/PersonForm';
-import ProfileForm from './dialogs/ProfileForm';
-import DeleteDialog from './dialogs/DeleteDialog';
+import CreateGroup from '../Create_Group';
 //import ContextErrorMessage from './ContextErrorMessage';
 //import LoadingProgress from './LoadingProgress';
 
@@ -19,11 +17,30 @@ class GroupDetail extends Component {
             groups: null,
             loadingInProgress: false,
             loadingError: null,
+            showGroup: false,
         };
     }
     componentDidMount() {
         if (!this.state.groups) {
             this.getGroup();
+        }
+    }
+    componentDidUpdate() {
+        console.log(this.state.groups)
+    }
+
+    // handle GroupDialog
+    showGroupDialog = () => {
+        this.setState({ showGroup: true });
+    }
+    closePersonDialog = group => {
+        if (group) {
+            this.setState({
+                group: group,     // update GroupBO
+                showGroup: false
+            });
+        } else {
+            this.setState({ showGroup: false });
         }
     }
 
@@ -49,8 +66,7 @@ class GroupDetail extends Component {
 
     /** Renders the component */
     render() {
-        const { classes, interests } = this.props;
-        const { person, profile, loadingInProgress, loadingError, showPerson, showProfile, showDelete } = this.state
+        const { person, groups, loadingInProgress, loadingError, showGroup} = this.state
 
         return (
             <div>
@@ -78,9 +94,27 @@ class GroupDetail extends Component {
                 <Paper variant='outlined'>
                     <Typography variant='h6'>
                         Gruppendaten
-               </Typography>
-                    
+                </Typography>
+                {groups ? 
+                    groups.legth>0 ?
+                      groups.map((group)=>
+                        <div>
+                            <Typography>
+                                Gruppenname: {group.getGname()}<br />
+                            Admin: {group.getAdmin()} <br />
+                            Teilnehmer: {group.getMembers()} <br />
+                            Anfragen: {group.getRecievedRequests()} <br />
+                            {/*Gruppenprofil hinzufügen */ }
+                            </Typography>
+                            </div>
+                      )
+                        : <div>
+                            <p>Keine Gruppe verfügbar</p>
+                            </div> : <p>Lädt noch</p>
+               }   
                </Paper>
+               <CreateGroup person={person}>
+               </CreateGroup>
             </div>
         );
     }
