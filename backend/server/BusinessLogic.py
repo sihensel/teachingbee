@@ -4,6 +4,7 @@ from .bo.Profile import Profile
 from .db.PersonMapper import PersonMapper
 from .db.ProfileMapper import ProfileMapper
 from .db.InterestMapper import InterestMapper
+from .db.GroupMapper import GroupMapper
 
 class BusinessLogic:
     def __init__(self):
@@ -54,4 +55,22 @@ class BusinessLogic:
     
     def delete_profile(self, person):
         with ProfileMapper() as mapper:
+            mapper.delete(person.get_profileID())
+
+
+    ''' Methoden für alle Gruppenobjekte '''
+    def get_group_by_member(self, id):
+        with GroupMapper() as mapper:
+            return mapper.find_by_member(id)
+    
+    def save_profile(self, profile):
+        with GroupMapper() as mapper:
+            return mapper.update(profile)
+
+    def add_profile(self, profile):
+        with GroupMapper() as mapper:
+            return mapper.insert(profile)
+    
+    def delete_profile(self, person):
+        with GroupMapper() as mapper:
             mapper.delete(person.get_profileID())

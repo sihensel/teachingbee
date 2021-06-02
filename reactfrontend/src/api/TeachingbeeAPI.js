@@ -237,12 +237,14 @@ export default class TeachingbeeAPI {
         'Accept': 'application/json, text/plain',
         'Content-type': 'application/json',
       },
-      body: JSON.stringify(groupBO)
-    }).then((responseJSON) => {
-      let responseGroupBO = GroupBO.fromJSON(responseJSON);
-      return new Promise(function (resolve) {
-        resolve (responseGroupBO);
+      body: JSON.stringify({
+        'gname':groupBO.getGname(),
+        'admin' :groupBO.getAdmin(),
+        'members' :groupBO.getMembers()
+
       })
     })
+      
+    
   }
 }
