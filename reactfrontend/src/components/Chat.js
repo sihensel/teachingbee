@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Paper, Button } from '@material-ui/core';
+import { withStyles, Typography, Paper, Button } from '@material-ui/core';
 import { TeachingbeeAPI } from '../api';
+import { makeStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+
+
 
 
 class Chat extends Component {
@@ -39,9 +48,33 @@ class Chat extends Component {
             loadingError: null
         });
     }
+    
+//Fertig machen
+    addMessage = () => {
+        let newMessage = new MessageBO(this.state.)
+        TeachingbeeAPI.getAPI().addPerson(newPerson).then(person => {
+          // Backend call sucessfull
+          // reinit the dialogs state for a new empty customer
+          this.setState(this.initialState);
+          this.props.onClose(person); // call the parent with the object from backend
+        }).catch(e =>
+          this.setState({
+            updatingInProgress: false,    // disable loading indicator 
+            updatingError: e              // show error message
+          })
+        );
+    
+        // set loading to true
+        this.setState({
+          updatingInProgress: true,       // show loading indicator
+          updatingError: null             // disable error message
+        });
+      }
+
 
 
     render() {
+        const { classes } = this.props
         const { messages, sender, recipient } = this.state
         console.log(messages)
         if (messages) {
@@ -50,54 +83,73 @@ class Chat extends Component {
 
             });
         }
-        console.log(messages)
+
         return (
-            /* <div>
-                 {
-                     messages ?
-                     
-                     messages.map(item => {
-                        
-                         if (item.getID()==sender.getID()){
-                              <p align="right">{item.getContent()}</p>}
- 
-                         else {
-                              <p>{item.getContent()}</p>
-                         }
-                     })
-                     : null
-                 }
-             </div>*/
-            <div className="d-flex flex-column flex-grow-1">
-                <div className="flex-grow-1 overflow-auto">
-                    <div className="d-flex flex-column align-items-start justify-content-end px-3">
-                        {messages ?
-                        messages.map(message => {
-                            console.log(message.getID())
-                            
+            <div>
+                {messages ?
+                    messages.map(message => {
+                        {if (message.getSender() != sender.getID()) {
                             return (
-                                <div
-                               
-                                    key={message.getID()}
-                                    className={`my-1 d-flex flex-column ${message.getSender() == sender.getID() ? 'align-self-end align-items-end' : 'align-items-start'}`}>
-                                    <div
-                                        className={`rounded px-2 py-1 ${message.getSender() == sender.getID() ? 'bg-primary text-white' : 'border'}`}>
-                                        {message.getContent()}
-                                    </div>
-                                    <div className={`text-muted small ${message.getSender() == sender.getID() ? 'text-right' : ''}`}>
-                                        {message.getSender() == sender.getID() ? 'You' : recipient}
-                                    </div>
-                                </div>
-                            )
-                        })
-                    :null}
-                    </div>
-                </div>
+                                    <Grid
+                                        item
+                                        xs
+                                        className={classes.outerColumn}
+                                        style={{ display: "flex", alignItems: "center" }}>
+                                        <Typography>{message.getContent()}</Typography>
+                                    </Grid>
+                                );
+                            }
+                            else {
+                                return (
+                                    <Grid
+                                        item
+                                        className={classes.outerColumn}
+                                        container
+                                        direction="row"
+                                        alignItems="center"
+                                        justify="flex-end">
+                                        <Typography>{message.getContent()}</Typography>
+                                    </Grid>
+                                );
+                            }
+                        }
+                })
+                : null}
+
+                <form className={classes.root} noValidate autoComplete="off">
+                    <TextField id="standard-basic" label="Standard" /> 
+                    </form>
+                    <Button color='primary' variant='contained' onClick={this.handleClose}>
+                    Absenden
+                    </Button>
+
             </div>
         );
-
     }
 }
+
+const styles = theme => ({
+    root: {
+        '& > *': {
+          margin: theme.spacing(1),
+          width: '100ch',
+        },
+      },
+    
+    outerColumn: {
+        borderRight: "1px solid grey",
+        borderBottom: "1px solid grey",
+        borderLeft: "1px solid grey",
+        height: 100
+    },
+    centerColumn: {
+        borderBottom: "1px solid grey",
+        height: 100
+    },
+});
+
+
+
 
 Chat.propTypes = {
     classes: PropTypes.object.isRequired,
@@ -105,4 +157,4 @@ Chat.propTypes = {
     recipient: PropTypes.object.isRequired,
 }
 
-export default Chat;
+export default withStyles(styles)(Chat);
