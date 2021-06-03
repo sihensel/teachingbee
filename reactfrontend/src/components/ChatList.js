@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import Chat from './Chat';
 import PropTypes from "prop-types";
-import { TeachingbeeAPI, MessageBO } from "../api";
+import { TeachingbeeAPI } from "../api";
 import { withStyles, Typography, Paper, Button } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
 import ListItemText from "@material-ui/core/ListItemText";
-//chat js import
 
 class ChatList extends Component {
   constructor(props) {
@@ -15,7 +14,11 @@ class ChatList extends Component {
 
     // Init the state
     this.state = {
-      chatList: null,
+      chatList: null,   // Liste mit den IDs aller Chatpartner
+      personList: [],   // Liste mit den Personenobjekten aller Chatpartner
+      isLoaded: false,  // bool, ob die personList geladen wurde
+      recipient: null,  // Empfänger der Nachricht
+      showChat: false,  // toggle, ob der Chat angezeigt wird
     };
   }
 
@@ -24,64 +27,82 @@ class ChatList extends Component {
   }
 
   getChatList = () => {
-    TeachingbeeAPI.getAPI()
-      .getChatList(this.props.person.getID())
-      .then((res) =>
-        this.setState({
-          chatList: res,
-          loadingInProgress: false,
-          loadingError: null,
-        })
-      )
-      .catch((e) =>
+    TeachingbeeAPI.getAPI().getChatList(this.props.person.getID()).then((response) =>
+      this.setState({
+        chatList: response,
+        loadingInProgress: false,
+        loadingError: null,
+      })).catch((e) =>
         this.setState({
           chatList: null,
           loadingInProgress: false,
           loadingError: e,
-        })
-      );
-    this.setState({
-      loadingInProgress: true,
-      loadingError: null,
-    });
-  };
-
-  enterChat = (item) => {
-      console.log(item)
+        }));
   }
-  
+
+  showChat = (item) => {
+    this.setState({
+      recipient: item,
+      showChat: true
+    })
+  }
+
+  closeChat = () => {
+    this.setState({ showChat: false })
+  }
+
+  getPersonList = () => {
+    this.state.chatList.map(item => {
+      TeachingbeeAPI.getAPI().getPerson(item).then(response => {
+        this.setState(prevState => ({
+          personList: [...prevState.personList, response],
+          isLoaded: true
+        }))
+      })
+    })
+  }
 
   render() {
     const { classes, person } = this.props;
-    const { chatList } = this.state;
+    const { chatList, personList, recipient, showChat, isLoaded } = this.state;
+
+    if (chatList && !isLoaded) {
+      this.getPersonList()
+    }
 
     return (
       <div>
-        {chatList ? (
-          <List component="nav" className={classes.root}>
-            {chatList.map((item) => {
-              return (
-                  <div>
-                <ListItem key="1234" button onClick={() => this.enterChat(item)}>
-                  <ListItemText primary={item}></ListItemText>
-                </ListItem>
-                <Divider />
-                </div>
-              );
-            })}
-          </List>
-        ) : null}
+        {chatList ?
+          showChat ?
+            <Chat sender={person} recipient={recipient} onClose={this.closeChat} />
+            :
+            (personList.length == chatList.length)
+              ?
+              <List component="nav" className={classes.root}>
+                {personList.map((item) => {
+                  return (
+                    <div>
+                      <ListItem button onClick={() => this.showChat(item.getID())}>
+                        <ListItemText primary={item.getFname() + ' ' + item.getLname()}></ListItemText>
+                      </ListItem>
+                      <Divider />
+                    </div>
+                  );
+                })}
+              </List>
+              : null
+          : null}
       </div>
     );
   }
 }
 
 const styles = (theme) => ({
-    root: {
-        width: '100%',
-        maxWidth: 360,
-        backgroundColor: theme.palette.background.paper,
-      },
+  root: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+  },
 });
 
 ChatList.propTypes = {

@@ -2,17 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Typography, Paper, Button } from '@material-ui/core';
 import { TeachingbeeAPI, MessageBO } from '../api';
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-
-
-
-
 
 class Chat extends Component {
 
@@ -22,8 +14,6 @@ class Chat extends Component {
         // Init the state
         this.state = {
             messages: null,
-            sender: props.sender,
-            recipient: 2,
             content: "",
         };
     }
@@ -32,8 +22,29 @@ class Chat extends Component {
         this.getMessage();
     }
 
+    addMessage = () => {
+        let newMessage = new MessageBO(this.state.content, this.props.sender.getID(), this.props.recipient)
+        TeachingbeeAPI.getAPI().addMessage(newMessage).then(message => {
+            this.state.messages.push(message)
+            this.setState({ content: '' });
+            // Backend call sucessfull
+            // reinit the dialogs state for a new empty customer
+        }).catch(e =>
+            this.setState({
+                updatingInProgress: false,    // disable loading indicator 
+                updatingError: e              // show error message
+            })
+        );
+
+        // set loading to true
+        this.setState({
+            updatingInProgress: true,       // show loading indicator
+            updatingError: null             // disable error message
+        });
+    }
+
     getMessage = () => {
-        TeachingbeeAPI.getAPI().getMessage(this.state.sender.getID(), this.state.recipient).then(messages =>
+        TeachingbeeAPI.getAPI().getMessage(this.props.sender.getID(), this.props.recipient).then(messages =>
             this.setState({
                 messages: messages,
                 loadingInProgress: false,
@@ -50,36 +61,18 @@ class Chat extends Component {
             loadingError: null
         });
     }
-    
 
-    addMessage = () => {
-        let newMessage = new MessageBO(this.state.content, this.state.sender.getID(), this.state.recipient)
-        TeachingbeeAPI.getAPI().addMessage(newMessage).then(message => {
-            this.state.messages.push(message)
-            this.setState({messages: this.state.messages})
-          // Backend call sucessfull
-          // reinit the dialogs state for a new empty customer
-        }).catch(e =>
-          this.setState({
-            updatingInProgress: false,    // disable loading indicator 
-            updatingError: e              // show error message
-          })
-        );
-    
-        // set loading to true
-        this.setState({
-          updatingInProgress: true,       // show loading indicator
-          updatingError: null             // disable error message
-        });
-      }
-      handleChange = (e) => {
-          this.setState({content: e.target.value})
-      }
+    handleChange = (e) => {
+        this.setState({ content: e.target.value })
+    }
 
+    handleClose = () => {
+        this.props.onClose()
+    }
 
     render() {
-        const { classes } = this.props
-        const { messages, sender, recipient, content } = this.state
+        const { classes, sender, recipient } = this.props
+        const { messages, content } = this.state
         if (messages) {
             messages.sort((a, b) => {
                 return a.getID() - b.getID();
@@ -91,39 +84,49 @@ class Chat extends Component {
             <div>
                 {messages ?
                     messages.map(message => {
-                        {if (message.getSender() != sender.getID()) {
-                            return (
-                                    <Grid
-                                        item
-                                        xs
-                                        className={classes.outerColumn}
-                                        style={{ display: "flex", alignItems: "center" }}>
-                                        <Typography>{message.getContent()}</Typography>
-                                    </Grid>
+                        {
+                            if (message.getSender() != sender.getID()) {
+                                return (
+                                    <div>
+                                        <Grid
+                                            item
+                                            xs
+                                            className={classes.outerColumn}
+                                            style={{ display: "flex", alignItems: "center" }}>
+                                            <Typography>{message.getContent()}</Typography>
+                                        </Grid>
+                                        <Divider />
+                                    </div>
                                 );
                             }
                             else {
                                 return (
-                                    <Grid
-                                        item
-                                        className={classes.outerColumn}
-                                        container
-                                        direction="row"
-                                        alignItems="center"
-                                        justify="flex-end">
-                                        <Typography>{message.getContent()}</Typography>
-                                    </Grid>
+                                    <div>
+                                        <Grid
+                                            item
+                                            className={classes.outerColumn}
+                                            container
+                                            direction="row"
+                                            alignItems="center"
+                                            justify="flex-end">
+                                            <Typography>{message.getContent()}</Typography>
+                                        </Grid>
+                                        <Divider />
+                                    </div>
                                 );
                             }
                         }
-                })
-                : null}
+                    })
+                    : null}
 
                 <form className={classes.root} noValidate autoComplete="off">
-                    <TextField id="standard-basic" label="Standard" value={content} onChange={this.handleChange}/> 
-                    </form>
-                    <Button color='primary' variant='contained' onClick={this.addMessage}>
+                    <TextField id="standard-basic" label="Bitte Text eingeben" value={content} onChange={this.handleChange} />
+                </form>
+                <Button color='primary' variant='contained' onClick={this.addMessage}>
                     Absenden
+                    </Button>
+                <Button color='secondary' onClick={this.handleClose}>
+                    Zurück
                     </Button>
 
             </div>
@@ -134,25 +137,17 @@ class Chat extends Component {
 const styles = theme => ({
     root: {
         '& > *': {
-          margin: theme.spacing(1),
-          width: '100ch',
+            margin: theme.spacing(1),
+            width: '100ch',
         },
-      },
-    
+    },
+
     outerColumn: {
-        borderRight: "1px solid grey",
-        borderBottom: "1px solid grey",
-        borderLeft: "1px solid grey",
-        height: 100
-    },
-    centerColumn: {
-        borderBottom: "1px solid grey",
-        height: 100
-    },
+        margin: 5,
+        padding: 5,
+        height: 50
+    }
 });
-
-
-
 
 Chat.propTypes = {
     classes: PropTypes.object.isRequired,

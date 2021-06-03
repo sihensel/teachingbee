@@ -182,24 +182,20 @@ export default class TeachingbeeAPI {
     })
   }
 
-
   getMessage(sender, recipient) {
     return this.#fetchAdvanced(this.#getMessageURL(sender, recipient)).then((responseJSON) => {
-      //let person = PersonBO.fromJSON(responseJSON);
-     // return new Promise(function (resolve) {
-       // resolve(person)
-      //})
-      let messageList = []
+      let messageList = [];
       responseJSON.map(item => {
-        let message = MessageBO.fromJSON(item)
-        messageList.push(message)
+        let message = MessageBO.fromJSON(item);
+        messageList.push(message);
 
       })
       return new Promise(function (resolve) {
-         resolve(messageList)
+         resolve(messageList);
        })
     })
   }
+
   addMessage(messageBO) {
     return this.#fetchAdvanced(this.#addMessageURL(messageBO.getSender(), messageBO.getRecipient()), {
       method: 'POST',
@@ -215,6 +211,7 @@ export default class TeachingbeeAPI {
       })
     })
   }
+
   getChatList(id) {
     return this.#fetchAdvanced(this.#getChatListURL(id)).then((responseJSON) => {
       return new Promise(function (resolve) {
