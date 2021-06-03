@@ -62,7 +62,13 @@ class BusinessLogic:
     def get_message(self, sender, recipient):
         with ChatMapper() as mapper:
             return mapper.find_by_sender(sender, recipient)
-        
+    
+    def add_message(self, message):
+        with ChatMapper() as mapper:
+            return mapper.insert(message)
+
     def get_chatList(self, senderID):
         with ChatMapper() as mapper:
             return mapper.find_all(senderID)
+            
+    

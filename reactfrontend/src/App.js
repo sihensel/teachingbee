@@ -4,6 +4,7 @@ import SignUp from './components/SignUp';
 import { TeachingbeeAPI } from './api';
 import { Component } from 'react';
 import Chat from './components/Chat';
+import ChatList from './components/ChatList';
 
 class App extends Component {
   constructor(props) {
@@ -65,7 +66,7 @@ class App extends Component {
     return (
       <div>
         {person ?
-        <Chat sender={person}/>
+        <ChatList person={person}/>
         : null}
       </div>
     );

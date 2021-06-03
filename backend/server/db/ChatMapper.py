@@ -119,6 +119,10 @@ class ChatMapper(Mapper):
         data = (message.get_content(), message.get_sender(), message.get_recipient())
         cursor.execute(command, data)
 
+        cursor.execute("SELECT LAST_INSERT_ID()")   # die ID des gerade geschriebenen Datensatzen auslesen
+        tuples = cursor.fetchall()
+        message.set_id(tuples[0][0])
+
         self._cnx.commit()
         cursor.close()
 

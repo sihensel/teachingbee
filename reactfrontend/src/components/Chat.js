@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Typography, Paper, Button } from '@material-ui/core';
-import { TeachingbeeAPI } from '../api';
+import { TeachingbeeAPI, MessageBO } from '../api';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -9,6 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+
 
 
 
@@ -23,6 +24,7 @@ class Chat extends Component {
             messages: null,
             sender: props.sender,
             recipient: 2,
+            content: "",
         };
     }
 
@@ -49,14 +51,14 @@ class Chat extends Component {
         });
     }
     
-//Fertig machen
+
     addMessage = () => {
-        let newMessage = new MessageBO(this.state.)
-        TeachingbeeAPI.getAPI().addPerson(newPerson).then(person => {
+        let newMessage = new MessageBO(this.state.content, this.state.sender.getID(), this.state.recipient)
+        TeachingbeeAPI.getAPI().addMessage(newMessage).then(message => {
+            this.state.messages.push(message)
+            this.setState({messages: this.state.messages})
           // Backend call sucessfull
           // reinit the dialogs state for a new empty customer
-          this.setState(this.initialState);
-          this.props.onClose(person); // call the parent with the object from backend
         }).catch(e =>
           this.setState({
             updatingInProgress: false,    // disable loading indicator 
@@ -70,13 +72,14 @@ class Chat extends Component {
           updatingError: null             // disable error message
         });
       }
-
+      handleChange = (e) => {
+          this.setState({content: e.target.value})
+      }
 
 
     render() {
         const { classes } = this.props
-        const { messages, sender, recipient } = this.state
-        console.log(messages)
+        const { messages, sender, recipient, content } = this.state
         if (messages) {
             messages.sort((a, b) => {
                 return a.getID() - b.getID();
@@ -117,9 +120,9 @@ class Chat extends Component {
                 : null}
 
                 <form className={classes.root} noValidate autoComplete="off">
-                    <TextField id="standard-basic" label="Standard" /> 
+                    <TextField id="standard-basic" label="Standard" value={content} onChange={this.handleChange}/> 
                     </form>
-                    <Button color='primary' variant='contained' onClick={this.handleClose}>
+                    <Button color='primary' variant='contained' onClick={this.addMessage}>
                     Absenden
                     </Button>
 

@@ -5,6 +5,7 @@ from flask_restx import Api, Resource, fields
 from server.BusinessLogic import BusinessLogic
 from server.bo.Person import Person
 from server.bo.Profile import Profile
+from server.bo.Message import Message
 
 app = Flask(__name__)
 CORS(app, resources=r'/teachingbee/*')
@@ -40,7 +41,6 @@ profile = api.inherit('Profile', bo, {
 
 # Nachrichtenobjekt
 message = api.inherit('Message', bo, {
-    'stamp': fields.String(attribute='_stamp', description='Timestamp'),
     'content': fields.String(attribute='_content', description='Inhalt'),
     'sender': fields.Integer(attribute='_sender', description='Sender'),
     'recipient': fields.Integer(attribute='_recipient', description='Empfänger'),
@@ -173,11 +173,17 @@ class ChatOperations(Resource):
 
     @teachingbee.marshal_with(message)
     @teachingbee.expect(message, validate=True)
-    def put(self, id):
-        pass
+    def post(self, sender, recipient):
+        bl = BusinessLogic()
+        msg = Message.from_dict(api.payload)
+        if msg:
+            m = bl.add_message(msg)
+            return m, 200
+        else:
+            return '', 500
 
 # eine Liste von Chats verwalten
-@teachingbee.route('/chatList/<int:id>')
+@teachingbee.route('/chatlist/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')
 class ChatListOperations(Resource):
@@ -188,7 +194,7 @@ class ChatListOperations(Resource):
         chatList = bl.get_chatList(id)
         return chatList
 
-    def put(self, id):
+    def post(self, id):
         pass
 
 

@@ -30,6 +30,7 @@ export default class MessageBO extends BusinessObject {
   getRecipient(recipient) {
     return this.recipient;
   }
+  
 
   
   

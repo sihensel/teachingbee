@@ -31,6 +31,8 @@ export default class TeachingbeeAPI {
   #getMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
   #addMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
 
+  #getChatListURL = (id) => `${this.#ServerBaseURL}/chatlist/${id}`;
+
 
 
   static getAPI() {
@@ -198,6 +200,26 @@ export default class TeachingbeeAPI {
        })
     })
   }
-
-
+  addMessage(messageBO) {
+    return this.#fetchAdvanced(this.#addMessageURL(messageBO.getSender(), messageBO.getRecipient()), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(messageBO)
+    }).then((responseJSON) => {
+      let responseMessageBO = MessageBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve(responseMessageBO);
+      })
+    })
+  }
+  getChatList(id) {
+    return this.#fetchAdvanced(this.#getChatListURL(id)).then((responseJSON) => {
+      return new Promise(function (resolve) {
+         resolve(responseJSON)
+       })
+    })
+  }
 }
