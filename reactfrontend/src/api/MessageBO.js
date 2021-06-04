@@ -31,9 +31,6 @@ export default class MessageBO extends BusinessObject {
     return this.recipient;
   }
   
-
-  
-  
   /** 
    * Returns an Object from a JSON
    */

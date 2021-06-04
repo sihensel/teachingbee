@@ -7,6 +7,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
 import ListItemText from "@material-ui/core/ListItemText";
+import GroupChat from "./GroupChat";
 
 class ChatList extends Component {
   constructor(props) {
@@ -21,7 +22,9 @@ class ChatList extends Component {
       chatisLoaded: false, // bool, ob die personList geladen wurde
       groupisLoaded: false,  
       recipient: null,  // Empfänger der Nachricht
+      groupID: null,
       showChat: false,  // toggle, ob der Chat angezeigt wird
+      showGroupChat: false,  // toggle, ob der Groupchat angezeigt wird
     };
   }
 
@@ -44,7 +47,6 @@ class ChatList extends Component {
         }));
   }
   
-
   getChatList = () => {
     TeachingbeeAPI.getAPI().getChatList(this.props.person.getID()).then((response) =>
       this.setState({
@@ -64,10 +66,28 @@ class ChatList extends Component {
       recipient: item,
       showChat: true
     })
+
+  }
+  showChat = (item) => {
+    this.setState({
+      recipient: item,
+      showChat: true
+    })
   }
 
   closeChat = () => {
     this.setState({ showChat: false })
+  }
+
+  showGroupChat = (item) => {
+    this.setState({
+      groupID: item,
+      showGroupChat: true
+    })
+  }
+
+  closeGroupChat = () => {
+    this.setState({ showGroupChat: false })
   }
 
   getPersonList = () => {
@@ -95,8 +115,7 @@ class ChatList extends Component {
 
   render() {
     const { classes, person } = this.props;
-    const { chatList, groupList, personList, groupBOList, recipient, showChat, chatisLoaded, groupisLoaded } = this.state;
-    console.log(this.state.personList)
+    const { chatList, groupList, personList, groupBOList, recipient, showChat, chatisLoaded, groupisLoaded, groupID, showGroupChat } = this.state;
 
     if (chatList && !chatisLoaded) {
       this.getPersonList()
@@ -107,6 +126,8 @@ class ChatList extends Component {
         {chatList && groupList ?
           showChat ?
             <Chat sender={person} recipient={recipient} onClose={this.closeChat} />
+            : showGroupChat ?
+            <GroupChat person={person} groupID={groupID} onClose={this.closeGroupChat} />
             :
             (personList.length == chatList.length)
               ?
@@ -114,7 +135,7 @@ class ChatList extends Component {
                 {groupList.map((item) => {
                   return (
                     <div>
-                      <ListItem button onClick={() => this.showChat(item.getID())}>
+                      <ListItem button onClick={() => this.showGroupChat(item)}>
                         <ListItemText primary={item}></ListItemText>
                       </ListItem>
                       <Divider />
@@ -124,7 +145,7 @@ class ChatList extends Component {
                 {personList.map((item) => {
                   return (
                     <div>
-                      <ListItem button onClick={() => this.showChat(item.getID())}>
+                      <ListItem button onClick={() => this.showChat(item)}>
                         <ListItemText primary={item.getFname() + ' ' + item.getLname()}></ListItemText>
                       </ListItem>
                       <Divider />

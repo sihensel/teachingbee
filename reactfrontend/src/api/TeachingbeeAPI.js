@@ -1,7 +1,7 @@
 import PersonBO from './PersonBO';
 import ProfileBO from './ProfileBO';
 import MessageBO from './MessageBO';
-import { id } from 'date-fns/locale';
+import GroupMessageBO from './GroupMessageBO';
 import GroupBO from './GroupBO';
 
 /**
@@ -33,8 +33,8 @@ export default class TeachingbeeAPI {
   #getMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
   #addMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
 
-  #getGroupMessageURL = (id) => `${this.#ServerBaseURL}/chat/${id}`;
-  #addGroupMessageURL = (id) => `${this.#ServerBaseURL}/chat/${id}`;
+  #getGroupMessageURL = (id) => `${this.#ServerBaseURL}/groupchat/${id}`;
+  #addGroupMessageURL = (id) => `${this.#ServerBaseURL}/groupchat/${id}`;
 
   #getChatListURL = (id) => `${this.#ServerBaseURL}/chatlist/${id}`;
   #getGroupListURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
@@ -62,8 +62,7 @@ export default class TeachingbeeAPI {
         throw Error(`${res.status} ${res.statusText}`);
       }
       return res.json();
-    }
-    )
+    })
 
 
   /**
@@ -235,6 +234,7 @@ export default class TeachingbeeAPI {
        })
     })
   }
+
   getGroup(id) {
     return this.#fetchAdvanced(this.#getGroupURL(id)).then((responseJSON) => {
       let group = GroupBO.fromJSON(responseJSON);
@@ -243,6 +243,7 @@ export default class TeachingbeeAPI {
        })
     })
   }
+
   getGroupMessage(id) {
     return this.#fetchAdvanced(this.#getGroupMessageURL(id)).then((responseJSON) => {
       let messageList = [];
@@ -257,16 +258,16 @@ export default class TeachingbeeAPI {
     })
   }
 
-  addGroupMessage(messageBO) {
-    return this.#fetchAdvanced(this.#addGroupMessageURL(messageBO.getSender(), messageBO.getRecipient()), {
+  addGroupMessage(groupmessageBO) {
+    return this.#fetchAdvanced(this.#addGroupMessageURL(groupmessageBO.getGroup()), {
       method: 'POST',
       headers: {
         'Accept': 'application/json, text/plain',
         'Content-type': 'application/json',
       },
-      body: JSON.stringify(messageBO)
+      body: JSON.stringify(groupmessageBO)
     }).then((responseJSON) => {
-      let responseMessageBO = MessageBO.fromJSON(responseJSON);
+      let responseMessageBO = GroupMessageBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
         resolve(responseMessageBO);
       })

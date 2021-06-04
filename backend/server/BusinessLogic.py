@@ -80,8 +80,11 @@ class BusinessLogic:
     def get_group(self, id):
         with GroupMapper() as mapper:
             return mapper.find_by_key(id)
-           
-
-
-            
     
+    def get_group_message(self, id):
+        with GroupChatMapper() as mapper:
+            return mapper.find_by_sender(id)
+
+    def add_group_message(self, message):
+        with GroupChatMapper() as mapper:
+            return mapper.insert(message)

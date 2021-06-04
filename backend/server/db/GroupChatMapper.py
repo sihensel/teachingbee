@@ -20,7 +20,7 @@ class GroupChatMapper(Mapper):
         cursor.close()
         return result
 
-    def find_by_sender(self, sender, recipient):
+    def find_by_sender(self, groupID):
         """Auslesen aller Benutzer anhand des Benutzernamens.
 
         :param name Name der zugehörigen Benutzer.
@@ -29,33 +29,18 @@ class GroupChatMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM Message WHERE sender = '{}' AND recipient = '{}' ORDER BY stamp".format(sender, recipient)
+        command = "SELECT * FROM Groupmessage WHERE groupID = '{}'".format(groupID)
         cursor.execute(command)
         tuples = cursor.fetchall()
         
-        for (id, stamp, content, sender, recipient) in tuples:
-            message = Message()
+        for (id, stamp, content, sender, group) in tuples:
+            message = GroupMessage()
 
             message.set_id(id)
             message.set_stamp(stamp)
             message.set_content(content)
             message.set_sender(sender)
-            message.set_recipient(recipient)
-
-            result.append(message)
-
-        command = "SELECT * FROM Message WHERE sender = '{}' AND recipient = '{}' ORDER BY stamp".format(recipient, sender)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, stamp, content, sender, recipient) in tuples:
-            message = Message()
-
-            message.set_id(id)
-            message.set_stamp(stamp)
-            message.set_content(content)
-            message.set_sender(sender)
-            message.set_recipient(recipient)
+            message.set_group(group)
 
             result.append(message)
 
@@ -65,36 +50,7 @@ class GroupChatMapper(Mapper):
         return result
         
     def find_by_key(self, key):
-        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
-        result = None
-
-        cursor = self._cnx.cursor()
-        command = "SELECT * FROM Message WHERE id={}".format(key)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-
-        try:
-            (id, stamp, content, sender, recipient) = tuples[0]
-            message = Message()
-
-            message.set_id(id)
-            message.set_stamp(stamp)
-            message.set_content(content)
-            message.set_sender(sender)
-            message.set_recipient(recipient)
-
-            result = message
-
-        except IndexError:
-            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
-            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
-            result = None
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
+        pass
 
     def insert(self, message):
         """Einfügen eines User-Objekts in die Datenbank.
@@ -107,8 +63,8 @@ class GroupChatMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "INSERT INTO Message (content, sender, recipient) VALUES (%s,%s,%s)"
-        data = (message.get_content(), message.get_sender(), message.get_recipient())
+        command = "INSERT INTO Groupmessage (content, sender, groupID) VALUES (%s,%s,%s)"
+        data = (message.get_content(), message.get_sender(), message.get_group())
         cursor.execute(command, data)
 
         cursor.execute("SELECT LAST_INSERT_ID()")   # die ID des gerade geschriebenen Datensatzen auslesen

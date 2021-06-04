@@ -6,6 +6,7 @@ from server.BusinessLogic import BusinessLogic
 from server.bo.Person import Person
 from server.bo.Profile import Profile
 from server.bo.Message import Message
+from server.bo.GroupMessage import GroupMessage
 
 app = Flask(__name__)
 CORS(app, resources=r'/teachingbee/*')
@@ -44,6 +45,13 @@ message = api.inherit('Message', bo, {
     'content': fields.String(attribute='_content', description='Inhalt'),
     'sender': fields.Integer(attribute='_sender', description='Sender'),
     'recipient': fields.Integer(attribute='_recipient', description='Empfänger'),
+})
+
+# Gruppennachrichten
+groupmessage = api.inherit('GroupMessage', bo, {
+    'content': fields.String(attribute='_content', description='Inhalt'),
+    'sender': fields.Integer(attribute='_sender', description='Sender'),
+    'group': fields.Integer(attribute='_group', description='ID der Gruppe'),
 })
 
 # Gruppenobjekt
@@ -233,5 +241,27 @@ class GroupOperations(Resource):
         pass 
 
 
+# eine einzelne Nachricht bearbeiten
+@teachingbee.route('/groupchat/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID der Gruppe')
+class GroupChatOperations(Resource):
+    @teachingbee.marshal_with(groupmessage)
+    def get(self, id):
+        ''' Nachricht aus der DB auslesen '''
+        bl = BusinessLogic()
+        chat = bl.get_group_message(id)
+        return chat
+
+    @teachingbee.marshal_with(groupmessage)
+    @teachingbee.expect(groupmessage, validate=True)
+    def post(self, id):
+        bl = BusinessLogic()
+        msg = GroupMessage.from_dict(api.payload)
+        if msg:
+            m = bl.add_group_message(msg)
+            return m, 200
+        else:
+            return '', 500
 
 app.run(debug=True)

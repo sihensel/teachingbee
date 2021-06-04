@@ -23,7 +23,7 @@ class Chat extends Component {
     }
 
     addMessage = () => {
-        let newMessage = new MessageBO(this.state.content, this.props.sender.getID(), this.props.recipient)
+        let newMessage = new MessageBO(this.state.content, this.props.sender.getID(), this.props.recipient.getID())
         TeachingbeeAPI.getAPI().addMessage(newMessage).then(message => {
             this.state.messages.push(message)
             this.setState({ content: '' });
@@ -44,7 +44,7 @@ class Chat extends Component {
     }
 
     getMessage = () => {
-        TeachingbeeAPI.getAPI().getMessage(this.props.sender.getID(), this.props.recipient).then(messages =>
+        TeachingbeeAPI.getAPI().getMessage(this.props.sender.getID(), this.props.recipient.getID()).then(messages =>
             this.setState({
                 messages: messages,
                 loadingInProgress: false,
@@ -82,6 +82,7 @@ class Chat extends Component {
 
         return (
             <div>
+                <h2>{recipient.getFname() + ' ' + recipient.getLname()}</h2>
                 {messages ?
                     messages.map(message => {
                         {

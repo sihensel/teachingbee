@@ -30,7 +30,6 @@ class GroupMessage(bo.BusinessObject):
         ''' Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz. '''
         return f'Message: {self.get_id()}, {self.get_stamp()}, {self.get_content()}, {self.get_sender()}, {self.get_group()}'
 
-    
     @staticmethod
     def from_dict(dictionary=dict()):
         obj = GroupMessage()

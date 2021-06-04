@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Typography, Paper, Button } from '@material-ui/core';
-import { TeachingbeeAPI, MessageBO } from '../api';
+import { TeachingbeeAPI, GroupMessageBO } from '../api';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -23,8 +23,8 @@ class GroupChat extends Component {
     }
 
     addMessage = () => {
-        let newMessage = new MessageBO(this.state.content, this.props.sender.getID(), this.props.recipient)
-        TeachingbeeAPI.getAPI().addMessage(newMessage).then(message => {
+        let newMessage = new GroupMessageBO(this.state.content, this.props.person.getID(), this.props.groupID)
+        TeachingbeeAPI.getAPI().addGroupMessage(newMessage).then(message => {
             this.state.messages.push(message)
             this.setState({ content: '' });
             // Backend call sucessfull
@@ -44,7 +44,7 @@ class GroupChat extends Component {
     }
 
     getMessage = () => {
-        TeachingbeeAPI.getAPI().getMessage(this.props.sender.getID(), this.props.recipient).then(messages =>
+        TeachingbeeAPI.getAPI().getGroupMessage(this.props.groupID).then(messages =>
             this.setState({
                 messages: messages,
                 loadingInProgress: false,
@@ -71,8 +71,9 @@ class GroupChat extends Component {
     }
 
     render() {
-        const { classes, sender, recipient } = this.props
+        const { classes, person, groupID } = this.props
         const { messages, content } = this.state
+
         if (messages) {
             messages.sort((a, b) => {
                 return a.getID() - b.getID();
@@ -85,7 +86,7 @@ class GroupChat extends Component {
                 {messages ?
                     messages.map(message => {
                         {
-                            if (message.getSender() != sender.getID()) {
+                            if (message.getSender() != person.getID()) {
                                 return (
                                     <div>
                                         <Grid
@@ -128,7 +129,6 @@ class GroupChat extends Component {
                 <Button color='secondary' onClick={this.handleClose}>
                     Zurück
                     </Button>
-
             </div>
         );
     }
@@ -149,10 +149,10 @@ const styles = theme => ({
     }
 });
 
-Chat.propTypes = {
+GroupChat.propTypes = {
     classes: PropTypes.object.isRequired,
-    sender: PropTypes.object.isRequired,
-    recipient: PropTypes.object.isRequired,
+    person: PropTypes.object.isRequired,
+    groupID: PropTypes.number.isRequired,
 }
 
 export default withStyles(styles)(GroupChat);
