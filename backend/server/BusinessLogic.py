@@ -7,6 +7,7 @@ from .db.ProfileMapper import ProfileMapper
 from .db.InterestMapper import InterestMapper
 from .db.ChatMapper import ChatMapper
 from .db.GroupChatMapper import GroupChatMapper
+from .db.GroupMapper import GroupMapper
 
 
 class BusinessLogic:
@@ -75,5 +76,12 @@ class BusinessLogic:
     def get_groupList(self, personID):
         with GroupChatMapper() as mapper:
             return mapper.find_all(personID)
+
+    def get_group(self, id):
+        with GroupMapper() as mapper:
+            return mapper.find_by_key(id)
+           
+
+
             
     

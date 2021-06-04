@@ -1,5 +1,4 @@
 from server.db.Mapper import Mapper
-import sys
 from server.bo.Group import Group
 
 
@@ -66,16 +65,16 @@ class GroupMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, gname, admin FROM studygroup WHERE id={}".format(key)
+        command = "SELECT id, gname, profileID FROM studygroup WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, gname, admin) = tuples[0]
+            (id, gname, profileID) = tuples[0]
             group = Group()
             group.set_id(id)
             group.set_name(gname)
-            group.set_admin(admin)
+            group.set_profileID(profileID)
             result = group
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
@@ -138,14 +137,3 @@ class GroupMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
-
-
-"""Zu Testzwecken können wir diese Datei bei Bedarf auch ausführen, 
-um die grundsätzliche Funktion zu überprüfen.
-
-Anmerkung: Nicht professionell aber hilfreich..."""
-#if (__name__ == "__main__"):
-    #with PersonMapper() as mapper:
-        #result = mapper.find_all()
-        #for user in result:
-            #print(user)

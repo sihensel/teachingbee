@@ -16,8 +16,9 @@ class ChatList extends Component {
     this.state = {
       chatList: null,   // Liste mit den IDs aller Chatpartner
       groupList: null,
-      personList: [],   // Liste mit den Personenobjekten aller Chatpartner
-      isLoaded: false, // bool, ob die personList geladen wurde
+      personList: [],
+      groupBOList: [],   // Liste mit den Personenobjekten aller Chatpartner
+      chatisLoaded: false, // bool, ob die personList geladen wurde
       groupisLoaded: false,  
       recipient: null,  // Empfänger der Nachricht
       showChat: false,  // toggle, ob der Chat angezeigt wird
@@ -25,8 +26,8 @@ class ChatList extends Component {
   }
 
   componentDidMount() {
-    this.getChatList();
     this.getGroupList();
+    this.getChatList();
   }
 
   getGroupList = () => {
@@ -42,6 +43,7 @@ class ChatList extends Component {
           loadingError: e,
         }));
   }
+  
 
   getChatList = () => {
     TeachingbeeAPI.getAPI().getChatList(this.props.person.getID()).then((response) =>
@@ -73,35 +75,52 @@ class ChatList extends Component {
       TeachingbeeAPI.getAPI().getPerson(item).then(response => {
         this.setState(prevState => ({
           personList: [...prevState.personList, response],
-          isLoaded: true
+          chatisLoaded: true
+        }))
+      })
+    })
+  }
+  
+  getGroupBOList = () => {
+    this.state.groupList.map(item => {
+      TeachingbeeAPI.getAPI().getGroup(item).then(response => {
+        this.setState(prevState => ({
+          groupBOList: [...prevState.groupBOList, response],
+          groupisLoaded: true
         }))
       })
     })
   }
 
+
   render() {
     const { classes, person } = this.props;
-    const { chatList, groupList, personList, recipient, showChat, isLoaded } = this.state;
+    const { chatList, groupList, personList, groupBOList, recipient, showChat, chatisLoaded, groupisLoaded } = this.state;
+    console.log(this.state.personList)
 
-    if (chatList && !isLoaded) {
+    if (chatList && !chatisLoaded) {
       this.getPersonList()
     }
-  
 
     return (
       <div>
-        {chatList ?
+        {chatList && groupList ?
           showChat ?
             <Chat sender={person} recipient={recipient} onClose={this.closeChat} />
             :
             (personList.length == chatList.length)
               ?
               <List component="nav" className={classes.root}>
-                {/*groupList.map((item) => {
+                {groupList.map((item) => {
                   return (
-                    <p>{item}</p>
+                    <div>
+                      <ListItem button onClick={() => this.showChat(item.getID())}>
+                        <ListItemText primary={item}></ListItemText>
+                      </ListItem>
+                      <Divider />
+                    </div>
                   )
-                })*/}
+                })}
                 {personList.map((item) => {
                   return (
                     <div>

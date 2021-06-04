@@ -46,6 +46,12 @@ message = api.inherit('Message', bo, {
     'recipient': fields.Integer(attribute='_recipient', description='Empfänger'),
 })
 
+# Gruppenobjekt
+group = api.inherit('Group', bo, {
+    'name': fields.String(attribute='_name', description='Gruppenname'),
+    'profileID': fields.Integer(attribute='_profileID', description='Profil ID'),
+})
+
 
 
 
@@ -210,6 +216,22 @@ class GroupListOperations(Resource):
 
     def post(self, id):
         pass 
+
+@teachingbee.route('/group/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID des Users')
+class GroupOperations(Resource):
+    
+    @teachingbee.marshal_with(group)
+    def get(self, id):
+        ''' Nachricht aus der DB auslesen '''
+        bl = BusinessLogic()
+        group = bl.get_group(id)
+        return group
+
+    def post(self, id):
+        pass 
+
 
 
 app.run(debug=True)

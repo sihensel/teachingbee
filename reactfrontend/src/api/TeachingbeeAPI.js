@@ -2,6 +2,7 @@ import PersonBO from './PersonBO';
 import ProfileBO from './ProfileBO';
 import MessageBO from './MessageBO';
 import { id } from 'date-fns/locale';
+import GroupBO from './GroupBO';
 
 /**
  * Abstracts the REST interface of the Python backend with convenient access methods.
@@ -32,8 +33,12 @@ export default class TeachingbeeAPI {
   #getMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
   #addMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
 
+  #getGroupMessageURL = (id) => `${this.#ServerBaseURL}/chat/${id}`;
+  #addGroupMessageURL = (id) => `${this.#ServerBaseURL}/chat/${id}`;
+
   #getChatListURL = (id) => `${this.#ServerBaseURL}/chatlist/${id}`;
   #getGroupListURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
+  #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
 
 
 
@@ -230,5 +235,41 @@ export default class TeachingbeeAPI {
        })
     })
   }
+  getGroup(id) {
+    return this.#fetchAdvanced(this.#getGroupURL(id)).then((responseJSON) => {
+      let group = GroupBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+         resolve(group)
+       })
+    })
+  }
+  getGroupMessage(id) {
+    return this.#fetchAdvanced(this.#getGroupMessageURL(id)).then((responseJSON) => {
+      let messageList = [];
+      responseJSON.map(item => {
+        let message = GroupMessageBO.fromJSON(item);
+        messageList.push(message);
 
+      })
+      return new Promise(function (resolve) {
+         resolve(messageList);
+       })
+    })
+  }
+
+  addGroupMessage(messageBO) {
+    return this.#fetchAdvanced(this.#addGroupMessageURL(messageBO.getSender(), messageBO.getRecipient()), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(messageBO)
+    }).then((responseJSON) => {
+      let responseMessageBO = MessageBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve(responseMessageBO);
+      })
+    })
+  }
 }
