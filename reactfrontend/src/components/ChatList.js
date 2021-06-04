@@ -15,8 +15,10 @@ class ChatList extends Component {
     // Init the state
     this.state = {
       chatList: null,   // Liste mit den IDs aller Chatpartner
+      groupList: null,
       personList: [],   // Liste mit den Personenobjekten aller Chatpartner
-      isLoaded: false,  // bool, ob die personList geladen wurde
+      isLoaded: false, // bool, ob die personList geladen wurde
+      groupisLoaded: false,  
       recipient: null,  // Empfänger der Nachricht
       showChat: false,  // toggle, ob der Chat angezeigt wird
     };
@@ -24,6 +26,21 @@ class ChatList extends Component {
 
   componentDidMount() {
     this.getChatList();
+    this.getGroupList();
+  }
+
+  getGroupList = () => {
+    TeachingbeeAPI.getAPI().getGroupList(this.props.person.getID()).then((response) =>
+      this.setState({
+        groupList: response,
+        loadingInProgress: false,
+        loadingError: null,
+      })).catch((e) =>
+        this.setState({
+          groupList: null,
+          loadingInProgress: false,
+          loadingError: e,
+        }));
   }
 
   getChatList = () => {
@@ -64,11 +81,12 @@ class ChatList extends Component {
 
   render() {
     const { classes, person } = this.props;
-    const { chatList, personList, recipient, showChat, isLoaded } = this.state;
+    const { chatList, groupList, personList, recipient, showChat, isLoaded } = this.state;
 
     if (chatList && !isLoaded) {
       this.getPersonList()
     }
+  
 
     return (
       <div>
@@ -79,6 +97,11 @@ class ChatList extends Component {
             (personList.length == chatList.length)
               ?
               <List component="nav" className={classes.root}>
+                {/*groupList.map((item) => {
+                  return (
+                    <p>{item}</p>
+                  )
+                })*/}
                 {personList.map((item) => {
                   return (
                     <div>

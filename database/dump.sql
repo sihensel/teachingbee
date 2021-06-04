@@ -45,10 +45,8 @@ CREATE TABLE Studygroup (
   id int NOT NULL AUTO_INCREMENT,
   stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   gname varchar(255),         -- gname = group name
-  admin int NOT NULL,
   profileID int NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (admin) REFERENCES Person(id),
   FOREIGN KEY (profileID) REFERENCES Profile(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -72,6 +70,18 @@ CREATE TABLE Message (
   PRIMARY KEY (id),
   FOREIGN KEY (sender) REFERENCES Person(id),
   FOREIGN KEY (recipient) REFERENCES Person(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS Groupmessage;
+CREATE TABLE Groupmessage (
+  id int NOT NULL AUTO_INCREMENT,
+  stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  content varchar(255),
+  sender int NOT NULL,
+  groupID int NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (sender) REFERENCES Person(id),
+  FOREIGN KEY (groupID) REFERENCES Studygroup(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Request;
@@ -100,6 +110,9 @@ INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest
 INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES ('IW', 'visuell', 3, 2, 'online', 2);
 INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES ('WI', 'auditiv', 1, 2, 'beides', 3);
 
+INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES ('WI', 'auditiv', 1, 2, 'beides', 3);
+INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES ('WI', 'auditiv', 2, 1, 'beides', 2);
+
 
 INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paula', 'Pudding', '2000-01-01', 3, 'weiblich', 1);
 INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES ('Paul', 'Meier', '2000-01-01', 2, 'männlich', 2);
@@ -117,3 +130,20 @@ INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 3-1', 3,
 INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 1-4', 1, 4);
 INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 4-1', 4, 1);
 INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 5-1', 5, 1);
+
+INSERT INTO Studygroup (gname, profileID) VALUES ('Gruppe 1', 6);
+INSERT INTO Studygroup (gname, profileID) VALUES ('Gruppe 2', 7);
+
+INSERT INTO Groupmessage (content, sender, groupID) VALUES ('Hallo wie gehts in der Gruppe', 1, 1);
+INSERT INTO Groupmessage (content, sender, groupID) VALUES ('Hallo wie gehts in der Gruppe ich bin die 3', 3, 1);
+INSERT INTO Groupmessage (content, sender, groupID) VALUES ('gut ich bin 1', 1, 2);
+INSERT INTO Groupmessage (content, sender, groupID) VALUES ('gut ich 3', 3, 2);
+INSERT INTO Groupmessage (content, sender, groupID) VALUES ('gut und ich 4', 4, 2);
+
+INSERT INTO R_person_group (groupID, personID) VALUES (1, 1);
+INSERT INTO R_person_group (groupID, personID) VALUES (1, 2);
+INSERT INTO R_person_group (groupID, personID) VALUES (1, 3);
+INSERT INTO R_person_group (groupID, personID) VALUES (2, 1);
+INSERT INTO R_person_group (groupID, personID) VALUES (2, 3);
+INSERT INTO R_person_group (groupID, personID) VALUES (2, 4);
+

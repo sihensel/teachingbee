@@ -197,5 +197,19 @@ class ChatListOperations(Resource):
     def post(self, id):
         pass
 
+@teachingbee.route('/grouplist/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID des Users')
+class GroupListOperations(Resource):
+
+    def get(self, id):
+        ''' Nachricht aus der DB auslesen '''
+        bl = BusinessLogic()
+        groupList = bl.get_groupList(id)
+        return groupList
+
+    def post(self, id):
+        pass 
+
 
 app.run(debug=True)

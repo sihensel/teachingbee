@@ -5,6 +5,7 @@ import { TeachingbeeAPI } from './api';
 import { Component } from 'react';
 import Chat from './components/Chat';
 import ChatList from './components/ChatList';
+import GroupChat from './components/GroupChat';
 
 class App extends Component {
   constructor(props) {

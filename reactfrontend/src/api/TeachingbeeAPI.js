@@ -1,6 +1,7 @@
 import PersonBO from './PersonBO';
 import ProfileBO from './ProfileBO';
 import MessageBO from './MessageBO';
+import { id } from 'date-fns/locale';
 
 /**
  * Abstracts the REST interface of the Python backend with convenient access methods.
@@ -32,6 +33,8 @@ export default class TeachingbeeAPI {
   #addMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
 
   #getChatListURL = (id) => `${this.#ServerBaseURL}/chatlist/${id}`;
+  #getGroupListURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
+
 
 
 
@@ -219,4 +222,13 @@ export default class TeachingbeeAPI {
        })
     })
   }
+
+  getGroupList(id) {
+    return this.#fetchAdvanced(this.#getGroupListURL(id)).then((responseJSON) => {
+      return new Promise(function (resolve) {
+         resolve(responseJSON)
+       })
+    })
+  }
+
 }

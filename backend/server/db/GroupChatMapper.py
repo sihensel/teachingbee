@@ -1,29 +1,21 @@
 from server.db.Mapper import Mapper
-from server.bo.Message import Message
+from server.bo.GroupMessage import GroupMessage
 
-class ChatMapper(Mapper):
+class GroupChatMapper(Mapper):
     def __init__(self):
         super().__init__()
 
-    def find_all(self, senderID):
+    def find_all(self, personID):
         ''' Auslesen aller Chatpartner eines Users '''
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT DISTINCT recipient FROM Message WHERE sender = '{}'".format(senderID)
+        command = "SELECT DISTINCT groupID FROM R_person_group WHERE personID = '{}'".format(personID)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         for i in tuples:
             result.append(i[0])
         
-        command = "SELECT DISTINCT sender FROM Message WHERE recipient = '{}'".format(senderID)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for i in tuples:
-            if i[0] not in result:
-                result.append(i[0])
-
         self._cnx.commit()
         cursor.close()
         return result
