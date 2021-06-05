@@ -225,7 +225,6 @@ export default class TeachingbeeAPI {
       responseJSON.map(item => {
         let message = GroupMessageBO.fromJSON(item);
         messageList.push(message);
-
       })
       return new Promise(function (resolve) {
          resolve(messageList);
@@ -251,16 +250,26 @@ export default class TeachingbeeAPI {
 
   getChatList(id) {
     return this.#fetchAdvanced(this.#getChatListURL(id)).then((responseJSON) => {
+      let chatList = [];
+      responseJSON.map(item => {
+        let person = PersonBO.fromJSON(item);
+        chatList.push(person);
+      })
       return new Promise(function (resolve) {
-         resolve(responseJSON)
+         resolve(chatList)
        })
     })
   }
 
   getGroupList(id) {
     return this.#fetchAdvanced(this.#getGroupListURL(id)).then((responseJSON) => {
+      let groupList = [];
+      responseJSON.map(item => {
+        let group = GroupBO.fromJSON(item);
+        groupList.push(group);
+      })
       return new Promise(function (resolve) {
-         resolve(responseJSON)
+         resolve(groupList)
        })
     })
   }

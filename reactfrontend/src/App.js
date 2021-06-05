@@ -1,11 +1,11 @@
 import './App.css';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 import AccountDetail from './components/AccountDetail';
 import SignUp from './components/SignUp';
 import { TeachingbeeAPI } from './api';
-import { Component } from 'react';
-import Chat from './components/Chat';
 import ChatList from './components/ChatList';
-import GroupChat from './components/GroupChat';
+import { withStyles, Typography, Paper, Button } from '@material-ui/core';
 
 class App extends Component {
   constructor(props) {
@@ -13,9 +13,11 @@ class App extends Component {
 
     // Init the state
     this.state = {
-      currentUser: 1,   // später die ID von Firebase
+      currentUser: props.currentUser,   // später die ID von Firebase
+      //currentUser: 1,   // später die ID von Firebase
       person: null,
       interests: null,
+      showAccount: false,
       loadingInProgress: false,
       loadingError: null,
     };
@@ -62,25 +64,51 @@ class App extends Component {
     });
   }
 
+  showAccount = () => {
+    this.setState({ showAccount: true });
+  }
+  closeAccount = () => {
+    this.setState({ showAccount: false });
+  }
+
   render() {
     const { person, interests } = this.state;
+    const { showAccount } = this.state
     return (
       <div>
-        {person ?
-        <ChatList person={person}/>
-        : null}
+        { interests ?
+          person ?
+            showAccount ?
+              <AccountDetail person={person} interests={interests} onClose={this.closeAccount} />
+              : 
+              <div>
+                <Button onClick={this.showAccount} color='primary' variant='contained'>
+                  Account
+                </Button>
+                <ChatList person={person} />
+              </div>
+          : <SignUp interests={interests} />
+          : null
+        }
       </div>
     );
   }
 }
 
+SignUp.propTypes = {
+    classes: PropTypes.object.isRequired,
+    person: PropTypes.object.isRequired,
+    interests: PropTypes.array.isRequired,
+    currentUser: PropTypes.number.isRequired,
+}
+
 export default App;
 
-/* 
+/*
 { interests
           ? person
           ?  <AccountDetail person={person} interests={interests} profile={null} />
-          : <SignUp interests={interests} />
+          : 
         : null
       }
 */

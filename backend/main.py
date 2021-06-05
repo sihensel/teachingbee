@@ -170,8 +170,6 @@ class LinkPersonProfile(Resource):
         else:
             return '', 500
 
-
-
 # eine einzelne Nachricht bearbeiten
 @teachingbee.route('/chat/<int:sender>/<int:recipient>')
 @teachingbee.response(500, 'Internal Server Error')
@@ -202,28 +200,24 @@ class ChatOperations(Resource):
 @teachingbee.param('id', 'ID des Users')
 class ChatListOperations(Resource):
 
+    @teachingbee.marshal_with(person)
     def get(self, id):
         ''' Nachricht aus der DB auslesen '''
         bl = BusinessLogic()
-        chatList = bl.get_chatList(id)
-        return chatList
-
-    def post(self, id):
-        pass
+        personList = bl.get_chatList(id)
+        return personList
 
 @teachingbee.route('/grouplist/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')
 class GroupListOperations(Resource):
 
+    @teachingbee.marshal_with(group)
     def get(self, id):
         ''' Nachricht aus der DB auslesen '''
         bl = BusinessLogic()
         groupList = bl.get_groupList(id)
         return groupList
-
-    def post(self, id):
-        pass 
 
 @teachingbee.route('/group/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
@@ -236,10 +230,6 @@ class GroupOperations(Resource):
         bl = BusinessLogic()
         group = bl.get_group(id)
         return group
-
-    def post(self, id):
-        pass 
-
 
 # eine einzelne Nachricht bearbeiten
 @teachingbee.route('/groupchat/<int:id>')

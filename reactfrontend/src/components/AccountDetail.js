@@ -15,9 +15,9 @@ class AccountDetail extends Component {
 
         // Init the state
         this.state = {
-            person: props.person,
-            profile: props.profile,
             interests: props.interests,
+            person: props.person,
+            profile: null,
             loadingInProgress: false,
             loadingError: null,
             showPerson: false,
@@ -26,9 +26,7 @@ class AccountDetail extends Component {
         };
     }
     componentDidMount() {
-        if (!this.state.profile) {
-            this.getProfile();
-        }
+        this.getProfile();
     }
 
     getProfile = () => {
@@ -82,6 +80,10 @@ class AccountDetail extends Component {
 
     toggleDelete = () => {
         this.setState({ showDelete: !this.state.showDelete})
+    }
+
+    handleClose = () => {
+        this.props.onClose()
     }
 
     /** Renders the component */
@@ -141,6 +143,9 @@ class AccountDetail extends Component {
                 <Button variant='contained' color='secondary' onClick={this.toggleDelete}>
                     Account löschen
                 </Button>
+                <Button color='secondary' onClick={this.handleClose}>
+                    Zurück
+                </Button>
                 <PersonForm show={showPerson} onClose={this.closePersonDialog} person={person} />
                 <DeleteDialog show={showDelete} onClose={this.toggleDelete} person={person} />
             </div>
@@ -165,8 +170,8 @@ const styles = theme => ({
 AccountDetail.propTypes = {
     classes: PropTypes.object.isRequired,
     person: PropTypes.object.isRequired,
-    profile: PropTypes.object.isRequired,
     interests: PropTypes.object.isRequired,
+    onClose: PropTypes.func.isRequired,
 }
 
 export default withStyles(styles)(AccountDetail);

@@ -70,12 +70,24 @@ class BusinessLogic:
             return mapper.insert(message)
 
     def get_chatList(self, senderID):
+        ''' Von allen Chatpartnern einer Person die Personenobjekte laden '''
+        result = []
         with ChatMapper() as mapper:
-            return mapper.find_all(senderID)
+            chatList = mapper.find_all(senderID)
+        with PersonMapper() as mapper:
+            for i in chatList:
+                result.append(mapper.find_by_key(i))
+        return result
 
     def get_groupList(self, personID):
+        ''' Von allen Gruppen einer Person die Gruppenobjekte laden '''
+        result = []
         with GroupChatMapper() as mapper:
-            return mapper.find_all(personID)
+            groupList = mapper.find_all(personID)
+        with GroupMapper() as mapper:
+            for i in groupList:
+                result.append(mapper.find_by_key(i))
+        return result
 
     def get_group(self, id):
         with GroupMapper() as mapper:

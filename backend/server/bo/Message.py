@@ -7,7 +7,6 @@ class Message(bo.BusinessObject):
         self._sender = 0
         self._recipient = 0
 
-
     def set_content(self, content):
         self._content = content
 
@@ -30,7 +29,6 @@ class Message(bo.BusinessObject):
         ''' Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz. '''
         return f'Message: {self.get_id()}, {self.get_stamp()}, {self.get_content()}, {self.get_sender()}, {self.get_recipient()}'
 
-    
     @staticmethod
     def from_dict(dictionary=dict()):
         obj = Message()
