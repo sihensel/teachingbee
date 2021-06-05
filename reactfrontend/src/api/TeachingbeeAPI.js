@@ -21,7 +21,6 @@ export default class TeachingbeeAPI {
   #updatePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   #deletePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
 
-
   #LinkURL = () => `${this.#ServerBaseURL}/link`;
 
   #addProfileURL = () => `${this.#ServerBaseURL}/profiles`;
@@ -40,7 +39,8 @@ export default class TeachingbeeAPI {
   #getGroupListURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
   #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
 
-
+  #MatchPersonURL = (id) => `${this.#ServerBaseURL}/match-person/${id}`;
+  #MatchGroupURL = (id) => `${this.#ServerBaseURL}/match-group/${id}`;
 
 
   static getAPI() {
@@ -280,6 +280,32 @@ export default class TeachingbeeAPI {
       return new Promise(function (resolve) {
          resolve(group)
        })
+    })
+  }
+
+  matchPerson(id) {
+    return this.#fetchAdvanced(this.#MatchPersonURL(id)).then((responseJSON) => {
+      let personList = [];
+      responseJSON.map(item => {
+        let person = PersonBO.fromJSON(item);
+        personList.push(person);
+      })
+      return new Promise(function (resolve) {
+        resolve(personList);
+      })
+    })
+  }
+
+  matchGroup(id) {
+    return this.#fetchAdvanced(this.#MatchGroupURL(id)).then((responseJSON) => {
+      let groupList = [];
+      responseJSON.map(item => {
+        let group = GroupBO.fromJSON(item);
+        groupList.push(group);
+      })
+      return new Promise(function (resolve) {
+        resolve(groupList);
+      })
     })
   }
 }

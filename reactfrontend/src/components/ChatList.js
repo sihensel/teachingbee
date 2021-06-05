@@ -89,7 +89,6 @@ class ChatList extends Component {
   render() {
     const { classes, person } = this.props;
     const { chatList, groupList, recipient, showChat, group, showGroupChat } = this.state;
-    console.log(chatList, groupList)
 
     return (
       <div>

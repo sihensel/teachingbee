@@ -5,8 +5,31 @@ class ProfileMapper(Mapper):
     def __init__(self):
         super().__init__()
 
-    def find_all(self):
-        pass
+    def find_all(self, key):
+        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
+        result = []
+
+        cursor = self._cnx.cursor()
+
+        command = "SELECT id, course, studytype, extroverted, frequency, online, interest FROM Profile WHERE id!={}".format(key)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+ 
+        for (id, course, studytype, extroverted, frequency, online, interest) in tuples:
+            profile = Profile()
+            profile.set_id(id)
+            profile.set_course(course)
+            profile.set_studytype(studytype)
+            profile.set_extroverted(extroverted)
+            profile.set_frequency(frequency)
+            profile.set_online(online)
+            profile.set_interest(interest)
+            result.append(profile)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
 
     def find_by_name(self, fname, lname):
         pass

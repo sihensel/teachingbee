@@ -3,55 +3,11 @@ from server.bo.Group import Group
 
 
 class GroupMapper(Mapper):
-    #def __init__(self):
-        #super(self).__init__()
+    def __init__(self):
+        super().__init__()
 
     def find_all(self):
-        """Auslesen aller Benutzer unseres Systems.
-
-        :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
-                des Systems repräsentieren.
-        """
-        result = []
-        cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from Studygroup")
-        tuples = cursor.fetchall()
-
-        for (id, stamp, gname, admin, profileID) in tuples:
-            group = Group()
-            group.set_name(gname)
-            group.set_admin(admin)
-            result.append(group)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
-    def find_by_name(self, gname):
-        """Auslesen aller Benutzer anhand des Benutzernamens.
-
-        :param name Name der zugehörigen Benutzer.
-        :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
-            mit dem gewünschten Namen enthält.
-        """
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, gname, admin FROM Studygroup WHERE gname LIKE '{}' ORDER BY gname".format(gname)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, gname, admin) in tuples:
-            group = Group()
-            group.set_id(id)
-            group.set_name(gname)
-            group.set_admin(admin)
-            result.append(group)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
+        pass
 
     def find_by_key(self, key):
         """Suchen eines Benutzers mit vorgegebener User ID. Da diese eindeutig ist,
@@ -66,6 +22,38 @@ class GroupMapper(Mapper):
 
         cursor = self._cnx.cursor()
         command = "SELECT id, gname, profileID FROM Studygroup WHERE id={}".format(key)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (id, gname, profileID) = tuples[0]
+            group = Group()
+            group.set_id(id)
+            group.set_name(gname)
+            group.set_profileID(profileID)
+            result = group
+        except IndexError:
+            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
+            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_by_profileID(self, profileID):
+        """Suchen eines Benutzers mit vorgegebener User ID. Da diese eindeutig ist,
+        wird genau ein Objekt zurückgegeben.
+
+        :param key Primärschlüsselattribut (->DB)
+        :return User-Objekt, das dem übergebenen Schlüssel entspricht, None bei
+            nicht vorhandenem DB-Tupel.
+        """
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT id, gname, profileID FROM Studygroup WHERE profileID={}".format(profileID)
         cursor.execute(command)
         tuples = cursor.fetchall()
 

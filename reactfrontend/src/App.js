@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Container, ThemeProvider, CssBaseline, Button } from "@material-ui/core";
 import { TeachingbeeAPI } from './api';
 import AccountDetail from './components/AccountDetail';
+import Matching from './components/Matching';
 import SignUp from './components/SignUp';
 import ChatList from './components/ChatList';
 import Theme from "./components/layout/Theme";
@@ -104,7 +105,7 @@ class App extends Component {
                 showAccount ?
                   <AccountDetail person={person} interests={interests} onClose={this.closeAccount} />
                   : showMatching ?
-                  null  // Hier noch die Matching-prop laden!
+                  <Matching person={person} onClose={this.closeMatching} />
                   :
                     <ChatList person={person} />
                 : <SignUp interests={interests} />

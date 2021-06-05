@@ -231,7 +231,7 @@ class GroupOperations(Resource):
         group = bl.get_group(id)
         return group
 
-# eine einzelne Nachricht bearbeiten
+# eine einzelne Gruppennachricht bearbeiten
 @teachingbee.route('/groupchat/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Gruppe')
@@ -253,5 +253,27 @@ class GroupChatOperations(Resource):
             return m, 200
         else:
             return '', 500
+
+# Person matchen
+@teachingbee.route('/match-person/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID der Person')
+class PersonMatching(Resource):
+    @teachingbee.marshal_with(person)
+    def get(self, id):
+        bl = BusinessLogic()
+        matchList = bl.match(id)
+        return matchList[0]
+
+# Gruppe matchen
+@teachingbee.route('/match-group/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID der Person')
+class GroupMatching(Resource):
+    @teachingbee.marshal_with(group)
+    def get(self, id):
+        bl = BusinessLogic()
+        matchList = bl.match(id)
+        return matchList[1]
 
 app.run(debug=True)

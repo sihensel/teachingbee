@@ -138,7 +138,12 @@ class AccountDetail extends Component {
                 </Paper>
                 { profile ?
                     <ProfileForm show={showProfile} onClose={this.closeProfileDialog} profile={profile} interests={interests} />
-                    : null }
+                    : <div>
+                        <p>Oops, hier scheint etwas shiefgelaufen zu sein.</p>
+                        <Button color='secondary' onClick={this.handleClose}>
+                            Zurück
+                        </Button>
+                    </div>}
                 <br />
                 <Button variant='contained' color='secondary' onClick={this.toggleDelete}>
                     Account löschen
