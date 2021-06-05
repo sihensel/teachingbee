@@ -78,7 +78,9 @@ class App extends Component {
   };
 
   showAccount = () => {
-    this.setState({ showAccount: true });
+    if (!this.state.showMatching) {
+      this.setState({ showAccount: true });
+    }
   }
   closeAccount = person => {
     if (person) {
@@ -92,7 +94,9 @@ class App extends Component {
   }
 
   showMatching = () => {
-    this.setState({ showMatching: true });
+    if (!this.state.showAccount) {
+      this.setState({ showMatching: true });
+    }
   }
   closeMatching = () => {
     this.setState({ showMatching: false });
