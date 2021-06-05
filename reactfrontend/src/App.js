@@ -1,12 +1,11 @@
 import './App.css';
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Container, ThemeProvider, CssBaseline, Button } from "@material-ui/core";
+import { TeachingbeeAPI } from './api';
 import AccountDetail from './components/AccountDetail';
 import SignUp from './components/SignUp';
-import { TeachingbeeAPI } from './api';
 import ChatList from './components/ChatList';
-import { withStyles, Typography, Paper, Button } from '@material-ui/core';
-import { Container, ThemeProvider, CssBaseline } from "@material-ui/core";
 import Theme from "./components/layout/Theme";
 import Header from "./components/layout/Header";
 
@@ -21,6 +20,7 @@ class App extends Component {
       person: null,
       interests: null,
       showAccount: false,
+      showMatching: false,
       loadingInProgress: false,
       loadingError: null,
     };
@@ -83,42 +83,45 @@ class App extends Component {
     this.setState({ showAccount: false });
   }
 
+  showMatching = () => {
+    this.setState({ showMatching: true });
+  }
+  closeMatching = () => {
+    this.setState({ showMatching: false });
+  }
+
   render() {
     const { person, interests } = this.state;
-    const { showAccount } = this.state
+    const { showAccount, showMatching } = this.state
     return (
-      <div>
-        { interests ?
-          person ?
-            showAccount ?
-              <AccountDetail person={person} interests={interests} onClose={this.closeAccount} />
-              : 
-              <div>
-                <Button onClick={this.showAccount} color='primary' variant='contained'>
-                  Account
-                </Button>
-                <ChatList person={person} />
-              </div>
-          : <SignUp interests={interests} />
-          : null
-        }
-      </div>
-      //<ThemeProvider theme={Theme}>
-      //  <CssBaseline />
-      //  <Header />
-      //  <Container maxWidth="md">
-      //    <div>{person ? <ChatList person={person} /> : null}</div>
-      // </Container>
-      //</ThemeProvider>
+      <ThemeProvider theme={Theme}>
+        <CssBaseline />
+        <Header showAccount={this.showAccount} showMatching={this.showMatching} />
+        <Container maxWidth="md">
+          <div>
+            {interests ?
+              person ?
+                showAccount ?
+                  <AccountDetail person={person} interests={interests} onClose={this.closeAccount} />
+                  : showMatching ?
+                  null  // Hier noch die Matching-prop laden!
+                  :
+                    <ChatList person={person} />
+                : <SignUp interests={interests} />
+              : null
+            }
+          </div>
+        </Container>
+      </ThemeProvider>
     );
   }
 }
 
 SignUp.propTypes = {
-    classes: PropTypes.object.isRequired,
-    person: PropTypes.object.isRequired,
-    interests: PropTypes.array.isRequired,
-    currentUser: PropTypes.number.isRequired,
+  classes: PropTypes.object.isRequired,
+  person: PropTypes.object.isRequired,
+  interests: PropTypes.array.isRequired,
+  currentUser: PropTypes.number.isRequired,
 }
 
 export default App;

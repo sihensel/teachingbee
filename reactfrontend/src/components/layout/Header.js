@@ -29,24 +29,32 @@ class Header extends Component {
     })
   };
 
+  showAccount = () => {
+    this.props.showAccount();
+  }
+
+  showMatching = () => {
+    this.props.showMatching();
+  }
+
   /** Renders the component */
   render() {
 
     return (
-      
         <CardActions style={{justifyContent: 'center'}}>
-            <Button variant="contained" color="primary">
+        <div></div>
+            <Button variant="contained" color="primary" onClick={this.showAccount}>
                 Account
             </Button>
+            {/*
             <Button variant="contained" color="primary">
                 Chat
             </Button>
-            <Button variant="contained" color="primary">
+            */}
+            <Button variant="contained" color="primary" onClick={this.showMatching}>
                 Matching
             </Button>
-        
         </CardActions>
-      
     )
   }
 }
