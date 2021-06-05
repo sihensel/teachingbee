@@ -6,6 +6,9 @@ import SignUp from './components/SignUp';
 import { TeachingbeeAPI } from './api';
 import ChatList from './components/ChatList';
 import { withStyles, Typography, Paper, Button } from '@material-ui/core';
+import { Container, ThemeProvider, CssBaseline } from "@material-ui/core";
+import Theme from "./components/layout/Theme";
+import Header from "./components/layout/Header";
 
 class App extends Component {
   constructor(props) {
@@ -13,8 +16,8 @@ class App extends Component {
 
     // Init the state
     this.state = {
-      currentUser: props.currentUser,   // später die ID von Firebase
-      //currentUser: 1,   // später die ID von Firebase
+      //currentUser: props.currentUser,   // später die ID von Firebase
+      currentUser: 1,   // später die ID von Firebase
       person: null,
       interests: null,
       showAccount: false,
@@ -22,47 +25,56 @@ class App extends Component {
       loadingError: null,
     };
   }
+
   componentDidMount() {
     this.getPerson();
     this.getInterests();
   }
 
   getPerson = () => {
-    TeachingbeeAPI.getAPI().getPerson(this.state.currentUser).then(person =>
-      this.setState({
-        person: person,
-        loadingInProgress: false,
-        loadingError: null
-      })).catch(e =>
+    TeachingbeeAPI.getAPI()
+      .getPerson(this.state.currentUser)
+      .then((person) =>
+        this.setState({
+          person: person,
+          loadingInProgress: false,
+          loadingError: null,
+        })
+      )
+      .catch((e) =>
         this.setState({
           person: null,
           loadingInProgress: false,
-          loadingError: e
+          loadingError: e,
         })
       );
     this.setState({
       loadingInProgress: true,
-      loadingError: null
+      loadingError: null,
     });
-  }
+  };
   getInterests = () => {
-    TeachingbeeAPI.getAPI().getInterests().then(interests =>
-      this.setState({
-        interests: interests,
-        loadingInProgress: false,
-        loadingError: null
-      })).catch(e =>
+    TeachingbeeAPI.getAPI()
+      .getInterests()
+      .then((interests) =>
+        this.setState({
+          interests: interests,
+          loadingInProgress: false,
+          loadingError: null,
+        })
+      )
+      .catch((e) =>
         this.setState({
           interests: null,
           loadingInProgress: false,
-          loadingError: e
+          loadingError: e,
         })
       );
     this.setState({
       loadingInProgress: true,
-      loadingError: null
+      loadingError: null,
     });
-  }
+  };
 
   showAccount = () => {
     this.setState({ showAccount: true });
@@ -91,6 +103,13 @@ class App extends Component {
           : null
         }
       </div>
+      //<ThemeProvider theme={Theme}>
+      //  <CssBaseline />
+      //  <Header />
+      //  <Container maxWidth="md">
+      //    <div>{person ? <ChatList person={person} /> : null}</div>
+      // </Container>
+      //</ThemeProvider>
     );
   }
 }
@@ -103,12 +122,3 @@ SignUp.propTypes = {
 }
 
 export default App;
-
-/*
-{ interests
-          ? person
-          ?  <AccountDetail person={person} interests={interests} profile={null} />
-          : 
-        : null
-      }
-*/
