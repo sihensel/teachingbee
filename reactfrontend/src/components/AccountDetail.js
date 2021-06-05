@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, Typography, Paper, Button } from '@material-ui/core';
+import { withStyles, Typography, Paper, Button, Table, TableCell, TableContainer, TableRow } from '@material-ui/core';
 import { TeachingbeeAPI } from '../api';
 import PersonForm from './dialogs/PersonForm';
 import ProfileForm from './dialogs/ProfileForm';
@@ -79,75 +79,103 @@ class AccountDetail extends Component {
     }
 
     toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete})
+        this.setState({ showDelete: !this.state.showDelete })
     }
 
     handleClose = () => {
-        this.props.onClose()
+        this.props.onClose(this.state.person)
     }
 
     /** Renders the component */
     render() {
         const { classes, interests } = this.props;
         const { person, profile, loadingInProgress, loadingError, showPerson, showProfile, showDelete } = this.state
+        const ExtrovertList = ['wenig', 'mäßig', 'sehr']
 
         return (
             <div>
-                <Paper variant='outlined'>
-                    <Typography variant='h6'>
-                        Personendaten
-               </Typography>
-                    {person ?
-                        <div>
-                            <Typography>
-                                Vorname: {person.getFname()}<br />
-                            Nachname: {person.getLname()} <br />
-                            Geburtsdatum: {person.getBirthdate()} <br />
-                            Semester: {person.getSemester()} <br />
-                            Geschlecht: {person.getGender()} <br />
-                            Profil-ID: {person.getProfileID()} <br />
+                { (person && profile && interests) ?
+                    <div>
+                        <Paper variant='outlined' className={classes.root}>
+                            <Typography variant='h6'>
+                                Personendaten
                             </Typography>
-                            <br />
-                            <Button variant='contained' color='primary' onClick={this.showPersonDialog}>
-                                Bearbeiten
+                            <div>
+                                <TableContainer component={Paper}>
+                                    <Table className={classes.table} size='small' aria-label='Personendaten'>
+                                        <TableRow>
+                                            <TableCell>Vorname</TableCell>
+                                            <TableCell>{person.getFname()}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>Nachname</TableCell>
+                                            <TableCell>{person.getLname()}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>Geburtsdatum</TableCell>
+                                            <TableCell>{person.getBirthdate()}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>Semester</TableCell>
+                                            <TableCell>{person.getSemester()}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>Geschlecht</TableCell>
+                                            <TableCell>{person.getGender()}</TableCell>
+                                        </TableRow>
+                                    </Table>
+                                </TableContainer>
+                                <br />
+                                <Button variant='contained' color='primary' onClick={this.showPersonDialog}>
+                                    Bearbeiten
                             </Button></div>
-                        : <div>
-                            <p>Keine Personendaten verfügbar</p><Button variant='contained' color='primary' onClick={this.showPersonDialog}>
-                                Anlegen
-                </Button></div>}
-                </Paper>
+                        </Paper>
 
-                <Paper variant='outlined' className={classes.root}>
-                    <Typography variant='h6'>
-                        Lernprofil
-               </Typography>
-                    {profile ?
-                        <Typography>
-                            Studiengang: {profile.getCourse()}<br />
-                            Lerntyp: {profile.getStudytype()} <br />
-                            Extrovertiertheit: {profile.getExtroverted()} <br />
-                            Lernhäufigkeit: {profile.getFrequency()} mal die Woche <br />
-                            Online: {profile.getOnline()} <br />
-                            Interesse: {interests[profile.getInterest()-1][1]}
-                        </Typography>
-                        : null}
-                    <br />
-                    <Button variant='contained' color='primary' onClick={this.showProfileDialog}>
-                        Bearbeiten
-                </Button>
-                </Paper>
-                { profile ?
-                    <ProfileForm show={showProfile} onClose={this.closeProfileDialog} profile={profile} interests={interests} />
-                    : <div>
-                        <p>Oops, hier scheint etwas shiefgelaufen zu sein.</p>
-                        <Button color='secondary' onClick={this.handleClose}>
-                            Zurück
+                        <Paper variant='outlined' className={classes.root}>
+                            <Typography variant='h6'>
+                                Lernprofil
+                            </Typography>
+                            <TableContainer component={Paper}>
+                                <Table className={classes.table} size='small' aria-label='Personendaten'>
+                                    <TableRow>
+                                        <TableCell>Studiengang</TableCell>
+                                        <TableCell>{profile.getCourse()}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Lerntyp</TableCell>
+                                        <TableCell>{profile.getStudytype()}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Extrovertiertheit</TableCell>
+                                        <TableCell>{ExtrovertList[profile.getExtroverted() - 1]}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Lernhäufigkeit</TableCell>
+                                        <TableCell>{profile.getFrequency()} mal die Woche</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Lernort</TableCell>
+                                        <TableCell>{profile.getOnline()}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Interesse</TableCell>
+                                        <TableCell>{interests[profile.getInterest() - 1][1]}</TableCell>
+                                    </TableRow>
+                                </Table>
+                            </TableContainer>
+                            <br />
+                            <Button variant='contained' color='primary' onClick={this.showProfileDialog}>
+                                Bearbeiten
                         </Button>
-                    </div>}
+                        </Paper>
+                        <br />
+                        <Button variant='contained' color='secondary' onClick={this.toggleDelete}>
+                            Account löschen
+                        </Button>
+                        <ProfileForm show={showProfile} onClose={this.closeProfileDialog} profile={profile} interests={interests} />
+                    </div>
+                    : null}
                 <br />
-                <Button variant='contained' color='secondary' onClick={this.toggleDelete}>
-                    Account löschen
-                </Button>
                 <Button color='secondary' onClick={this.handleClose}>
                     Zurück
                 </Button>
@@ -169,6 +197,9 @@ const styles = theme => ({
         right: theme.spacing(1),
         top: theme.spacing(1),
         color: theme.palette.grey[500],
+    },
+    table: {
+        minWidth: 650,
     },
 });
 

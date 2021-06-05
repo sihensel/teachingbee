@@ -80,8 +80,15 @@ class App extends Component {
   showAccount = () => {
     this.setState({ showAccount: true });
   }
-  closeAccount = () => {
-    this.setState({ showAccount: false });
+  closeAccount = person => {
+    if (person) {
+      this.setState({
+        person: person,
+        showAccount: false
+      });
+    } else {
+      this.setState({ showAccount: false });
+    }
   }
 
   showMatching = () => {

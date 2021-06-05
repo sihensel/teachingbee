@@ -98,6 +98,8 @@ class ChatList extends Component {
             : showGroupChat ?
             <GroupChat person={person} group={group} onClose={this.closeGroupChat} />
             :
+            <div>
+              <h2>Deine Chats</h2>
               <List component="nav" className={classes.root}>
                 {groupList.map((item) => {
                   return (
@@ -120,6 +122,7 @@ class ChatList extends Component {
                   );
                 })}
               </List>
+              </div>
           : <p>Noch keine Chats vorhanden</p>
         }
       </div>
