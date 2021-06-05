@@ -219,31 +219,6 @@ export default class TeachingbeeAPI {
     })
   }
 
-  getChatList(id) {
-    return this.#fetchAdvanced(this.#getChatListURL(id)).then((responseJSON) => {
-      return new Promise(function (resolve) {
-         resolve(responseJSON)
-       })
-    })
-  }
-
-  getGroupList(id) {
-    return this.#fetchAdvanced(this.#getGroupListURL(id)).then((responseJSON) => {
-      return new Promise(function (resolve) {
-         resolve(responseJSON)
-       })
-    })
-  }
-
-  getGroup(id) {
-    return this.#fetchAdvanced(this.#getGroupURL(id)).then((responseJSON) => {
-      let group = GroupBO.fromJSON(responseJSON);
-      return new Promise(function (resolve) {
-         resolve(group)
-       })
-    })
-  }
-
   getGroupMessage(id) {
     return this.#fetchAdvanced(this.#getGroupMessageURL(id)).then((responseJSON) => {
       let messageList = [];
@@ -271,6 +246,31 @@ export default class TeachingbeeAPI {
       return new Promise(function (resolve) {
         resolve(responseMessageBO);
       })
+    })
+  }
+
+  getChatList(id) {
+    return this.#fetchAdvanced(this.#getChatListURL(id)).then((responseJSON) => {
+      return new Promise(function (resolve) {
+         resolve(responseJSON)
+       })
+    })
+  }
+
+  getGroupList(id) {
+    return this.#fetchAdvanced(this.#getGroupListURL(id)).then((responseJSON) => {
+      return new Promise(function (resolve) {
+         resolve(responseJSON)
+       })
+    })
+  }
+
+  getGroup(id) {
+    return this.#fetchAdvanced(this.#getGroupURL(id)).then((responseJSON) => {
+      let group = GroupBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+         resolve(group)
+       })
     })
   }
 }

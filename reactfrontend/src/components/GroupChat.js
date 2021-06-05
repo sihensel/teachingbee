@@ -23,7 +23,7 @@ class GroupChat extends Component {
     }
 
     addMessage = () => {
-        let newMessage = new GroupMessageBO(this.state.content, this.props.person.getID(), this.props.groupID)
+        let newMessage = new GroupMessageBO(this.state.content, this.props.person.getID(), this.props.group.getID())
         TeachingbeeAPI.getAPI().addGroupMessage(newMessage).then(message => {
             this.state.messages.push(message)
             this.setState({ content: '' });
@@ -44,7 +44,7 @@ class GroupChat extends Component {
     }
 
     getMessage = () => {
-        TeachingbeeAPI.getAPI().getGroupMessage(this.props.groupID).then(messages =>
+        TeachingbeeAPI.getAPI().getGroupMessage(this.props.group.getID()).then(messages =>
             this.setState({
                 messages: messages,
                 loadingInProgress: false,
@@ -71,7 +71,7 @@ class GroupChat extends Component {
     }
 
     render() {
-        const { classes, person, groupID } = this.props
+        const { classes, person, group } = this.props
         const { messages, content } = this.state
 
         if (messages) {
@@ -83,6 +83,7 @@ class GroupChat extends Component {
 
         return (
             <div>
+                <h2>{group.getName()}</h2>
                 {messages ?
                     messages.map(message => {
                         {
@@ -152,7 +153,7 @@ const styles = theme => ({
 GroupChat.propTypes = {
     classes: PropTypes.object.isRequired,
     person: PropTypes.object.isRequired,
-    groupID: PropTypes.number.isRequired,
+    group: PropTypes.object.isRequired,
 }
 
 export default withStyles(styles)(GroupChat);

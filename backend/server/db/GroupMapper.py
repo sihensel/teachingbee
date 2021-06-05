@@ -14,7 +14,7 @@ class GroupMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from studygroup")
+        cursor.execute("SELECT * from Studygroup")
         tuples = cursor.fetchall()
 
         for (id, stamp, gname, admin, profileID) in tuples:
@@ -37,7 +37,7 @@ class GroupMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, gname, admin FROM studygroup WHERE gname LIKE '{}' ORDER BY gname".format(gname)
+        command = "SELECT id, gname, admin FROM Studygroup WHERE gname LIKE '{}' ORDER BY gname".format(gname)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -65,7 +65,7 @@ class GroupMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, gname, profileID FROM studygroup WHERE id={}".format(key)
+        command = "SELECT id, gname, profileID FROM Studygroup WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -91,7 +91,7 @@ class GroupMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "INSERT INTO studygroup (gname, admin, profileID) VALUES (%s, %s, %s)"
+        command = "INSERT INTO Studygroup (gname, admin, profileID) VALUES (%s, %s, %s)"
         data = (group.get_gname(), group.get_admin(), 1)
         cursor.execute(command, data)
 
@@ -118,7 +118,7 @@ class GroupMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE studygroup " + "SET gname=%s, admin=%s WHERE id=%s"
+        command = "UPDATE Studygroup " + "SET gname=%s, admin=%s WHERE id=%s"
         data = (group.get_gname(), group.get_admin())
         cursor.execute(command, data)
 
@@ -132,7 +132,7 @@ class GroupMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM studygroup WHERE id={}".format(group.get_id())
+        command = "DELETE FROM Studygroup WHERE id={}".format(group.get_id())
         cursor.execute(command)
 
         self._cnx.commit()

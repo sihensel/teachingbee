@@ -6,12 +6,6 @@ class Group(bo.BusinessObject):
         super().__init__()
         self._profileID = 0
     
-    #def add_member(self, member):
-    #    self._members.append(member)
-
-    #def remove_member(self, member):
-    #    self._members.pop(self._members.index(member))
-
     def set_profileID(self, id):
         self._profileID = id
 

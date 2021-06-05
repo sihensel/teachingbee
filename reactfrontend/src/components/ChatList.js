@@ -15,16 +15,16 @@ class ChatList extends Component {
 
     // Init the state
     this.state = {
-      chatList: null,   // Liste mit den IDs aller Chatpartner
-      groupList: null,
-      personList: [],
-      groupBOList: [],   // Liste mit den Personenobjekten aller Chatpartner
-      chatisLoaded: false, // bool, ob die personList geladen wurde
-      groupisLoaded: false,  
-      recipient: null,  // Empfänger der Nachricht
-      groupID: null,
-      showChat: false,  // toggle, ob der Chat angezeigt wird
-      showGroupChat: false,  // toggle, ob der Groupchat angezeigt wird
+      chatList: null,       // Liste mit den IDs aller Chatpartner
+      groupList: null,      // Liste mit den IDs aller Gruppen
+      personList: [],       // Liste mit den Personenobjekten aller Chatpartner
+      groupBOList: [],      // Liste mit allen Gruppenobjekten einer Person
+      chatisLoaded: false,  // bool, ob die personList geladen wurde
+      groupisLoaded: false, // bool, ob die Gruppenliste geladen wurde
+      recipient: null,      // Empfänger einer Einzelnachricht
+      group: null,          // Empfänger einer Gruppennachricht
+      showChat: false,      // toggle, ob der Chat angezeigt wird
+      showGroupChat: false, // toggle, ob der Gruppenchat angezeigt wird
     };
   }
 
@@ -81,7 +81,7 @@ class ChatList extends Component {
 
   showGroupChat = (item) => {
     this.setState({
-      groupID: item,
+      group: item,
       showGroupChat: true
     })
   }
@@ -112,13 +112,14 @@ class ChatList extends Component {
     })
   }
 
-
   render() {
     const { classes, person } = this.props;
-    const { chatList, groupList, personList, groupBOList, recipient, showChat, chatisLoaded, groupisLoaded, groupID, showGroupChat } = this.state;
+    const { chatList, groupList, personList, groupBOList, recipient, showChat, chatisLoaded, groupisLoaded, group, showGroupChat } = this.state;
 
-    if (chatList && !chatisLoaded) {
+    // Objekte der Chatpartner und Gruppen laden
+    if ((chatList && !chatisLoaded) && (groupList && !groupisLoaded)) {
       this.getPersonList()
+      this.getGroupBOList()
     }
 
     return (
@@ -127,16 +128,16 @@ class ChatList extends Component {
           showChat ?
             <Chat sender={person} recipient={recipient} onClose={this.closeChat} />
             : showGroupChat ?
-            <GroupChat person={person} groupID={groupID} onClose={this.closeGroupChat} />
+            <GroupChat person={person} group={group} onClose={this.closeGroupChat} />
             :
-            (personList.length == chatList.length)
+            ((personList.length == chatList.length) && (groupBOList.length == groupList.length))
               ?
               <List component="nav" className={classes.root}>
-                {groupList.map((item) => {
+                {groupBOList.map((item) => {
                   return (
                     <div>
                       <ListItem button onClick={() => this.showGroupChat(item)}>
-                        <ListItemText primary={item}></ListItemText>
+                        <ListItemText primary={item.getName()}></ListItemText>
                       </ListItem>
                       <Divider />
                     </div>
