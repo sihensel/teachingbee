@@ -14,8 +14,10 @@ app = Flask(__name__)
 CORS(app, resources=r'/teachingbee/*')
 
 
-api = Api(app, version='0.1', title='Teachingbee', description='App um Lernpartner zu finden.')
-teachingbee = api.namespace('teachingbee', description='App zum finden von Lernpartnern')
+api = Api(app, version='0.1', title='Teachingbee',
+          description='App um Lernpartner zu finden.')
+teachingbee = api.namespace(
+    'teachingbee', description='App zum finden von Lernpartnern')
 
 # Business Object
 bo = api.model('BusinessObject', {
@@ -27,7 +29,8 @@ person = api.inherit('Person', bo, {
     'fname': fields.String(attribute='_fname', description='Vorname'),
     'lname': fields.String(attribute='_lname', description='Nachname'),
     'birthdate': fields.String(attribute='_birthdate', description='Geburtsdatum'),
-    'semester': fields.String(attribute='_semester', description='Semester'),  # vllt als String lassen?
+    # vllt als String lassen?
+    'semester': fields.String(attribute='_semester', description='Semester'),
     'gender': fields.String(attribute='_gender', description='Geschlecht'),
     'profileID': fields.Integer(attribute='_profileID', description='ID des Profils'),
 })
@@ -59,10 +62,9 @@ groupmessage = api.inherit('GroupMessage', bo, {
 # Gruppenobjekt
 group = api.inherit('Group', bo, {
     'name': fields.String(attribute='_name', description='Gruppenname'),
+    'info': fields.String(attribute='_info', description='Gruppeninfo'),
     'profileID': fields.Integer(attribute='_profileID', description='Profil ID'),
 })
-
-
 
 
 # POST: create
@@ -79,6 +81,8 @@ class Interests(Resource):
         return interests
 
 # eine einzelne Person bearbeiten
+
+
 @teachingbee.route('/person/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
@@ -109,6 +113,8 @@ class PersonOperations(Resource):
         return result, 200
 
 # Person neu speichern
+
+
 @teachingbee.route('/persons')
 @teachingbee.response(500, 'Internal Server Error')
 class AddPerson(Resource):
@@ -123,6 +129,8 @@ class AddPerson(Resource):
             return '', 500
 
 # Profil bearbeiten
+
+
 @teachingbee.route('/profile/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Profils')
@@ -147,6 +155,8 @@ class ProfileOperations(Resource):
             return '', 500
 
 # Profil neu speichern
+
+
 @teachingbee.route('/profiles')
 @teachingbee.response(500, 'Internal Server Error')
 class AddProfile(Resource):
@@ -161,18 +171,23 @@ class AddProfile(Resource):
             return '', 500
 
 # Profil und Person verknüpfen
+
+
 @teachingbee.route('/link')
 @teachingbee.response(500, 'Internal Server Error')
 class LinkPersonProfile(Resource):
     def put(self):
         if api.payload:
             bl = BusinessLogic()
-            bl.link_person_profile(api.payload['personID'], api.payload['profileID'])
+            bl.link_person_profile(
+                api.payload['personID'], api.payload['profileID'])
             return 'successfull', 200
         else:
             return '', 500
 
 # eine einzelne Nachricht bearbeiten
+
+
 @teachingbee.route('/chat/<int:sender>/<int:recipient>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('sender', 'Sender')
@@ -197,6 +212,8 @@ class ChatOperations(Resource):
             return '', 500
 
 # eine Liste von Chats verwalten
+
+
 @teachingbee.route('/chatlist/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')
@@ -208,6 +225,7 @@ class ChatListOperations(Resource):
         bl = BusinessLogic()
         personList = bl.get_chatList(id)
         return personList
+
 
 @teachingbee.route('/grouplist/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
@@ -221,17 +239,6 @@ class GroupListOperations(Resource):
         groupList = bl.get_groupList(id)
         return groupList
 
-@teachingbee.route('/group/<int:id>')
-@teachingbee.response(500, 'Internal Server Error')
-@teachingbee.param('id', 'ID des Users')
-class GroupOperations(Resource):
-    
-    @teachingbee.marshal_with(group)
-    def get(self, id):
-        ''' Nachricht aus der DB auslesen '''
-        bl = BusinessLogic()
-        group = bl.get_group(id)
-        return group
 
 # eine einzelne Gruppennachricht bearbeiten
 @teachingbee.route('/groupchat/<int:id>')
@@ -257,6 +264,8 @@ class GroupChatOperations(Resource):
             return '', 500
 
 # Person matchen
+
+
 @teachingbee.route('/match-person/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
@@ -268,6 +277,8 @@ class PersonMatching(Resource):
         return matchList[0]
 
 # Gruppe matchen
+
+
 @teachingbee.route('/match-group/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
@@ -277,6 +288,7 @@ class GroupMatching(Resource):
         bl = BusinessLogic()
         matchList = bl.match(id)
         return matchList[1]
+
 
 @teachingbee.route('/groups/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
@@ -288,21 +300,49 @@ class GroupsByMember(Resource):
         groups = bl.get_group_by_member(id)
         return groups
 
+
+@teachingbee.route('/group/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID des Users')
+class GroupOperations(Resource):
+
+    @teachingbee.marshal_with(group)
+    def get(self, id):
+        ''' Nachricht aus der DB auslesen '''
+        bl = BusinessLogic()
+        group = bl.get_group(id)
+        return group
+
+    @teachingbee.marshal_with(group)
+    @teachingbee.expect(group, validate=True)
+    def put(self, id):
+        bl = BusinessLogic()
+        group = Group.from_dict(api.payload)
+        if group:
+            g = bl.update_group(group)
+            return g, 200
+        else:
+            return "", 500
+
+    def delete(self, id):
+        pass
+
+
 @teachingbee.route('/groups')
 @teachingbee.response(500, 'Internal Server Error')
 class AddGroup(Resource):
-   
+
+    @teachingbee.marshal_with(group)
+    @teachingbee.expect(group, validate=True)
     def post(self):
         bl = BusinessLogic()
-        response = api.payload
-        group = Group()
-        #group.set_gname(response)
-        print(response)
+        group = Group.from_dict(api.payload["group"])
+        personID = api.payload["personID"]
+        # group.set_gname(response)
 
-
-        if prof:
-            p = bl.add_profile(prof)
-            return p, 200
+        if group:
+            g = bl.add_group(group, personID)
+            return g, 200
         else:
             return '', 500
 
