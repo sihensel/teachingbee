@@ -1,10 +1,7 @@
 import PersonBO from './PersonBO';
 import ProfileBO from './ProfileBO';
-<<<<<<< HEAD
-=======
 import MessageBO from './MessageBO';
 import GroupMessageBO from './GroupMessageBO';
->>>>>>> main
 import GroupBO from './GroupBO';
 
 /**
@@ -32,13 +29,6 @@ export default class TeachingbeeAPI {
 
   #InterestsURL = () => `${this.#ServerBaseURL}/interests`;
 
-<<<<<<< HEAD
-  #addGroupURL = () => `${this.#ServerBaseURL}/groups`;
-  #getGroupByMemberURL = (id) => `${this.#ServerBaseURL}/groups/${id}`;
-  #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
-  #updateGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
-  #deleteGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
-=======
   #getMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
   #addMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
 
@@ -47,11 +37,13 @@ export default class TeachingbeeAPI {
 
   #getChatListURL = (id) => `${this.#ServerBaseURL}/chatlist/${id}`;
   #getGroupListURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
+  #addGroupURL = () => `${this.#ServerBaseURL}/groups`;
   #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
+  #deleteGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
+  #updateGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
 
   #MatchPersonURL = (id) => `${this.#ServerBaseURL}/match-person/${id}`;
   #MatchGroupURL = (id) => `${this.#ServerBaseURL}/match-group/${id}`;
->>>>>>> main
 
 
   static getAPI() {
@@ -329,18 +321,6 @@ export default class TeachingbeeAPI {
     })
   }
 
-  getGroupByMember(personID) {
-    return this.#fetchAdvanced(this.#getGroupByMemberURL(personID)).then((response) => {
-      var groups = [];
-      for (let i of response){
-        groups.push(GroupBO.fromJSON(i));
-      }
-      return new Promise(function (resolve) {
-        resolve(groups)
-      })
-    })
-  }
-
   deleteGroup(groupBO) {
     return this.#fetchAdvanced(this.#deleteGroupURL(groupBO.getID()), {
       method: 'DELETE',
@@ -369,18 +349,18 @@ export default class TeachingbeeAPI {
     })
   }
 
-  addGroup(groupBO) {
+  addGroup(groupBO, personBO) {
     return this.#fetchAdvanced(this.#addGroupURL(), {
       method: 'POST',
       headers: {
         'Accept': 'application/json, text/plain',
         'Content-type': 'application/json',
       },
-      body: JSON.stringify({
-        'gname':groupBO.getGname(),
-        'admin' :groupBO.getAdmin(),
-        'members' :groupBO.getMembers()
-
+      body: JSON.stringify({"group": groupBO, "personID": personBO.getID()})
+    }).then((responseJSON) => {
+      let responseGroupBO = ProfileBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve(responseGroupBO);
       })
     })
       
