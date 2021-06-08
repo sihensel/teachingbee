@@ -60,7 +60,7 @@ class Profile (bo.BusinessObject):
 
     def __str__(self):
         ''' Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz. '''
-        return f"Profile: {self.get_id()}, {self._course}, {self._studytype}, {self._extroverted}, {self._frequency}, {self._online}, {self._interest}"
+        return f"Profile: {self.get_id()}, {self.get_course()}, {self.get_studytype()}, {self.get_extroverted()}, {self.get_frequency()}, {self.get_online()}, {self.get_interest()}"
 
     @staticmethod
     def from_dict(dictionary=dict()):
