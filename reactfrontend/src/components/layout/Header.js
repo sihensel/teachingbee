@@ -37,6 +37,10 @@ class Header extends Component {
     this.props.showMatching();
   }
 
+  showGroup = () => {
+    this.props.showGroup();
+  }
+
   /** Renders the component */
   render() {
 
@@ -46,11 +50,9 @@ class Header extends Component {
             <Button variant="contained" color="primary" onClick={this.showAccount}>
                 Account
             </Button>
-            {/*
-            <Button variant="contained" color="primary">
-                Chat
+            <Button variant="contained" color="primary" onClick={this.showGroup}>
+                Gruppe erstellen
             </Button>
-            */}
             <Button variant="contained" color="primary" onClick={this.showMatching}>
                 Matching
             </Button>
