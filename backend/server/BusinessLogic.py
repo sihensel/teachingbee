@@ -39,7 +39,7 @@ class BusinessLogic:
         # es müssen natürlich auch noch aus allen anderen Tabellen die Einträge gelöscht werden!
         with PersonMapper() as mapper:
             mapper.delete(person.get_id())
-        self.delete_profile(person)         # das Profil muss natürlich auch geslöscht werden
+        self.delete_profile(person.get_id())         # das Profil muss natürlich auch geslöscht werden
         return 'successfull'
 
     ''' Verknüpft ein Profil mit einer Person '''
@@ -60,9 +60,9 @@ class BusinessLogic:
         with ProfileMapper() as mapper:
             return mapper.insert(profile)
     
-    def delete_profile(self, person):
+    def delete_profile(self, profileID):
         with ProfileMapper() as mapper:
-            mapper.delete(person.get_profileID())
+            mapper.delete(profileID)
 
     ''' Methoden für Nachrichtenobjekte '''
     def get_message(self, sender, recipient):
@@ -102,6 +102,12 @@ class BusinessLogic:
             return mapper.update(group)
 
     def add_group(self, group, personID):
+        ''' Eine neue Gruppe erstellen
+        Die Gruppe erhält ein gleiches Profil wie die erstellende Person
+        Das Gruppenobjekt enthält zuerst die profileID oder Person, damit wird das Profil erstellt
+        Das neue Profil wird dann als profileID der neuen Gruppe gesetzt und ebenfalls bespeichert
+        Zum Schluss wird die Gruppe mit der Person verknüpft
+        '''
         profile = self.get_profile(group.get_profileID())
 
         profile = self.add_profile(profile)
@@ -111,12 +117,20 @@ class BusinessLogic:
             group = mapper.insert(group)
 
         self.add_group_member(group.get_id(), personID)
-
         return group
 
     def add_group_member(self, groupID, personID):
         with GroupMapper() as mapper:
             return mapper.insert_member(groupID, personID)
+    
+    def leave_group(self, group, person):
+        with GroupMapper() as mapper:
+            mapper.remove_member(group.get_id(), person.get_id())
+
+            # wenn die Gruppe leer ist, soll sie mit dem zugehörigen Profil gelöscht werden
+            if mapper.check_group(group.get_id()) == None:
+                mapper.delete(group.get_id())
+                self.delete_profile(group.get_profileID())
 
     ''' Methoden für Gruppennachrichtenobjekte '''
     def get_group_message(self, id):

@@ -65,6 +65,12 @@ class GroupChat extends Component {
         });
     }
 
+    leaveGroup = () => {
+        TeachingbeeAPI.getAPI().leaveGroup(this.state.group, this.props.person).then(response => 
+            this.handleClose()
+        )
+    }
+
     showGroupForm = () => {
         this.setState({
             showGroupForm: true
@@ -107,8 +113,11 @@ class GroupChat extends Component {
                 <Button color='primary' variant='contained' onClick={this.showGroupForm}>
                     Bearbeiten
                 </Button>
+                <Button color='primary' variant='contained' onClick={this.leaveGroup}>
+                    Gruppe verlassen
+                </Button>
                 {showGroupForm ?
-                    <GroupForm group={group} show={showGroupForm} onClose={this.closeGroupForm}/>
+                    <GroupForm group={group} show={showGroupForm} onClose={this.closeGroupForm} />
                     : null}
                 {messages ?
                     messages.map(message => {

@@ -78,7 +78,6 @@ class Matching extends Component {
     render() {
         const { classes } = this.props;
         const { personList, groupList } = this.state;
-        console.log(personList, groupList)
 
         return (
             <div>
@@ -117,6 +116,9 @@ class Matching extends Component {
                                         <CardContent>
                                             <Typography variant='h6' component='h4'>
                                                 {group.getName()}
+                                            </Typography>
+                                            <Typography variant='h6' component='h4'>
+                                                {group.getInfo()}
                                             </Typography>
                                         </CardContent>
                                         <CardActions>

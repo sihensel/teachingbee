@@ -1,11 +1,7 @@
-import 'date-fns';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import DateFnsUtils from '@date-io/date-fns';
-import { format } from 'date-fns';
-import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import { TeachingbeeAPI, GroupBO } from '../../api';
 //import ContextErrorMessage from './ContextErrorMessage';
 //import LoadingProgress from './LoadingProgress';
@@ -137,7 +133,7 @@ class GroupForm extends Component {
     if (group) {
       // Person bereits vorhanden => bearneiten
       title = 'Guppe bearbeiten';
-      header = `Gruppen_ID: ${group.getID()}`;
+      header = `Gruppen-ID: ${group.getID()}`;
     } else {
       title = 'Gruppe anlegen';
       header = 'Bitte Daten eingeben';
@@ -195,6 +191,7 @@ const styles = theme => ({
 
 GroupForm.propTypes = {
   group: PropTypes.object,
+  person: PropTypes.object.isRequired,
   show: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   children: PropTypes.node

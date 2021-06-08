@@ -17,7 +17,6 @@ class GroupMapper(Mapper):
         :return User-Objekt, das dem übergebenen Schlüssel entspricht, None bei
             nicht vorhandenem DB-Tupel.
         """
-
         result = None
 
         cursor = self._cnx.cursor()
@@ -76,26 +75,6 @@ class GroupMapper(Mapper):
 
         return result
     
-    def find_by_member(self, member):
-
-        result = []
-
-        cursor = self._cnx.cursor()
-        command = "SELECT groupID FROM R_person_group WHERE personID={}".format(member)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for groupID in tuples:
-            result.push(self.find_by_key(groupID))
-            
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-    
-    
-
     def insert(self, group):
         #Einfügen eines Group-Objekts in die Datenbank.
 
@@ -104,24 +83,20 @@ class GroupMapper(Mapper):
         command = "INSERT INTO Studygroup (gname, info, profileID) VALUES (%s, %s, %s)"
         data = (group.get_name(), group.get_info(), group.get_profileID())
         cursor.execute(command, data)
-
         self._cnx.commit()
-
 
         cursor.execute("SELECT LAST_INSERT_ID()")   # die ID des gerade geschriebenen Datensatzen auslesen
         tuples = cursor.fetchall()
         group.set_id(tuples[0][0])
 
         self._cnx.commit()
-
         cursor.close()
 
         return group
 
     def insert_member(self, groupID, personID):
-        #Einfügen eines Member-Objekts in die Datenbank.
+        ''' eine Person einer Gruppe zufügen '''
 
-    
         cursor = self._cnx.cursor()
         command = "INSERT INTO R_person_group (groupID, personID) VALUES (%s, %s)"
         data = (groupID, personID)
@@ -129,6 +104,32 @@ class GroupMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
+    
+    def remove_member(self, groupID, personID):
+        ''' Eine Person aus einer Gruppe entfernen '''
+
+        cursor = self._cnx.cursor()
+        command = "DELETE FROM R_person_group WHERE groupID=%s AND personID=%s"
+        data = (groupID, personID)
+        cursor.execute(command, data)
+
+        self._cnx.commit()
+        cursor.close()
+    
+    def check_group(self, groupID):
+
+        cursor = self._cnx.cursor()
+        command = "SELECT * FROM R_person_group WHERE groupID={}".format(groupID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        self._cnx.commit()
+        cursor.close()
+
+        if tuples:
+            return True
+        else:
+            return None
 
 
     def update(self, group):
@@ -147,14 +148,14 @@ class GroupMapper(Mapper):
 
         return group
 
-    def delete(self, group):
+    def delete(self, groupID):
         """Löschen der Daten eines User-Objekts aus der Datenbank.
 
         :param user das aus der DB zu löschende "Objekt"
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM Studygroup WHERE id={}".format(group.get_id())
+        command = "DELETE FROM Studygroup WHERE id={}".format(groupID)
         cursor.execute(command)
 
         self._cnx.commit()

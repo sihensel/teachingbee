@@ -212,8 +212,6 @@ class ChatOperations(Resource):
             return '', 500
 
 # eine Liste von Chats verwalten
-
-
 @teachingbee.route('/chatlist/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')
@@ -227,6 +225,7 @@ class ChatListOperations(Resource):
         return personList
 
 
+# Eine Liste von Gruppen einer Person verwalten
 @teachingbee.route('/grouplist/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')
@@ -234,10 +233,21 @@ class GroupListOperations(Resource):
 
     @teachingbee.marshal_with(group)
     def get(self, id):
-        ''' Nachricht aus der DB auslesen '''
+        ''' Alle Gruppen einer Person auslesen '''
         bl = BusinessLogic()
         groupList = bl.get_groupList(id)
         return groupList
+    
+    def put(self, id):
+        ''' Eine Gruppe verlassen '''
+        bl = BusinessLogic()
+        group = Group.from_dict(api.payload['group'])
+        person = Person.from_dict(api.payload['person'])
+        if group and person:
+            bl.leave_group(group, person)
+            return '', 200
+        else:
+            return '', 500
 
 
 # eine einzelne Gruppennachricht bearbeiten
@@ -264,8 +274,6 @@ class GroupChatOperations(Resource):
             return '', 500
 
 # Person matchen
-
-
 @teachingbee.route('/match-person/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
@@ -289,18 +297,7 @@ class GroupMatching(Resource):
         matchList = bl.match(id)
         return matchList[1]
 
-
-@teachingbee.route('/groups/<int:id>')
-@teachingbee.response(500, 'Internal Server Error')
-@teachingbee.param('id', 'ID des Teilnehmers')
-class GroupsByMember(Resource):
-    def get(self, id):
-        ''' Gruppen aus der DB auslesen '''
-        bl = BusinessLogic()
-        groups = bl.get_group_by_member(id)
-        return groups
-
-
+# Gruppe bearbeiten
 @teachingbee.route('/group/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')
@@ -324,10 +321,7 @@ class GroupOperations(Resource):
         else:
             return "", 500
 
-    def delete(self, id):
-        pass
-
-
+# Eine Gruppe hinzufügen
 @teachingbee.route('/groups')
 @teachingbee.response(500, 'Internal Server Error')
 class AddGroup(Resource):

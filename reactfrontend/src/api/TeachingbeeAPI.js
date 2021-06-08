@@ -37,6 +37,7 @@ export default class TeachingbeeAPI {
 
   #getChatListURL = (id) => `${this.#ServerBaseURL}/chatlist/${id}`;
   #getGroupListURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
+  #leaveGroupURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
   #addGroupURL = () => `${this.#ServerBaseURL}/groups`;
   #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
   #deleteGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
@@ -321,17 +322,6 @@ export default class TeachingbeeAPI {
     })
   }
 
-  deleteGroup(groupBO) {
-    return this.#fetchAdvanced(this.#deleteGroupURL(groupBO.getID()), {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json, text/plain',
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(groupBO)
-    })
-  }
-
   // Profil speichern
   updateGroup(groupBO) {
     return this.#fetchAdvanced(this.#updateGroupURL(groupBO.getID()), {
@@ -363,7 +353,17 @@ export default class TeachingbeeAPI {
         resolve(responseGroupBO);
       })
     })
-      
-    
   }
+      
+  leaveGroup(groupBO, personBO) {
+    return this.#fetchAdvanced(this.#leaveGroupURL(personBO.getID()), {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({'group': groupBO, 'person': personBO})
+    })
+  }
+    
 }

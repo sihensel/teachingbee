@@ -67,7 +67,6 @@ class SignUp extends Component {
     render() {
         const { interests } = this.props;
         const { person, profile, showPerson, showProfile, linked } = this.state;
-        console.log(this.state)
         return (
             <div>
                 { linked ?
