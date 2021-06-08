@@ -1,5 +1,10 @@
 import PersonBO from './PersonBO';
 import ProfileBO from './ProfileBO';
+<<<<<<< HEAD
+=======
+import MessageBO from './MessageBO';
+import GroupMessageBO from './GroupMessageBO';
+>>>>>>> main
 import GroupBO from './GroupBO';
 
 /**
@@ -27,11 +32,26 @@ export default class TeachingbeeAPI {
 
   #InterestsURL = () => `${this.#ServerBaseURL}/interests`;
 
+<<<<<<< HEAD
   #addGroupURL = () => `${this.#ServerBaseURL}/groups`;
   #getGroupByMemberURL = (id) => `${this.#ServerBaseURL}/groups/${id}`;
   #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
   #updateGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
   #deleteGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
+=======
+  #getMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
+  #addMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
+
+  #getGroupMessageURL = (id) => `${this.#ServerBaseURL}/groupchat/${id}`;
+  #addGroupMessageURL = (id) => `${this.#ServerBaseURL}/groupchat/${id}`;
+
+  #getChatListURL = (id) => `${this.#ServerBaseURL}/chatlist/${id}`;
+  #getGroupListURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
+  #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
+
+  #MatchPersonURL = (id) => `${this.#ServerBaseURL}/match-person/${id}`;
+  #MatchGroupURL = (id) => `${this.#ServerBaseURL}/match-group/${id}`;
+>>>>>>> main
 
 
   static getAPI() {
@@ -53,8 +73,7 @@ export default class TeachingbeeAPI {
         throw Error(`${res.status} ${res.statusText}`);
       }
       return res.json();
-    }
-    )
+    })
 
 
   /**
@@ -83,7 +102,7 @@ export default class TeachingbeeAPI {
     }).then((responseJSON) => {
       let responsePersonBO = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve (responsePersonBO);
+        resolve(responsePersonBO);
       })
     })
   }
@@ -99,7 +118,7 @@ export default class TeachingbeeAPI {
     }).then((responseJSON) => {
       let responsePersonBO = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve (responsePersonBO);
+        resolve(responsePersonBO);
       })
     })
   }
@@ -136,7 +155,7 @@ export default class TeachingbeeAPI {
     }).then((responseJSON) => {
       let responseProfileBO = ProfileBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve (responseProfileBO);
+        resolve(responseProfileBO);
       })
     })
   }
@@ -152,7 +171,7 @@ export default class TeachingbeeAPI {
     }).then((responseJSON) => {
       let responseProfileBO = ProfileBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve (responseProfileBO);
+        resolve(responseProfileBO);
       })
     })
   }
@@ -172,11 +191,131 @@ export default class TeachingbeeAPI {
         'Accept': 'application/json, text/plain',
         'Content-type': 'application/json',
       },
-      body: JSON.stringify({'personID': personID, 'profileID': profileID})
+      body: JSON.stringify({ 'personID': personID, 'profileID': profileID })
     }).then((responseJSON) => {
       //let responsePersonBO = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve (responseJSON);
+        resolve(responseJSON);
+      })
+    })
+  }
+
+  getMessage(sender, recipient) {
+    return this.#fetchAdvanced(this.#getMessageURL(sender, recipient)).then((responseJSON) => {
+      let messageList = [];
+      responseJSON.map(item => {
+        let message = MessageBO.fromJSON(item);
+        messageList.push(message);
+
+      })
+      return new Promise(function (resolve) {
+         resolve(messageList);
+       })
+    })
+  }
+
+  addMessage(messageBO) {
+    return this.#fetchAdvanced(this.#addMessageURL(messageBO.getSender(), messageBO.getRecipient()), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(messageBO)
+    }).then((responseJSON) => {
+      let responseMessageBO = MessageBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve(responseMessageBO);
+      })
+    })
+  }
+
+  getGroupMessage(id) {
+    return this.#fetchAdvanced(this.#getGroupMessageURL(id)).then((responseJSON) => {
+      let messageList = [];
+      responseJSON.map(item => {
+        let message = GroupMessageBO.fromJSON(item);
+        messageList.push(message);
+      })
+      return new Promise(function (resolve) {
+         resolve(messageList);
+       })
+    })
+  }
+
+  addGroupMessage(groupmessageBO) {
+    return this.#fetchAdvanced(this.#addGroupMessageURL(groupmessageBO.getGroup()), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(groupmessageBO)
+    }).then((responseJSON) => {
+      let responseMessageBO = GroupMessageBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve(responseMessageBO);
+      })
+    })
+  }
+
+  getChatList(id) {
+    return this.#fetchAdvanced(this.#getChatListURL(id)).then((responseJSON) => {
+      let chatList = [];
+      responseJSON.map(item => {
+        let person = PersonBO.fromJSON(item);
+        chatList.push(person);
+      })
+      return new Promise(function (resolve) {
+         resolve(chatList)
+       })
+    })
+  }
+
+  getGroupList(id) {
+    return this.#fetchAdvanced(this.#getGroupListURL(id)).then((responseJSON) => {
+      let groupList = [];
+      responseJSON.map(item => {
+        let group = GroupBO.fromJSON(item);
+        groupList.push(group);
+      })
+      return new Promise(function (resolve) {
+         resolve(groupList)
+       })
+    })
+  }
+
+  getGroup(id) {
+    return this.#fetchAdvanced(this.#getGroupURL(id)).then((responseJSON) => {
+      let group = GroupBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+         resolve(group)
+       })
+    })
+  }
+
+  matchPerson(id) {
+    return this.#fetchAdvanced(this.#MatchPersonURL(id)).then((responseJSON) => {
+      let personList = [];
+      responseJSON.map(item => {
+        let person = PersonBO.fromJSON(item);
+        personList.push(person);
+      })
+      return new Promise(function (resolve) {
+        resolve(personList);
+      })
+    })
+  }
+
+  matchGroup(id) {
+    return this.#fetchAdvanced(this.#MatchGroupURL(id)).then((responseJSON) => {
+      let groupList = [];
+      responseJSON.map(item => {
+        let group = GroupBO.fromJSON(item);
+        groupList.push(group);
+      })
+      return new Promise(function (resolve) {
+        resolve(groupList);
       })
     })
   }

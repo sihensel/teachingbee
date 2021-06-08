@@ -5,6 +5,7 @@ import { TeachingbeeAPI } from '../api';
 import PersonForm from './dialogs/PersonForm';
 import ProfileForm from './dialogs/ProfileForm';
 import AccountDetail from './AccountDetail';
+import App from '../App';
 
 class SignUp extends Component {
 
@@ -70,7 +71,7 @@ class SignUp extends Component {
         return (
             <div>
                 { linked ?
-                    <AccountDetail person={person} profile={profile} interests={interests} />
+                    <App person={person} interests={interests} currentUser={person.getID()} />
                     :
                     <div>
                         <Paper variant='outlined'>

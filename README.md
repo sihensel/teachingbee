@@ -13,7 +13,7 @@ Logout |
 Create Profile | Kai, Tobi
 Manage Profile | Jacky, Simon
 Manage Person | Jacky, Simon
-Browse Recommendations |
+Matching | Simon
 Request Contact |
 Chat | Kai, Tobi
 Join Group |

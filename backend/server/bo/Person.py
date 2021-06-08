@@ -4,20 +4,12 @@ class Person(bo.BusinessObject):
     ''' Personendaten eines Accounts '''
     def __init__(self):
         super().__init__()
-        self._id = 0
         self._fname = ''
         self._lname = ''
         self._birthdate = ''
-        self._semester = 0
+        self._semester = ''
         self._gender = ''
         self._profileID = 0
-
-    def set_id(self, id):
-        self._id = id
-
-    def get_id(self):
-        return self._id
-
 
     def set_fname(self, fname):
         self._fname = fname
@@ -57,7 +49,7 @@ class Person(bo.BusinessObject):
 
     def __str__(self):
         ''' Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz. '''
-        return f'Person: {self.get_id()}, {self._fname}, {self._lname}, {self._birthdate}, {self._semester}, {self._gender}, {self._profileID}'
+        return f'Person: {self.get_id()}, {self.get_fname()}, {self.get_lname()}, {self.get_birthdate()}, {self.get_semester()}, {self.get_gender()}, {self.get_profileID()}'
 
     @staticmethod
     def from_dict(dictionary=dict()):

@@ -41,6 +41,36 @@ class PersonMapper(Mapper):
         cursor.close()
 
         return result
+    
+    def find_by_profileID(self, profileID):
+        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT id, fname, lname, birthdate, semester, gender, profileID FROM Person WHERE profileID={}".format(profileID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (id, fname, lname, birthdate, semester, gender, profileID) = tuples[0]
+            person = Person()
+            person.set_id(id)
+            person.set_fname(fname)
+            person.set_lname(lname)
+            person.set_birthdate(birthdate)
+            person.set_semester(semester)
+            person.set_gender(gender)
+            person.set_profileID(profileID)
+            result = person
+        except IndexError:
+            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
+            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
 
     def insert(self, person):
         """Einfügen eines User-Objekts in die Datenbank. """

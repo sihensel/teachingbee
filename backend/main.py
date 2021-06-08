@@ -7,6 +7,8 @@ from server.bo.Person import Person
 from server.bo.Profile import Profile
 from server.bo.Group import Group
 
+from server.bo.Message import Message
+from server.bo.GroupMessage import GroupMessage
 
 app = Flask(__name__)
 CORS(app, resources=r'/teachingbee/*')
@@ -39,6 +41,29 @@ profile = api.inherit('Profile', bo, {
     'online': fields.String(attribute='_online', description='Online/Offline lernen'),
     'interest': fields.Integer(attribute='_interest', description='Interessen'),
 })
+
+# Nachrichtenobjekt
+message = api.inherit('Message', bo, {
+    'content': fields.String(attribute='_content', description='Inhalt'),
+    'sender': fields.Integer(attribute='_sender', description='Sender'),
+    'recipient': fields.Integer(attribute='_recipient', description='Empfänger'),
+})
+
+# Gruppennachrichten
+groupmessage = api.inherit('GroupMessage', bo, {
+    'content': fields.String(attribute='_content', description='Inhalt'),
+    'sender': fields.Integer(attribute='_sender', description='Sender'),
+    'group': fields.Integer(attribute='_group', description='ID der Gruppe'),
+})
+
+# Gruppenobjekt
+group = api.inherit('Group', bo, {
+    'name': fields.String(attribute='_name', description='Gruppenname'),
+    'profileID': fields.Integer(attribute='_profileID', description='Profil ID'),
+})
+
+
+
 
 # POST: create
 # PUT: update
@@ -147,48 +172,111 @@ class LinkPersonProfile(Resource):
         else:
             return '', 500
 
+# eine einzelne Nachricht bearbeiten
+@teachingbee.route('/chat/<int:sender>/<int:recipient>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('sender', 'Sender')
+@teachingbee.param('recipient', 'Empfänger')
+class ChatOperations(Resource):
+    @teachingbee.marshal_with(message)
+    def get(self, sender, recipient):
+        ''' Nachricht aus der DB auslesen '''
+        bl = BusinessLogic()
+        chat = bl.get_message(sender, recipient)
+        return chat
 
+    @teachingbee.marshal_with(message)
+    @teachingbee.expect(message, validate=True)
+    def post(self, sender, recipient):
+        bl = BusinessLogic()
+        msg = Message.from_dict(api.payload)
+        if msg:
+            m = bl.add_message(msg)
+            return m, 200
+        else:
+            return '', 500
 
-@app.route('/chat', methods=['GET', 'POST'])
-def chat():
-    if request.method == 'GET':
-        fname = request.args.get('fname')
-        lname = request.args.get('lname')
+# eine Liste von Chats verwalten
+@teachingbee.route('/chatlist/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID des Users')
+class ChatListOperations(Resource):
 
-        PM = pm()
-        user = PM.find_by_name(fname, lname)[0]
-        id = user.get_id()
-        CM = cm()
-        response = CM.find_by_sender(id)
+    @teachingbee.marshal_with(person)
+    def get(self, id):
+        ''' Nachricht aus der DB auslesen '''
+        bl = BusinessLogic()
+        personList = bl.get_chatList(id)
+        return personList
 
-        answer = []
+@teachingbee.route('/grouplist/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID des Users')
+class GroupListOperations(Resource):
 
-        for i in response:
-            answer.append({
-                "content": i.get_content(),
-                "sender": i.get_sender(),
-                "recipient": i.get_recipient()
-            })
+    @teachingbee.marshal_with(group)
+    def get(self, id):
+        ''' Nachricht aus der DB auslesen '''
+        bl = BusinessLogic()
+        groupList = bl.get_groupList(id)
+        return groupList
 
-        return jsonify(answer)
-    if request.method == 'POST':
-        data = request.get_json()
-        msg = Message()
-        CM = cm()
-        PM = pm()
-        sender = PM.find_by_name(data["senderf"], data["senderl"])
-        recipient = PM.find_by_name(data["recipientf"], data["recipientl"])
+@teachingbee.route('/group/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID des Users')
+class GroupOperations(Resource):
+    
+    @teachingbee.marshal_with(group)
+    def get(self, id):
+        ''' Nachricht aus der DB auslesen '''
+        bl = BusinessLogic()
+        group = bl.get_group(id)
+        return group
 
-        msg.set_content(data["content"])
-        msg.set_sender(sender[0].get_id())
-        msg.set_recipient(recipient[0].get_id())
+# eine einzelne Gruppennachricht bearbeiten
+@teachingbee.route('/groupchat/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID der Gruppe')
+class GroupChatOperations(Resource):
+    @teachingbee.marshal_with(groupmessage)
+    def get(self, id):
+        ''' Nachricht aus der DB auslesen '''
+        bl = BusinessLogic()
+        chat = bl.get_group_message(id)
+        return chat
 
-        CM.insert(msg)
-        
+    @teachingbee.marshal_with(groupmessage)
+    @teachingbee.expect(groupmessage, validate=True)
+    def post(self, id):
+        bl = BusinessLogic()
+        msg = GroupMessage.from_dict(api.payload)
+        if msg:
+            m = bl.add_group_message(msg)
+            return m, 200
+        else:
+            return '', 500
 
-        return 'Success', 200
+# Person matchen
+@teachingbee.route('/match-person/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID der Person')
+class PersonMatching(Resource):
+    @teachingbee.marshal_with(person)
+    def get(self, id):
+        bl = BusinessLogic()
+        matchList = bl.match(id)
+        return matchList[0]
 
-
+# Gruppe matchen
+@teachingbee.route('/match-group/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID der Person')
+class GroupMatching(Resource):
+    @teachingbee.marshal_with(group)
+    def get(self, id):
+        bl = BusinessLogic()
+        matchList = bl.match(id)
+        return matchList[1]
 
 @teachingbee.route('/groups/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')

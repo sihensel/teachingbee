@@ -5,33 +5,30 @@ class ChatMapper(Mapper):
     def __init__(self):
         super().__init__()
 
-    def find_all(self):
-        """Auslesen aller Benutzer unseres Systems.
-
-        :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
-                des Systems repräsentieren.
-        """
+    def find_all(self, senderID):
+        ''' Auslesen aller Chatpartner eines Users '''
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from Message")
+        command = "SELECT DISTINCT recipient FROM Message WHERE sender = '{}'".format(senderID)
+        cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, stamp, content, sender, recipient) in tuples:
-            message = Message()
-            message.set_id(id)
-            message.set_stamp(stamp)
-            message.set_content(content)
-            message.set_sender(sender)
-            message.set_recipient(recipient)
+        for i in tuples:
+            result.append(i[0])
+        
+        command = "SELECT DISTINCT sender FROM Message WHERE recipient = '{}'".format(senderID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
 
-            result.append(message)
+        for i in tuples:
+            if i[0] not in result:
+                result.append(i[0])
 
         self._cnx.commit()
         cursor.close()
-
         return result
 
-    def find_by_sender(self, sender):
+    def find_by_sender(self, sender, recipient):
         """Auslesen aller Benutzer anhand des Benutzernamens.
 
         :param name Name der zugehörigen Benutzer.
@@ -40,7 +37,22 @@ class ChatMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM Message WHERE sender LIKE '{}'ORDER BY sender".format(sender)
+        command = "SELECT * FROM Message WHERE sender = '{}' AND recipient = '{}' ORDER BY stamp".format(sender, recipient)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        
+        for (id, stamp, content, sender, recipient) in tuples:
+            message = Message()
+
+            message.set_id(id)
+            message.set_stamp(stamp)
+            message.set_content(content)
+            message.set_sender(sender)
+            message.set_recipient(recipient)
+
+            result.append(message)
+
+        command = "SELECT * FROM Message WHERE sender = '{}' AND recipient = '{}' ORDER BY stamp".format(recipient, sender)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -54,11 +66,12 @@ class ChatMapper(Mapper):
             message.set_recipient(recipient)
 
             result.append(message)
+
         self._cnx.commit()
         cursor.close()
 
         return result
-
+        
     def find_by_key(self, key):
         """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
         result = None
@@ -80,9 +93,6 @@ class ChatMapper(Mapper):
             message.set_recipient(recipient)
 
             result = message
-
-
-
 
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
@@ -109,34 +119,17 @@ class ChatMapper(Mapper):
         data = (message.get_content(), message.get_sender(), message.get_recipient())
         cursor.execute(command, data)
 
+        cursor.execute("SELECT LAST_INSERT_ID()")   # die ID des gerade geschriebenen Datensatzen auslesen
+        tuples = cursor.fetchall()
+        message.set_id(tuples[0][0])
+
         self._cnx.commit()
         cursor.close()
 
         return message
 
     def update(self, message):
-        """Wiederholtes Schreiben eines Objekts in die Datenbank.
-
-        :param user das Objekt, das in die DB geschrieben werden soll
-        """
-        cursor = self._cnx.cursor()
-
-        command = "UPDATE person " + "SET content=%s, sender=%s, recipient=%s WHERE id=%s"
-        data = (message.get_content(), message.get_sender(), message.get_recipient(), message.get_id())
-        cursor.execute(command, data)
-
-        self._cnx.commit()
-        cursor.close()
+        pass
 
     def delete(self, message):
-        """Löschen der Daten eines User-Objekts aus der Datenbank.
-
-        :param user das aus der DB zu löschende "Objekt"
-        """
-        cursor = self._cnx.cursor()
-
-        command = "DELETE FROM message WHERE id={}".format(message.get_id())
-        cursor.execute(command)
-
-        self._cnx.commit()
-        cursor.close()
+        pass

@@ -15,6 +15,7 @@ export default class GroupBO extends BusinessObject {
      * @param {String} gender - the firstname of this CustomerBO.
      * @param {String} profileID - the firstname of this CustomerBO.
      */
+<<<<<<< HEAD
     constructor(members, admin, recieved_requests, chat, gname, profileID) {
         super();
         this.members = members;
@@ -64,6 +65,13 @@ export default class GroupBO extends BusinessObject {
     getGname() {
         return this.gname;
     }
+=======
+    constructor(profileID) {
+        super();
+        this.profileID = profileID;
+    }
+
+>>>>>>> main
 
     setProfileID(profileID) {
         this.profileID = profileID;
@@ -74,7 +82,10 @@ export default class GroupBO extends BusinessObject {
     }
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     /** 
      * Returns an Object from a JSON
      */
