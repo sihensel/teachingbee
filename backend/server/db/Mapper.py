@@ -19,7 +19,7 @@ class Mapper (AbstractContextManager, ABC):
         elif platform == 'win32':
             # Windows
             USER = 'root'
-            PASSWD = 'password'
+            PASSWD = 'Passwort'
             HOST = 'localhost'
             DB = 'teachingbee'
         elif platform == "linux":
