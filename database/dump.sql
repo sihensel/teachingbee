@@ -45,6 +45,7 @@ CREATE TABLE Studygroup (
   id int NOT NULL AUTO_INCREMENT,
   stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   gname varchar(255),         -- gname = group name
+  info varchar(255),
   profileID int NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (profileID) REFERENCES Profile(id)
@@ -131,8 +132,8 @@ INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 1-4', 1,
 INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 4-1', 4, 1);
 INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 5-1', 5, 1);
 
-INSERT INTO Studygroup (gname, profileID) VALUES ('Gruppe 1', 6);
-INSERT INTO Studygroup (gname, profileID) VALUES ('Gruppe 2', 7);
+INSERT INTO Studygroup (gname, info, profileID) VALUES ('Gruppe 1', "Dies ist die erste Gruppe", 6);
+INSERT INTO Studygroup (gname, info, profileID) VALUES ('Gruppe 2', "Dies ist die zweite Gruppe", 7);
 
 INSERT INTO Groupmessage (content, sender, groupID) VALUES ('Hallo wie gehts in der Gruppe', 1, 1);
 INSERT INTO Groupmessage (content, sender, groupID) VALUES ('Hallo wie gehts in der Gruppe ich bin die 3', 3, 1);
