@@ -5,6 +5,7 @@ import { TeachingbeeAPI, GroupMessageBO } from '../api';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import GroupForm from './dialogs/GroupForm'
 
 class GroupChat extends Component {
 
@@ -13,8 +14,10 @@ class GroupChat extends Component {
 
         // Init the state
         this.state = {
+            group: props.group,
             messages: null,
             content: "",
+            showGroupForm: false
         };
     }
 
@@ -23,7 +26,7 @@ class GroupChat extends Component {
     }
 
     addMessage = () => {
-        let newMessage = new GroupMessageBO(this.state.content, this.props.person.getID(), this.props.group.getID())
+        let newMessage = new GroupMessageBO(this.state.content, this.props.person.getID(), this.state.group.getID())
         TeachingbeeAPI.getAPI().addGroupMessage(newMessage).then(message => {
             this.state.messages.push(message)
             this.setState({ content: '' });
@@ -44,7 +47,7 @@ class GroupChat extends Component {
     }
 
     getMessage = () => {
-        TeachingbeeAPI.getAPI().getGroupMessage(this.props.group.getID()).then(messages =>
+        TeachingbeeAPI.getAPI().getGroupMessage(this.state.group.getID()).then(messages =>
             this.setState({
                 messages: messages,
                 loadingInProgress: false,
@@ -62,6 +65,23 @@ class GroupChat extends Component {
         });
     }
 
+    showGroupForm = () => {
+        this.setState({
+            showGroupForm: true
+        })
+    }
+
+    closeGroupForm = group => {
+        if (group) {
+            this.setState({
+                group: group,     // update ProfileBO
+                showGroupForm: false
+            });
+        } else {
+            this.setState({ showGroupForm: false });
+        }
+    }
+
     handleChange = (e) => {
         this.setState({ content: e.target.value })
     }
@@ -71,8 +91,8 @@ class GroupChat extends Component {
     }
 
     render() {
-        const { classes, person, group } = this.props
-        const { messages, content } = this.state
+        const { classes, person } = this.props
+        const { group, messages, content, showGroupForm } = this.state
 
         if (messages) {
             messages.sort((a, b) => {
@@ -84,6 +104,12 @@ class GroupChat extends Component {
         return (
             <div>
                 <h2>{group.getName()}</h2>
+                <Button color='primary' variant='contained' onClick={this.showGroupForm}>
+                    Bearbeiten
+                </Button>
+                {showGroupForm ?
+                    <GroupForm group={group} show={showGroupForm} onClose={this.closeGroupForm}/>
+                    : null}
                 {messages ?
                     messages.map(message => {
                         {
