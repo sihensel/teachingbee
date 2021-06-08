@@ -5,6 +5,8 @@ from flask_restx import Api, Resource, fields
 from server.BusinessLogic import BusinessLogic
 from server.bo.Person import Person
 from server.bo.Profile import Profile
+from server.bo.Group import Group
+
 from server.bo.Message import Message
 from server.bo.GroupMessage import GroupMessage
 
@@ -275,5 +277,34 @@ class GroupMatching(Resource):
         bl = BusinessLogic()
         matchList = bl.match(id)
         return matchList[1]
+
+@teachingbee.route('/groups/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID des Teilnehmers')
+class GroupsByMember(Resource):
+    def get(self, id):
+        ''' Gruppen aus der DB auslesen '''
+        bl = BusinessLogic()
+        groups = bl.get_group_by_member(id)
+        return groups
+
+@teachingbee.route('/groups')
+@teachingbee.response(500, 'Internal Server Error')
+class AddGroup(Resource):
+   
+    def post(self):
+        bl = BusinessLogic()
+        response = api.payload
+        group = Group()
+        #group.set_gname(response)
+        print(response)
+
+
+        if prof:
+            p = bl.add_profile(prof)
+            return p, 200
+        else:
+            return '', 500
+
 
 app.run(debug=True)

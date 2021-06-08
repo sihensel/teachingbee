@@ -73,6 +73,26 @@ class GroupMapper(Mapper):
         cursor.close()
 
         return result
+    
+    def find_by_member(self, member):
+
+        result = []
+
+        cursor = self._cnx.cursor()
+        command = "SELECT groupID FROM R_person_group WHERE personID={}".format(member)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for groupID in tuples:
+            result.push(self.find_by_key(groupID))
+            
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+    
+    
 
     def insert(self, group):
         #Einfügen eines Group-Objekts in die Datenbank.

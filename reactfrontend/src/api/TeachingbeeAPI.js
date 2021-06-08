@@ -1,7 +1,10 @@
 import PersonBO from './PersonBO';
 import ProfileBO from './ProfileBO';
+<<<<<<< HEAD
+=======
 import MessageBO from './MessageBO';
 import GroupMessageBO from './GroupMessageBO';
+>>>>>>> main
 import GroupBO from './GroupBO';
 
 /**
@@ -29,6 +32,13 @@ export default class TeachingbeeAPI {
 
   #InterestsURL = () => `${this.#ServerBaseURL}/interests`;
 
+<<<<<<< HEAD
+  #addGroupURL = () => `${this.#ServerBaseURL}/groups`;
+  #getGroupByMemberURL = (id) => `${this.#ServerBaseURL}/groups/${id}`;
+  #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
+  #updateGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
+  #deleteGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
+=======
   #getMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
   #addMessageURL = (sender, recipient) => `${this.#ServerBaseURL}/chat/${sender}/${recipient}`;
 
@@ -41,6 +51,7 @@ export default class TeachingbeeAPI {
 
   #MatchPersonURL = (id) => `${this.#ServerBaseURL}/match-person/${id}`;
   #MatchGroupURL = (id) => `${this.#ServerBaseURL}/match-group/${id}`;
+>>>>>>> main
 
 
   static getAPI() {
@@ -171,7 +182,7 @@ export default class TeachingbeeAPI {
         resolve(response)
       })
     })
-  }
+  } 
 
   link_person_profile(personID, profileID) {
     return this.#fetchAdvanced(this.#LinkURL(), {
@@ -307,5 +318,72 @@ export default class TeachingbeeAPI {
         resolve(groupList);
       })
     })
+  }
+
+  getGroup(groupID) {
+    return this.#fetchAdvanced(this.#getGroupURL(groupID)).then((responseJSON) => {
+      let group = GroupBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve(group)
+      })
+    })
+  }
+
+  getGroupByMember(personID) {
+    return this.#fetchAdvanced(this.#getGroupByMemberURL(personID)).then((response) => {
+      var groups = [];
+      for (let i of response){
+        groups.push(GroupBO.fromJSON(i));
+      }
+      return new Promise(function (resolve) {
+        resolve(groups)
+      })
+    })
+  }
+
+  deleteGroup(groupBO) {
+    return this.#fetchAdvanced(this.#deleteGroupURL(groupBO.getID()), {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(groupBO)
+    })
+  }
+
+  // Profil speichern
+  updateGroup(groupBO) {
+    return this.#fetchAdvanced(this.#updateGroupURL(groupBO.getID()), {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(groupBO)
+    }).then((responseJSON) => {
+      let responseGroupBO = GroupBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve (responseGroupBO);
+      })
+    })
+  }
+
+  addGroup(groupBO) {
+    return this.#fetchAdvanced(this.#addGroupURL(), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        'gname':groupBO.getGname(),
+        'admin' :groupBO.getAdmin(),
+        'members' :groupBO.getMembers()
+
+      })
+    })
+      
+    
   }
 }
