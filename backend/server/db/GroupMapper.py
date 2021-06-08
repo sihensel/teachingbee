@@ -21,15 +21,16 @@ class GroupMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, gname, profileID FROM Studygroup WHERE id={}".format(key)
+        command = "SELECT id, gname, info, profileID FROM Studygroup WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, gname, profileID) = tuples[0]
+            (id, gname, info, profileID) = tuples[0]
             group = Group()
             group.set_id(id)
             group.set_name(gname)
+            group.set_info(info)
             group.set_profileID(profileID)
             result = group
         except IndexError:
@@ -53,15 +54,16 @@ class GroupMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, gname, profileID FROM Studygroup WHERE profileID={}".format(profileID)
+        command = "SELECT id, gname, info, profileID FROM Studygroup WHERE profileID={}".format(profileID)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, gname, profileID) = tuples[0]
+            (id, gname, info, profileID) = tuples[0]
             group = Group()
             group.set_id(id)
             group.set_name(gname)
+            group.set_info(info)
             group.set_profileID(profileID)
             result = group
         except IndexError:
@@ -99,24 +101,34 @@ class GroupMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "INSERT INTO Studygroup (gname, admin, profileID) VALUES (%s, %s, %s)"
-        data = (group.get_gname(), group.get_admin(), 1)
+        command = "INSERT INTO Studygroup (gname, info, profileID) VALUES (%s, %s, %s)"
+        data = (group.get_name(), group.get_info(), group.get_profileID())
+        cursor.execute(command, data)
+
+        self._cnx.commit()
+
+
+        cursor.execute("SELECT LAST_INSERT_ID()")   # die ID des gerade geschriebenen Datensatzen auslesen
+        tuples = cursor.fetchall()
+        group.set_id(tuples[0][0])
+
+        self._cnx.commit()
+
+        cursor.close()
+
+        return group
+
+    def insert_member(self, groupID, personID):
+        #Einfügen eines Member-Objekts in die Datenbank.
+
+    
+        cursor = self._cnx.cursor()
+        command = "INSERT INTO R_person_group (groupID, personID) VALUES (%s, %s)"
+        data = (groupID, personID)
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
-
-    def insert_members(self, group):
-        #Einfügen eines Member-Objekts in die Datenbank.
-
-        for i in group.get_members():
-            cursor = self._cnx.cursor()
-            command = "INSERT INTO r_person_group (groupID, personID) VALUES (%s, %s)"
-            data = (group.get_id(), i)
-            cursor.execute(command, data)
-
-            self._cnx.commit()
-            cursor.close()
 
 
     def update(self, group):
@@ -126,12 +138,14 @@ class GroupMapper(Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE Studygroup " + "SET gname=%s, admin=%s WHERE id=%s"
-        data = (group.get_gname(), group.get_admin())
+        command = "UPDATE Studygroup " + "SET gname=%s, info=%s WHERE id=%s"
+        data = (group.get_name(), group.get_info(), group.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
+
+        return group
 
     def delete(self, group):
         """Löschen der Daten eines User-Objekts aus der Datenbank.
