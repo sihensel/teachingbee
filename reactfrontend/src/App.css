@@ -3,3 +3,42 @@
   width: 10%;
   padding: 10px;  
 }
+
+.Chat_Card {
+  background-color: #c9d6df;
+}
+
+/*
+#recipient_text {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	box-sizing: border-box;
+	border-radius: 1rem;
+	background: #FFD91D;
+              
+
+}
+
+/*#sender_text {
+  display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	box-sizing: border-box;
+	border-radius: 1rem;
+	background: #c9d6df;
+  
+}
+*/
+
+#recipient_text {
+  color: #FFD91D;
+}
+
+#sender_text {
+  color: #f0f5f9;
+}
+
+.h2_chat_name {
+  color: #eeeeee;
+}
