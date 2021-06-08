@@ -1,3 +1,4 @@
+from re import S
 from .bo.Person import Person
 from .bo.Profile import Profile
 from .bo.Message import Message
@@ -95,6 +96,27 @@ class BusinessLogic:
     def get_group(self, id):
         with GroupMapper() as mapper:
             return mapper.find_by_key(id)
+
+    def update_group(self, group):
+        with GroupMapper() as mapper:
+            return mapper.update(group)
+
+    def add_group(self, group, personID):
+        profile = self.get_profile(group.get_profileID())
+
+        profile = self.add_profile(profile)
+        group.set_profileID(profile.get_id())
+    
+        with GroupMapper() as mapper:
+            group = mapper.insert(group)
+
+        self.add_group_member(group.get_id(), personID)
+
+        return group
+
+    def add_group_member(self, groupID, personID):
+        with GroupMapper() as mapper:
+            return mapper.insert_member(groupID, personID)
 
     ''' Methoden für Gruppennachrichtenobjekte '''
     def get_group_message(self, id):
