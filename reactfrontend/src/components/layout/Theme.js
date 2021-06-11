@@ -1,25 +1,29 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import { colors } from '@material-ui/core';
 
-const white = '#FFFFFF';
+const white = '#f0f5f9';
 const black = '#000000';
+const yellow = '#FFD91D';
+const white_paper = '#393e46';
+const text_white ='#eeeeee';
 
 // A custom theme for this app
 const theme = createMuiTheme({
   palette: {
     black,
     white,
+    yellow,
     primary: {
-      contrastText: white,
-      dark: colors.indigo[900],
-      main: colors.indigo[500],
-      light: colors.indigo[100]
+      contrastText: black,
+      dark: colors.yellow[200],
+      main: colors.yellow[600],
+      light: colors.yellow[500]
     },
     secondary: {
-      contrastText: white,
-      dark: colors.blue[900],
-      main: colors.blue['A400'],
-      light: colors.blue['A400']
+      contrastText: black,
+      dark: colors.red[500],
+      main: colors.yellow[600],
+      light: colors.yellow[500]
     },
     success: {
       contrastText: white,
@@ -46,13 +50,13 @@ const theme = createMuiTheme({
       light: colors.red[400]
     },
     text: {
-      primary: colors.blueGrey[800],
-      secondary: colors.blueGrey[600],
-      link: colors.blue[600]
+      primary: text_white,
+      secondary: colors.grey[500],
+      link: colors.grey[600]
     },
     background: {
-      default: '#F4F6F8',
-      paper: white
+      default: '#232931',
+      paper: white_paper
     },
     icon: colors.blueGrey[600],
     divider: colors.grey[200]

@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withStyles, Typography, Paper, Button } from '@material-ui/core';
-import { TeachingbeeAPI, GroupMessageBO } from '../api';
-import Divider from '@material-ui/core/Divider';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import GroupForm from './dialogs/GroupForm'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { withStyles, Typography, Paper, Button } from "@material-ui/core";
+import { TeachingbeeAPI, GroupMessageBO } from "../api";
+import Divider from "@material-ui/core/Divider";
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 class GroupChat extends Component {
 
@@ -170,26 +170,29 @@ class GroupChat extends Component {
     }
 }
 
-const styles = theme => ({
-    root: {
-        '& > *': {
-            margin: theme.spacing(1),
-            width: '100ch',
-        },
+const styles = (theme) => ({
+  root: {
+    "& > *": {
+      margin: theme.spacing(1),
+      width: "100ch",
     },
+  },
 
-    outerColumn: {
-        margin: 5,
-        padding: 5,
-        height: 50
-    }
+  outerColumn: {
+    margin: 5,
+    padding: 5,
+    height: 50,
+  },
+  button_style: {
+    margin: 5,
+    padding: 5,
+  },
 });
 
 GroupChat.propTypes = {
-    classes: PropTypes.object.isRequired,
-    person: PropTypes.object.isRequired,
-    group: PropTypes.object.isRequired,
-}
+  classes: PropTypes.object.isRequired,
+  person: PropTypes.object.isRequired,
+  group: PropTypes.object.isRequired,
+};
 
 export default withStyles(styles)(GroupChat);
-
