@@ -15,11 +15,19 @@ export default class GroupBO extends BusinessObject {
      * @param {String} gender - the firstname of this CustomerBO.
      * @param {String} profileID - the firstname of this CustomerBO.
      */
-    constructor(profileID) {
+    constructor(info, profileID) {
         super();
+        this.info = info;
         this.profileID = profileID;
     }
 
+    setInfo(info){
+        this.info = info
+    }
+
+    getInfo(){
+        return this.info
+    }
 
     setProfileID(profileID) {
         this.profileID = profileID;

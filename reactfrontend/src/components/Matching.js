@@ -89,11 +89,10 @@ class Matching extends Component {
     return age_now;
   };
 
-  /** Renders the component */
-  render() {
-    const { classes } = this.props;
-    const { personList, groupList } = this.state;
-    console.log(personList, groupList);
+    /** Renders the component */
+    render() {
+        const { classes } = this.props;
+        const { personList, groupList } = this.state;
 
     return (
       <div>
@@ -142,6 +141,7 @@ class Matching extends Component {
                   </Card>
                 );
               })}
+
             </div>
             <div>
               {groupList.map((group) => {

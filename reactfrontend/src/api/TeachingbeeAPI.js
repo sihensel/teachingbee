@@ -37,7 +37,11 @@ export default class TeachingbeeAPI {
 
   #getChatListURL = (id) => `${this.#ServerBaseURL}/chatlist/${id}`;
   #getGroupListURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
+  #leaveGroupURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
+  #addGroupURL = () => `${this.#ServerBaseURL}/groups`;
   #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
+  #deleteGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
+  #updateGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
 
   #MatchPersonURL = (id) => `${this.#ServerBaseURL}/match-person/${id}`;
   #MatchGroupURL = (id) => `${this.#ServerBaseURL}/match-group/${id}`;
@@ -171,7 +175,7 @@ export default class TeachingbeeAPI {
         resolve(response)
       })
     })
-  }
+  } 
 
   link_person_profile(personID, profileID) {
     return this.#fetchAdvanced(this.#LinkURL(), {
@@ -308,4 +312,58 @@ export default class TeachingbeeAPI {
       })
     })
   }
+
+  getGroup(groupID) {
+    return this.#fetchAdvanced(this.#getGroupURL(groupID)).then((responseJSON) => {
+      let group = GroupBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve(group)
+      })
+    })
+  }
+
+  // Profil speichern
+  updateGroup(groupBO) {
+    return this.#fetchAdvanced(this.#updateGroupURL(groupBO.getID()), {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(groupBO)
+    }).then((responseJSON) => {
+      let responseGroupBO = GroupBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve (responseGroupBO);
+      })
+    })
+  }
+
+  addGroup(groupBO, personBO) {
+    return this.#fetchAdvanced(this.#addGroupURL(), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({"group": groupBO, "personID": personBO.getID()})
+    }).then((responseJSON) => {
+      let responseGroupBO = ProfileBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve(responseGroupBO);
+      })
+    })
+  }
+      
+  leaveGroup(groupBO, personBO) {
+    return this.#fetchAdvanced(this.#leaveGroupURL(personBO.getID()), {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({'group': groupBO, 'person': personBO})
+    })
+  }
+    
 }

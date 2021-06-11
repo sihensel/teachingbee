@@ -83,6 +83,7 @@ class ChatList extends Component {
   }
 
   closeGroupChat = () => {
+    this.getGroupList()
     this.setState({ showGroupChat: false })
   }
 

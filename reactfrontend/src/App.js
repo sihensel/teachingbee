@@ -9,6 +9,7 @@ import SignUp from './components/SignUp';
 import ChatList from './components/ChatList';
 import Theme from "./components/layout/Theme";
 import Header from "./components/layout/Header";
+import GroupForm from './components/dialogs/GroupForm';
 
 class App extends Component {
   constructor(props) {
@@ -20,6 +21,7 @@ class App extends Component {
       currentUser: 1,   // später die ID von Firebase
       person: null,
       interests: null,
+      showGroup: false,
       showAccount: false,
       showMatching: false,
       loadingInProgress: false,
@@ -78,10 +80,11 @@ class App extends Component {
   };
 
   showAccount = () => {
-    if (!this.state.showMatching) {
+    if (!this.state.showGroup && !this.state.showMatching) {
       this.setState({ showAccount: true });
     }
   }
+
   closeAccount = person => {
     if (person) {
       this.setState({
@@ -93,22 +96,34 @@ class App extends Component {
     }
   }
 
+  showGroup = () => {
+    if (!this.state.showAccount && !this.state.showMatching) {
+      this.setState({ showGroup: true });
+    }
+  }
+
+  closeGroup = () => {
+    this.setState({ showGroup: false });
+
+  }
+
   showMatching = () => {
-    if (!this.state.showAccount) {
+    if (!this.state.showAccount && !this.state.showGroup) {
       this.setState({ showMatching: true });
     }
   }
+
   closeMatching = () => {
     this.setState({ showMatching: false });
   }
 
   render() {
     const { person, interests } = this.state;
-    const { showAccount, showMatching } = this.state
+    const { showAccount, showMatching, showGroup } = this.state
     return (
       <ThemeProvider theme={Theme}>
         <CssBaseline />
-        <Header showAccount={this.showAccount} showMatching={this.showMatching} />
+        <Header showAccount={this.showAccount} showMatching={this.showMatching} showGroup={this.showGroup} />
         <Container maxWidth="md">
           <div>
             {interests ?
@@ -116,9 +131,12 @@ class App extends Component {
                 showAccount ?
                   <AccountDetail person={person} interests={interests} onClose={this.closeAccount} />
                   : showMatching ?
-                  <Matching person={person} onClose={this.closeMatching} />
-                  :
-                    <ChatList person={person} />
+                    <Matching person={person} onClose={this.closeMatching} />
+                    : 
+                    <div>
+                      <GroupForm group={null} show={showGroup} onClose={this.closeGroup} person={person}></GroupForm>
+                      <ChatList person={person} />
+                    </div>
                 : <SignUp interests={interests} />
               : null
             }
