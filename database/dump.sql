@@ -87,15 +87,26 @@ CREATE TABLE Groupmessage (
 
 DROP TABLE IF EXISTS Request;
 CREATE TABLE Request (
-  id int NOT NULL,
+  id int NOT NULL AUTO_INCREMENT,
   stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   sender int NOT NULL,
   recipient int NOT NULL,
-  is_resolved int NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (sender) REFERENCES Person(id),
   FOREIGN KEY (recipient) REFERENCES Person(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS Grouprequest;
+CREATE TABLE Request (
+  id int NOT NULL AUTO_INCREMENT,
+  stamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  sender int NOT NULL,
+  groupID int NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (sender) REFERENCES Person(id),
+  FOREIGN KEY (groupID) REFERENCES Studygroup(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- insert values into tables
 INSERT INTO Interests (iname) VALUES ('Sport');
