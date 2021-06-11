@@ -130,6 +130,21 @@ class GroupMapper(Mapper):
             return True
         else:
             return None
+    
+    def check_member(self, groupID):
+
+        cursor = self._cnx.cursor()
+        command = "SELECT personID FROM R_person_group WHERE groupID={}".format(groupID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        self._cnx.commit()
+        cursor.close()
+
+        if tuples:
+            return tuples
+        else:
+            return None
 
 
     def update(self, group):

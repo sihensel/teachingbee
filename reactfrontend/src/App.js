@@ -7,6 +7,7 @@ import AccountDetail from './components/AccountDetail';
 import Matching from './components/Matching';
 import SignUp from './components/SignUp';
 import ChatList from './components/ChatList';
+import Requests from './components/Requests';
 import Theme from "./components/layout/Theme";
 import Header from "./components/layout/Header";
 import GroupForm from './components/dialogs/GroupForm';
@@ -24,6 +25,7 @@ class App extends Component {
       showGroup: false,
       showAccount: false,
       showMatching: false,
+      showRequests: false,
       loadingInProgress: false,
       loadingError: null,
     };
@@ -117,13 +119,23 @@ class App extends Component {
     this.setState({ showMatching: false });
   }
 
+  showRequests = () => {
+    if (!this.state.showAccount && !this.state.showGroup) {
+      this.setState({ showRequests: true });
+    }
+  }
+
+  closeRequests = () => {
+    this.setState({ showRequests: false });
+  }
+
   render() {
     const { person, interests } = this.state;
-    const { showAccount, showMatching, showGroup } = this.state
+    const { showAccount, showMatching, showGroup, showRequests } = this.state
     return (
       <ThemeProvider theme={Theme}>
         <CssBaseline />
-        <Header showAccount={this.showAccount} showMatching={this.showMatching} showGroup={this.showGroup} />
+        <Header showAccount={this.showAccount} showMatching={this.showMatching} showGroup={this.showGroup} showRequests={this.showRequests} />
         <Container maxWidth="md">
           <div>
             {interests ?
@@ -132,7 +144,9 @@ class App extends Component {
                   <AccountDetail person={person} interests={interests} onClose={this.closeAccount} />
                   : showMatching ?
                     <Matching person={person} onClose={this.closeMatching} />
-                    : 
+                    : showRequests ?
+                    <Requests onClose={this.closeRequests}/>
+                    :
                     <div>
                       <GroupForm group={null} show={showGroup} onClose={this.closeGroup} person={person}></GroupForm>
                       <ChatList person={person} />

@@ -37,6 +37,7 @@ export default class TeachingbeeAPI {
 
   #getChatListURL = (id) => `${this.#ServerBaseURL}/chatlist/${id}`;
   #getGroupListURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
+
   #leaveGroupURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
   #addGroupURL = () => `${this.#ServerBaseURL}/groups`;
   #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
@@ -46,6 +47,11 @@ export default class TeachingbeeAPI {
   #MatchPersonURL = (id) => `${this.#ServerBaseURL}/match-person/${id}`;
   #MatchGroupURL = (id) => `${this.#ServerBaseURL}/match-group/${id}`;
 
+  #getRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
+  #sendRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
+
+  #getGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
+  #sendGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
 
   static getAPI() {
     if (this.#api == null) {
@@ -364,6 +370,42 @@ export default class TeachingbeeAPI {
       },
       body: JSON.stringify({'group': groupBO, 'person': personBO})
     })
+  }
+
+  sendRequest(senderID, recipientID) {
+    return this.#fetchAdvanced(this.#sendRequestsURL(senderID), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({"sender": senderID, "recipient": recipientID})
+    }).then((responseJSON) => {
+      return new Promise(function (resolve) {
+        resolve(responseJSON);
+      })
+    })
+  }
+
+  getRequests(personID) {
+    return this.#fetchAdvanced(this.#getRequestsURL(personID)).then(responseJSON => {
+      let personList = [];
+      responseJSON.map(item => {
+        let person = PersonBO.fromJSON(item);
+        personList.push(person);
+      })
+      return new Promise(function (resolve) {
+        resolve(personList);
+      })
+    })
+  }
+
+  sendGroupRequest(sender, recipient) {
+
+  }
+
+  getGroupRequest(sender, recipient) {
+
   }
     
 }

@@ -41,6 +41,10 @@ class Header extends Component {
     this.props.showGroup();
   }
 
+  showRequests = () => {
+    this.props.showRequests();
+  }
+
   /** Renders the component */
   render() {
 
@@ -55,6 +59,9 @@ class Header extends Component {
             </Button>
             <Button variant="contained" color="primary" onClick={this.showMatching}>
                 Matching
+            </Button>
+            <Button variant="contained" color="primary" onClick={this.showRequests}>
+                Anfragen
             </Button>
         </CardActions>
     )

@@ -11,6 +11,7 @@ from .db.InterestMapper import InterestMapper
 from .db.ChatMapper import ChatMapper
 from .db.GroupChatMapper import GroupChatMapper
 from .db.GroupMapper import GroupMapper
+from .db.RequestMapper import RequestMapper
 
 
 class BusinessLogic:
@@ -140,6 +141,27 @@ class BusinessLogic:
     def add_group_message(self, message):
         with GroupChatMapper() as mapper:
             return mapper.insert(message)
+    
+    def add_request(self, sender, recipient):
+        with RequestMapper() as mapper:
+            return mapper.insert_request(sender, recipient)
+
+    def get_requests(self, id):
+        result = []
+        with RequestMapper() as mapper:
+            personList = mapper.find_all(id)
+
+        with PersonMapper() as mapper:
+            for i in personList:
+                result.append(mapper.find_by_key(i))
+        return result
+    
+    def add_group_request(self, sender, recipient):
+        with RequestMapper() as mapper:
+            return mapper.insert_group_request(sender, recipient)
+
+    def get_group_requests(self, id):
+        pass
     
     def match(self, personID):
         ''' Matching-Algorithmus um Lernpartner zu finden
