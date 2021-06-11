@@ -51,8 +51,8 @@ const theme = createMuiTheme({
     },
     text: {
       primary: text_white,
-      secondary: colors.grey[500],
-      link: colors.grey[600]
+      secondary: text_white,
+      link: text_white,
     },
     background: {
       default: '#232931',

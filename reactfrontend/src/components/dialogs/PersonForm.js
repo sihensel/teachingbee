@@ -186,6 +186,7 @@ class PersonForm extends Component {
                 <TextField autoFocus type='text' required fullWidth margin='normal' id='fname' label='Vorname:' value={fname} onChange={this.textFieldValueChange} error={fnameValidationFailed} />
                 <TextField type='text' required fullWidth margin='normal' id='lname' label='Nachname:' value={lname} onChange={this.textFieldValueChange} error={lnameValidationFailed} />
                 <br />
+                <br />
                 <InputLabel id='gender-label'>Geschlecht</InputLabel>
                 <Select labelId='gender-label' id='gender' value={gender} onChange={this.handleChange}>
                   <MenuItem value='weiblich'>weiblich</MenuItem>

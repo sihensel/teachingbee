@@ -261,7 +261,7 @@ const styles = theme => ({
     color: theme.palette.grey[500],
   },
   label: {
-    color: '#282828',
+    color: '#FFD91D',
     fontSize: 17,
     marginBottom: 10,
   },
