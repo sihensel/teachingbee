@@ -126,10 +126,10 @@ class GroupMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-        if tuples:
+        if len(tuples) > 0:
             return True
         else:
-            return None
+            return False
     
     def check_member(self, groupID):
         ''' Gibt alle Mitglieder einer Gruppe zurück '''
@@ -184,6 +184,15 @@ class GroupMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "DELETE FROM Studygroup WHERE id={}".format(groupID)
+        cursor.execute(command)
+
+        self._cnx.commit()
+        cursor.close()
+    
+    def leave_all_groups(self, personID):
+        cursor = self._cnx.cursor()
+
+        command = "DELETE FROM R_person_group WHERE personID={}".format(personID)
         cursor.execute(command)
 
         self._cnx.commit()

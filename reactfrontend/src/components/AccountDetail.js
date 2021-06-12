@@ -213,7 +213,7 @@ class AccountDetail extends Component {
               </Button>
             </Paper>
             <br />
-            <CardActions style={{ justifyContent: "center" }}>
+            <CardActions style={{ justifyContent: "flex-end" }}>
               <Button
                 variant="contained"
                 color="secondary"

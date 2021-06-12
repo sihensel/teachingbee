@@ -79,5 +79,11 @@ class GroupChatMapper(Mapper):
     def update(self, message):
         pass
 
-    def delete(self, message):
-        pass
+    def delete(self, groupID):
+        cursor = self._cnx.cursor()
+
+        command = "DELETE FROM Groupmessage WHERE groupID={}".format(groupID)
+        cursor.execute(command)
+
+        self._cnx.commit()
+        cursor.close()

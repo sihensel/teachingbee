@@ -105,3 +105,27 @@ class RequestMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
+    
+    def delete_by_group(self, groupID):
+        cursor = self._cnx.cursor()
+
+        cursor.execute("DELETE FROM Grouprequest WHERE groupID={}".format(groupID))
+
+        self._cnx.commit()
+        cursor.close()
+    
+    def delete_by_person(self, personID):
+        cursor = self._cnx.cursor()
+
+        cursor.execute("DELETE FROM Request WHERE sender={} OR recipient={}".format(personID, personID))
+
+        self._cnx.commit()
+        cursor.close()
+
+    def delete_group_by_person(self, personID):
+        cursor = self._cnx.cursor()
+
+        cursor.execute("DELETE FROM Grouprequest WHERE sender={}".format(personID))
+
+        self._cnx.commit()
+        cursor.close()

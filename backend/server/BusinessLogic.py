@@ -37,6 +37,11 @@ class BusinessLogic:
     
     def delete_person(self, person):
         # es müssen natürlich auch noch aus allen anderen Tabellen die Einträge gelöscht werden!
+        with RequestMapper() as mapper:
+            mapper.delete_by_person(person.get_id())
+            mapper.delete_group_by_person(person.get_id())
+        with GroupMapper() as mapper:
+            mapper.leave_all_groups(person.get_id())
         with PersonMapper() as mapper:
             mapper.delete(person.get_id())
         self.delete_profile(person.get_id())         # das Profil muss natürlich auch geslöscht werden
@@ -126,11 +131,17 @@ class BusinessLogic:
     def leave_group(self, group, person):
         with GroupMapper() as mapper:
             mapper.remove_member(group.get_id(), person.get_id())
+            result = mapper.check_group(group.get_id())
 
             # wenn die Gruppe leer ist, soll sie mit dem zugehörigen Profil gelöscht werden
-            if mapper.check_group(group.get_id()) == None:
+        if result == False:
+            with GroupChatMapper() as mapper:
                 mapper.delete(group.get_id())
-                self.delete_profile(group.get_profileID())
+            with RequestMapper() as mapper:
+                mapper.delete_by_group(group.get_id())
+            with GroupMapper() as mapper:
+                mapper.delete(group.get_id())
+            self.delete_profile(group.get_profileID())
 
     ''' Methoden für Gruppennachrichtenobjekte '''
     def get_group_message(self, id):
