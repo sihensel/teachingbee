@@ -68,9 +68,7 @@ CREATE TABLE Message (
   content varchar(255),
   sender int NOT NULL,
   recipient int NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (sender) REFERENCES Person(id),
-  FOREIGN KEY (recipient) REFERENCES Person(id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS Groupmessage;
@@ -81,7 +79,6 @@ CREATE TABLE Groupmessage (
   sender int NOT NULL,
   groupID int NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (sender) REFERENCES Person(id),
   FOREIGN KEY (groupID) REFERENCES Studygroup(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -141,7 +138,7 @@ INSERT INTO Message (content, sender, recipient) VALUES ('Testnachricht 3-1', 3,
 
 INSERT INTO Studygroup (gname, info, profileID) VALUES ('Gruppe 1', "Dies ist die erste Gruppe", 6);
 INSERT INTO Studygroup (gname, info, profileID) VALUES ('Gruppe 2', "Dies ist die zweite Gruppe", 7);
-INSERT INTO Studygroup (gname, info, profileID) VALUES ('Gruppe 2', "Dies ist die dritte Gruppe", 8);
+INSERT INTO Studygroup (gname, info, profileID) VALUES ('Gruppe 3', "Dies ist die dritte Gruppe", 8);
 
 INSERT INTO Groupmessage (content, sender, groupID) VALUES ('Hallo wie gehts in der Gruppe', 1, 1);
 INSERT INTO Groupmessage (content, sender, groupID) VALUES ('Hallo wie gehts in der Gruppe ich bin die 3', 3, 1);
