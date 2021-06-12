@@ -19,7 +19,7 @@ class App extends Component {
     // Init the state
     this.state = {
       //currentUser: props.currentUser,   // später die ID von Firebase
-      currentUser: 1,   // später die ID von Firebase
+      currentUser: 4,  // später die ID von Firebase
       person: null,
       interests: null,
       showGroup: false,

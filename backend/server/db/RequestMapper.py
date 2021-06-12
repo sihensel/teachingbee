@@ -4,19 +4,30 @@ class RequestMapper(Mapper):
     def __init__(self):
         super().__init__()
 
-    def find_all(self, key):
+    def find_all(self, personID):
         ''' Liest alle Anfragen aus, die eine Person erhalten hat '''
-        result = []
         cursor = self._cnx.cursor()
 
-        command = "SELECT DISTINCT sender FROM Request WHERE recipient={}".format(key)
+        command = "SELECT DISTINCT sender FROM Request WHERE recipient={}".format(personID)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for i in tuples:
-            result.append(i[0])
+        result = [i[0] for i in tuples]
 
         return result
+
+    def find_all_groups(self, groupID):
+        ''' Liest alle Anfragen aus, die eine Person erhalten hat '''
+        cursor = self._cnx.cursor()
+
+        command = "SELECT DISTINCT sender, groupID FROM Grouprequest WHERE groupID={}".format(groupID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        if tuples:
+            return tuples[0]
+        else:
+            return None
     
     def find_by_key(self, key):
         pass
@@ -26,6 +37,16 @@ class RequestMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "SELECT DISTINCT sender, recipient FROM Request WHERE sender={} OR recipient={}".format(personID, personID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        return tuples
+    
+    def find_group_by_person(self, personID):
+
+        cursor = self._cnx.cursor()
+
+        command = "SELECT DISTINCT sender, groupID FROM Grouprequest WHERE sender={}".format(personID)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -63,24 +84,24 @@ class RequestMapper(Mapper):
         return 'successfull'
 
     def update(self, profile):
-        ''' Einen Eintrag in der Datenbank mittels eines Objekts updaten '''
-        cursor = self._cnx.cursor()
+        pass
 
-        command = "UPDATE Profile " + "SET course=%s, studytype=%s, extroverted=%s, frequency=%s, online=%s, interest=%s WHERE id=%s"
-        data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online(), profile.get_interest(), profile.get_id())
-        cursor.execute(command, data)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return profile
-
-    def delete(self, profileID):
+    def delete(self, sender, recipient):
         """Löschen der Daten eines User-Objekts aus der Datenbank. """
 
         cursor = self._cnx.cursor()
 
-        cursor.execute("DELETE FROM Profile WHERE id={}".format(profileID))
+        cursor.execute("DELETE FROM Request WHERE sender={} AND recipient={}".format(sender, recipient))
+
+        self._cnx.commit()
+        cursor.close()
+
+    def delete_group_request(self, sender, groupID):
+        """Löschen der Daten eines User-Objekts aus der Datenbank. """
+
+        cursor = self._cnx.cursor()
+
+        cursor.execute("DELETE FROM Grouprequest WHERE sender={} AND groupID={}".format(sender, groupID))
 
         self._cnx.commit()
         cursor.close()

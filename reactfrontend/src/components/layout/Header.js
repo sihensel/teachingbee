@@ -49,21 +49,23 @@ class Header extends Component {
   render() {
 
     return (
-        <CardActions style={{justifyContent: 'center'}}>
-        <div></div>
-            <Button variant="contained" color="primary" onClick={this.showAccount}>
-                Account
+      <div>
+        <h1 style={{ textAlign: 'center', color: '#FFD91D' }}>Teachingbee</h1>
+        <CardActions style={{ justifyContent: 'center' }}>
+          <Button variant="contained" color="primary" onClick={this.showAccount}>
+            Account
             </Button>
-            <Button variant="contained" color="primary" onClick={this.showGroup}>
-                Gruppe erstellen
+          <Button variant="contained" color="primary" onClick={this.showGroup}>
+            Gruppe erstellen
             </Button>
-            <Button variant="contained" color="primary" onClick={this.showMatching}>
-                Matching
+          <Button variant="contained" color="primary" onClick={this.showMatching}>
+            Matching
             </Button>
-            <Button variant="contained" color="primary" onClick={this.showRequests}>
-                Anfragen
+          <Button variant="contained" color="primary" onClick={this.showRequests}>
+            Anfragen
             </Button>
         </CardActions>
+      </div>
     )
   }
 }

@@ -41,7 +41,6 @@ export default class TeachingbeeAPI {
   #leaveGroupURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
   #addGroupURL = () => `${this.#ServerBaseURL}/groups`;
   #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
-  #deleteGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
   #updateGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
 
   #MatchPersonURL = (id) => `${this.#ServerBaseURL}/match-person/${id}`;
@@ -49,9 +48,11 @@ export default class TeachingbeeAPI {
 
   #getRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
   #sendRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
+  #deleteRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
 
   #getGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
   #sendGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
+  #deleteGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
 
   static getAPI() {
     if (this.#api == null) {
@@ -400,12 +401,37 @@ export default class TeachingbeeAPI {
     })
   }
 
-  sendGroupRequest(sender, recipient) {
+  handleRequest(personID, recipientID, cmd) {
+    return this.#fetchAdvanced(this.#deleteRequestsURL(personID), {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({'sender': personID, 'recipient': recipientID, 'cmd': cmd})
+    })
+  }
+
+  sendGroupRequests(sender, groupID) {
 
   }
 
-  getGroupRequest(sender, recipient) {
-
+  getGroupRequests(personID) {
+    return this.#fetchAdvanced(this.#getGroupRequestsURL(personID)).then(responseJSON => {
+      return new Promise(function (resolve) {
+        resolve(responseJSON);
+      })
+    })
   }
-    
+
+  handleGroupRequest(personID, groupID, cmd) {
+    return this.#fetchAdvanced(this.#deleteGroupRequestsURL(personID), {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({'sender': personID, 'group': groupID, 'cmd': cmd})
+    })
+  }
 }

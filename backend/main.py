@@ -341,6 +341,13 @@ class RequestOperations(Resource):
         bl = BusinessLogic()
         response = bl.add_request(api.payload['sender'], api.payload['recipient'])
         return response, 200
+    
+    def delete(self, id):
+        bl = BusinessLogic()
+        if api.payload['cmd'] == 'accept':
+            bl.accept_request(api.payload['sender'], api.payload['recipient'])
+        elif api.payload['cmd'] == 'deny':
+            bl.deny_request(api.payload['sender'],  api.payload['recipient'])
 
 # Anfragen an Gruppen verwalten
 @teachingbee.route('/grouprequests/<int:id>')
@@ -348,7 +355,6 @@ class RequestOperations(Resource):
 @teachingbee.param('id', 'ID des Users')
 class GroupRequestOperations(Resource):
 
-    @teachingbee.marshal_with(person)
     def get(self, id):
         bl = BusinessLogic()
         return bl.get_group_requests(id)
@@ -357,5 +363,12 @@ class GroupRequestOperations(Resource):
         bl = BusinessLogic()
         response = bl.add_group_request(api.payload['sender'], api.payload['recipient'])
         return response, 200
+
+    def delete(self, id):
+        bl = BusinessLogic()
+        if api.payload['cmd'] == 'accept':
+            bl.accept_group_request(api.payload['sender'], api.payload['group'])
+        elif api.payload['cmd'] == 'deny':
+            bl.deny_group_request(api.payload['sender'],  api.payload['group'])
 
 app.run(debug=True)

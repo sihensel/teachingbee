@@ -76,8 +76,7 @@ class GroupMapper(Mapper):
         return result
     
     def insert(self, group):
-        #Einfügen eines Group-Objekts in die Datenbank.
-
+        ''' Einfügen eines Group-Objekts in die Datenbank '''
         cursor = self._cnx.cursor()
 
         command = "INSERT INTO Studygroup (gname, info, profileID) VALUES (%s, %s, %s)"
@@ -117,6 +116,7 @@ class GroupMapper(Mapper):
         cursor.close()
     
     def check_group(self, groupID):
+        ''' Check, ob eine Gruppe noch Mitglieder hat '''
 
         cursor = self._cnx.cursor()
         command = "SELECT * FROM R_person_group WHERE groupID={}".format(groupID)
@@ -132,6 +132,7 @@ class GroupMapper(Mapper):
             return None
     
     def check_member(self, groupID):
+        ''' Gibt alle Mitglieder einer Gruppe zurück '''
 
         cursor = self._cnx.cursor()
         command = "SELECT personID FROM R_person_group WHERE groupID={}".format(groupID)
@@ -141,10 +142,22 @@ class GroupMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-        if tuples:
-            return tuples
-        else:
-            return None
+        result = [i[0] for i in tuples]
+
+        return result
+    
+    def find_groups_of_person(self, personID):
+        cursor = self._cnx.cursor()
+        command = "SELECT groupID FROM R_person_group WHERE personID={}".format(personID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        self._cnx.commit()
+        cursor.close()
+
+        result = [i[0] for i in tuples]
+
+        return result
 
 
     def update(self, group):

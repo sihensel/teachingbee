@@ -154,14 +154,46 @@ class BusinessLogic:
             for i in personList:
                 result.append(mapper.find_by_key(i))    # Liste mit den Personen-BOs
         return result
+    
+    def deny_request(self, sender, recipient):
+        with RequestMapper() as mapper:
+            mapper.delete(sender, recipient)
+
+    def accept_request(self, sender, recipient):
+        ''' Eine Anfrage annehmen
+        Es wird ein Standard-Nachrichtenobjekt erstellt, damit beide Personen einen Chat haben
+        Anschließend wird die Anfrage gelöscht '''
+        message = Message()
+        message.set_content('Willkommen im Chat')
+        message.set_sender(sender)
+        message.set_recipient(recipient)
+        self.add_message(message)
+        self.deny_request(sender, recipient)
 
     def add_group_request(self, sender, recipient):
         with RequestMapper() as mapper:
             return mapper.insert_group_request(sender, recipient)
 
     def get_group_requests(self, id):
-        pass
+        result = []
+        with GroupMapper() as mapper:
+            groupList = mapper.find_groups_of_person(id)
+        with RequestMapper() as mapper:
+            for i in groupList:
+                item = mapper.find_all_groups(i)
+                if item:
+                    result.append(item)
+
+        return result
+
+    def deny_group_request(self, sender, groupID):
+        with RequestMapper() as mapper:
+            mapper.delete_group_request(sender, groupID)
     
+    def accept_group_request(self, sender, groupID):
+        self.add_group_member(groupID, sender)
+        self.deny_group_request(sender, groupID)
+
     def match(self, personID):
         ''' Matching-Algorithmus um Lernpartner zu finden
         Logik:
@@ -203,7 +235,7 @@ class BusinessLogic:
             if profile.get_interest() == myProfile.get_interest():
                 value += 2
 
-            # ab einem Wert von 5 kann man von recht ähnlichen Profilen sprechen
+            # ab einem Wert von 4 kann man von recht ähnlichen Profilen sprechen
             if value >= 4:
                 result.append(profile)
 
@@ -212,12 +244,12 @@ class BusinessLogic:
                 break
 
         requestList = []
-        chatList = []
         groupRequestList = []
-        groupChatList = []
+        chatList = []
 
         with RequestMapper() as mapper:
             requestList = mapper.find_by_person(personID)
+            groupRequestList = mapper.find_group_by_person(personID)
 
         with ChatMapper() as mapper:
             chatList = mapper.find_by_person(personID)
@@ -239,14 +271,18 @@ class BusinessLogic:
             for j in requestList:
                 if person.get_id() in j and personID in j:
                     personList.remove(person)
+                    continue
             for k in chatList:
                 if person.get_id() in k and personID in k:
                     personList.remove(person)
-        
+
         for group in groupList[:]:
+            with GroupMapper() as mapper:
+                if personID in mapper.check_member(group.get_id()):
+                    groupList.remove(group)
+                    continue
             for j in groupRequestList:
-                pass
-            for k in groupChatList:
-                pass
+                if group.get_id() in j and personID in j:
+                    groupList.remove(group)
 
         return (personList, groupList)

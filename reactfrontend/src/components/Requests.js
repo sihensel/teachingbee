@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles, Typography, Card, CardContent, CardActions, Button } from "@material-ui/core";
-import { TeachingbeeAPI, MessageBO } from "../api";
+import { TeachingbeeAPI } from "../api";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ConfirmDialog from './dialogs/ConfirmDialog';
 
 class Requests extends Component {
   constructor(props) {
@@ -11,60 +12,85 @@ class Requests extends Component {
     // Init the state
     this.state = {
       personList: null,
+      groupList: null,
+      isLoaded: false,
+      personBOList: [],
+      groupBOList: [],
+      showConfirm: false,
+      action: ''
     };
   }
 
   componentDidMount() {
     this.getRequests();
+    this.getGroupRequests();
   }
 
-  addMessage = () => {
-    let newMessage = new MessageBO(
-      this.state.content,
-      this.props.sender.getID(),
-      this.props.recipient.getID()
-    );
-    TeachingbeeAPI.getAPI().addMessage(newMessage).then((message) => {
-        this.state.messages.push(message);
-        this.setState({ content: "" });
-        // Backend call sucessfull
-        // reinit the dialogs state for a new empty customer
-      })
-      .catch((e) =>
-        this.setState({
-          updatingInProgress: false, // disable loading indicator
-          updatingError: e, // show error message
-        })
-      );
-
-    // set loading to true
-    this.setState({
-      updatingInProgress: true, // show loading indicator
-      updatingError: null, // disable error message
-    });
-  };
-
   getRequests = () => {
-    TeachingbeeAPI.getAPI().getRequests(this.props.person.getID()).then((response) =>
+    TeachingbeeAPI.getAPI().getRequests(this.props.person.getID()).then((response) => {
+      if (response.length > 0) {
         this.setState({
-          personList: response,
-          loadingInProgress: false,
-          loadingError: null,
-        })).catch((e) =>
-        this.setState({
-          personList: null,
-          loadingInProgress: false,
-          loadingError: e,
-        }));
-    this.setState({
-      loadingInProgress: true,
-      loadingError: null,
-    });
+          personList: response
+        })
+      } else {
+        this.setState({ personList: null })
+      }
+    })
   };
 
-  handleChange = (e) => {
-    this.setState({ content: e.target.value });
+  getGroupRequests = () => {
+    TeachingbeeAPI.getAPI().getGroupRequests(this.props.person.getID()).then((response) => {
+      if (response.length > 0) {
+        this.setState({
+          groupList: response
+        })
+      } else {
+        this.setState({ groupList: null })
+      }
+    })
   };
+
+  getPerson = (personID) => {
+    TeachingbeeAPI.getAPI().getPerson(personID).then((person) => {
+      this.setState({ personBOList: [...this.state.personBOList, person] })
+    })
+  };
+
+  getGroup = (groupID) => {
+    TeachingbeeAPI.getAPI().getGroup(groupID).then((group) => {
+      this.setState({ groupBOList: [...this.state.groupBOList, group] })
+    })
+  };
+
+  acceptRequest = (senderID) => {
+    TeachingbeeAPI.getAPI().handleRequest(senderID, this.props.person.getID(), 'accept').then(response => {
+      this.setState({ showConfirm: true, action: 'person' })
+      this.getRequests();
+    })
+  }
+
+  denyRequest = (senderID) => {
+    TeachingbeeAPI.getAPI().handleRequest(senderID, this.props.person.getID(), 'deny').then(response => {
+      this.getRequests();
+    })
+  }
+
+  acceptGroupRequest = (senderID, groupID) => {
+    TeachingbeeAPI.getAPI().handleGroupRequest(senderID, groupID, 'accept').then(response => {
+      this.setState({ showConfirm: true, action: 'group' })
+      this.getGroupRequests();
+    })
+  }
+
+  denyGroupRequest = (personID, groupID) => {
+    TeachingbeeAPI.getAPI().handleGroupRequest(personID, groupID, 'deny').then(response => {
+      this.getGroupRequests();
+    })
+  }
+
+  closeConfirm = () => {
+    this.setState({ showConfirm: false })
+  }
 
   handleClose = () => {
     this.props.onClose();
@@ -83,48 +109,76 @@ class Requests extends Component {
 
   render() {
     const { classes, person } = this.props;
-    const { personList } = this.state;
+    const { personList, groupList, isLoaded, personBOList, groupBOList, showConfirm, action } = this.state;
+    let len = [];
 
-    console.log(this.props)
-    console.log(personList)
+    if (groupList && !isLoaded) {
+      groupList.map(item => {
+        this.getPerson(item[0])
+        this.getGroup(item[1])
+      })
+      this.setState({ isLoaded: true })
+    }
+    if (isLoaded) {
+      for (let i = 0; i < personBOList.length; i++) {
+        len.push(i)
+      }
+    }
 
     return (
       <div>
         <h2 class="h2_requests">
           Anfragen
         </h2>
-            <Button className={classes.button_style} color="secondary" variant='outlined' onClick={this.handleClose}>
-              <ArrowBackIcon />
-            </Button>
+        <Button className={classes.button_style} color="secondary" variant='outlined' onClick={this.handleClose}>
+          <ArrowBackIcon />
+        </Button>
         { personList ?
           personList.map(person => {
             return (
-                  <Card className={classes.root} variant="outlined" key={person.getID()}>
-                    <CardContent>
-                      <Typography variant="h6" component="h4">
-                        {person.getFname()} {person.getLname()}
+              <Card className={classes.root} variant="outlined" key={person.getID()}>
+                <CardContent>
+                  <Typography variant="h6" component="h4">
+                    {person.getFname()} {person.getLname()} ({this.calculateAge(person.getBirthdate())}, {person.getSemester()}. Semester) hat dir eine Anfrage geschickt.
                       </Typography>
-                      <Typography className={classes.content} color="textPrimary">
-                        {this.calculateAge(person.getBirthdate())} Jahre alt
-                      </Typography>
-                      <Typography className={classes.content} color="textPrimary" >
-                        {person.getSemester()}. Semester
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small" variant="contained" color="primary" onClick={() => this.sendRequest(person.getID())}>
-                        Annehmen
+                </CardContent>
+                <CardActions>
+                  <Button size="small" variant="contained" color="primary" onClick={() => this.acceptRequest(person.getID())}>
+                    Annehmen
                       </Button>
-                      <Button size="small" variant="contained" color="primary" onClick={() => this.sendRequest(person.getID())}>
-                        Ablehnen
+                  <Button size="small" variant="contained" color="primary" onClick={() => this.denyRequest(person.getID())}>
+                    Ablehnen
                       </Button>
-                    </CardActions>
-                  </Card>
+                </CardActions>
+              </Card>
             );
           })
-          : null
+          : <p>Es stehen keine Personenanfragen zur Verfügung.</p>}
+        {groupList ?
+          (len.length == personBOList.length && len.length == groupBOList.length) ?
+            len.map(index => {
+              return (
+                <Card className={classes.root} variant="outlined" key={person.getID()}>
+                  <CardContent>
+                    <Typography variant="h6" component="h4">
+                      {personBOList[index].getFname()} {personBOList[index].getLname()} hat eine Anfrage an {groupBOList[index].getName()} geschickt.
+                      </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small" variant="contained" color="primary" onClick={() => this.acceptGroupRequest(personBOList[index].getID(), groupBOList[index].getID())}>
+                      Annehmen
+                      </Button>
+                    <Button size="small" variant="contained" color="primary" onClick={() => this.denyGroupRequest(personBOList[index].getID(), groupBOList[index].getID())}>
+                      Ablehnen
+                      </Button>
+                  </CardActions>
+                </Card>
+              );
+            })
+            : null
+          : <p>Es stehen keine Gruppenanfragen zur Verfügung.</p>
         }
-  
+        <ConfirmDialog show={showConfirm} action={action} onClose={this.closeConfirm} />
       </div>
     );
   }
