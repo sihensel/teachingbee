@@ -99,7 +99,7 @@ class App extends Component {
   }
 
   showGroup = () => {
-    if (!this.state.showAccount && !this.state.showMatching) {
+    if (!this.state.showAccount && !this.state.showMatching && !this.state.showRequests) {
       this.setState({ showGroup: true });
     }
   }
@@ -110,7 +110,7 @@ class App extends Component {
   }
 
   showMatching = () => {
-    if (!this.state.showAccount && !this.state.showGroup) {
+    if (!this.state.showAccount && !this.state.showGroup && !this.state.showRequests) {
       this.setState({ showMatching: true });
     }
   }
@@ -120,7 +120,7 @@ class App extends Component {
   }
 
   showRequests = () => {
-    if (!this.state.showAccount && !this.state.showGroup) {
+    if (!this.state.showAccount && !this.state.showGroup && !this.state.showMatching) {
       this.setState({ showRequests: true });
     }
   }
@@ -145,7 +145,7 @@ class App extends Component {
                   : showMatching ?
                     <Matching person={person} onClose={this.closeMatching} />
                     : showRequests ?
-                    <Requests onClose={this.closeRequests}/>
+                    <Requests person={person} onClose={this.closeRequests}/>
                     :
                     <div>
                       <GroupForm group={null} show={showGroup} onClose={this.closeGroup} person={person}></GroupForm>

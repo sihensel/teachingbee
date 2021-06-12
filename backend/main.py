@@ -265,7 +265,7 @@ class GroupChatOperations(Resource):
 @teachingbee.route('/match-person/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
-class PersonMatching(Resource):
+class MatchPerson(Resource):
     @teachingbee.marshal_with(person)
     def get(self, id):
         bl = BusinessLogic()
@@ -276,7 +276,7 @@ class PersonMatching(Resource):
 @teachingbee.route('/match-group/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
-class GroupMatching(Resource):
+class MatchGroup(Resource):
     @teachingbee.marshal_with(group)
     def get(self, id):
         bl = BusinessLogic()
@@ -326,7 +326,7 @@ class AddGroup(Resource):
         else:
             return '', 500
 
-# Anfragen von Personen verwalten
+# Anfragen an Personen verwalten
 @teachingbee.route('/requests/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')

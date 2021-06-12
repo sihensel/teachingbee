@@ -9,30 +9,27 @@ class RequestMapper(Mapper):
         result = []
         cursor = self._cnx.cursor()
 
-        command = "SELECT DISTINCT sender FROM Request WHERE recipient={} AND is_group=0".format(key)
+        command = "SELECT DISTINCT sender FROM Request WHERE recipient={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        personList = []
         for i in tuples:
             result.append(i[0])
 
         return result
-
+    
     def find_by_key(self, key):
-        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
-        result = []
+        pass
+
+    def find_by_person(self, personID):
+        ''' liest alle Anfragen aus, die einer Person geschickt oder erhalten hat '''
         cursor = self._cnx.cursor()
 
-        command = "SELECT DISTINCT sender FROM Request WHERE recipient={} AND is_group=1".format(key)
+        command = "SELECT DISTINCT sender, recipient FROM Request WHERE sender={} OR recipient={}".format(personID, personID)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        personList = []
-        for i in tuples:
-            personList.append(i[0])
-
-        return personList
+        return tuples
 
     def insert(self):
         pass

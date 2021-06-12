@@ -1,4 +1,3 @@
-from re import S
 from .bo.Person import Person
 from .bo.Profile import Profile
 from .bo.Message import Message
@@ -149,13 +148,13 @@ class BusinessLogic:
     def get_requests(self, id):
         result = []
         with RequestMapper() as mapper:
-            personList = mapper.find_all(id)
+            personList = mapper.find_all(id)    # Liste mit allen Personen-IDs
 
         with PersonMapper() as mapper:
             for i in personList:
-                result.append(mapper.find_by_key(i))
+                result.append(mapper.find_by_key(i))    # Liste mit den Personen-BOs
         return result
-    
+
     def add_group_request(self, sender, recipient):
         with RequestMapper() as mapper:
             return mapper.insert_group_request(sender, recipient)
@@ -205,12 +204,23 @@ class BusinessLogic:
                 value += 2
 
             # ab einem Wert von 5 kann man von recht ähnlichen Profilen sprechen
-            if value >= 5:
+            if value >= 4:
                 result.append(profile)
 
-            # max. 5 Vorschläge reichen (vorerst)
-            if len(result) == 5:
+            # max. 10 Vorschläge reichen (vorerst)
+            if len(result) == 10:
                 break
+
+        requestList = []
+        chatList = []
+        groupRequestList = []
+        groupChatList = []
+
+        with RequestMapper() as mapper:
+            requestList = mapper.find_by_person(personID)
+
+        with ChatMapper() as mapper:
+            chatList = mapper.find_by_person(personID)
 
         # Es muss noch zwischen Person und Gruppe unterscheiden werden
         for profile in result:
@@ -219,8 +229,24 @@ class BusinessLogic:
             if person != None:
                 personList.append(person)
             else:
+                # es handelt sich um ein Gruppenobjekt
                 with GroupMapper() as mapper:
                     group = mapper.find_by_profileID(profile.get_id())
                     groupList.append(group)
+
+        # wenn schon eine Anfrage oder ein Chat mit einer Person oder Gruppe besteht, sollen sie ausgeschlossen werden
+        for person in personList[:]:
+            for j in requestList:
+                if person.get_id() in j and personID in j:
+                    personList.remove(person)
+            for k in chatList:
+                if person.get_id() in k and personID in k:
+                    personList.remove(person)
+        
+        for group in groupList[:]:
+            for j in groupRequestList:
+                pass
+            for k in groupChatList:
+                pass
 
         return (personList, groupList)

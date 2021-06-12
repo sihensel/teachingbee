@@ -29,12 +29,7 @@ class ChatMapper(Mapper):
         return result
 
     def find_by_sender(self, sender, recipient):
-        """Auslesen aller Benutzer anhand des Benutzernamens.
-
-        :param name Name der zugehörigen Benutzer.
-        :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
-            mit dem gewünschten Namen enthält.
-        """
+        ''' Gibt eine Liste von Nachrichten zwischen 2 Personen zurück '''
         result = []
         cursor = self._cnx.cursor()
         command = "SELECT * FROM Message WHERE sender = '{}' AND recipient = '{}' ORDER BY stamp".format(sender, recipient)
@@ -73,36 +68,16 @@ class ChatMapper(Mapper):
         return result
         
     def find_by_key(self, key):
-        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
-        result = None
+        pass
+
+    def find_by_person(self, personID):
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM Message WHERE id={}".format(key)
+        command = "SELECT DISTINCT sender, recipient FROM Message WHERE sender={} OR recipient={}".format(personID, personID)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-
-        try:
-            (id, stamp, content, sender, recipient) = tuples[0]
-            message = Message()
-
-            message.set_id(id)
-            message.set_stamp(stamp)
-            message.set_content(content)
-            message.set_sender(sender)
-            message.set_recipient(recipient)
-
-            result = message
-
-        except IndexError:
-            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
-            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
-            result = None
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
+        return tuples
 
     def insert(self, message):
         """Einfügen eines User-Objekts in die Datenbank.
