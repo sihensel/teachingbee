@@ -74,18 +74,19 @@ class Matching extends Component {
     });
   };
 
-  sendRequest = (recipientID) => {
-    TeachingbeeAPI.getAPI().sendRequest(this.props.person.getID(), recipientID).then((response) => {
+  addRequest = (recipientID) => {
+    TeachingbeeAPI.getAPI().addRequest(this.props.person.getID(), recipientID).then((response) => {
       if (response == 'successfull') {
         this.matchPerson();
-        this.matchGroup();
       }
     })
   }
 
-  sendGroupRequest = (recipientID) => {
-    TeachingbeeAPI.getAPI().sendGRoupRequest(this.props.person.getID(), recipientID).then((response) => {
-      console.log(response)
+  addGroupRequest = (groupID) => {
+    TeachingbeeAPI.getAPI().addGroupRequest(this.props.person.getID(), groupID).then((response) => {
+      if (response == 'successfull') {
+        this.matchGroup();
+      }
     })
   }
 
@@ -148,7 +149,7 @@ class Matching extends Component {
                         size="small"
                         variant="contained"
                         color="primary"
-                        onClick={() => this.sendRequest(person.getID())}
+                        onClick={() => this.addRequest(person.getID())}
                       >
                         Kontakt anfragen
                       </Button>
@@ -175,7 +176,7 @@ class Matching extends Component {
                         size="small"
                         variant="contained"
                         color="primary"
-                        onClick={() => this.sendGroupRequest(group.getID())}
+                        onClick={() => this.addGroupRequest(group.getID())}
                       >
                         Kontakt anfragen
                       </Button>

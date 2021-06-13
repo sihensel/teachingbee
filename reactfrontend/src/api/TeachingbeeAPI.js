@@ -47,11 +47,11 @@ export default class TeachingbeeAPI {
   #MatchGroupURL = (id) => `${this.#ServerBaseURL}/match-group/${id}`;
 
   #getRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
-  #sendRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
+  #addRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
   #deleteRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
 
   #getGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
-  #sendGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
+  #addGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
   #deleteGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
 
   static getAPI() {
@@ -373,8 +373,8 @@ export default class TeachingbeeAPI {
     })
   }
 
-  sendRequest(senderID, recipientID) {
-    return this.#fetchAdvanced(this.#sendRequestsURL(senderID), {
+  addRequest(senderID, recipientID) {
+    return this.#fetchAdvanced(this.#addRequestsURL(senderID), {
       method: 'POST',
       headers: {
         'Accept': 'application/json, text/plain',
@@ -412,8 +412,19 @@ export default class TeachingbeeAPI {
     })
   }
 
-  sendGroupRequests(sender, groupID) {
-
+  addGroupRequest(senderID, groupID) {
+    return this.#fetchAdvanced(this.#addGroupRequestsURL(senderID), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({"sender": senderID, "group": groupID})
+    }).then((responseJSON) => {
+      return new Promise(function (resolve) {
+        resolve(responseJSON);
+      })
+    })
   }
 
   getGroupRequests(personID) {

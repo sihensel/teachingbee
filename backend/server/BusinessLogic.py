@@ -11,6 +11,7 @@ from .db.ChatMapper import ChatMapper
 from .db.GroupChatMapper import GroupChatMapper
 from .db.GroupMapper import GroupMapper
 from .db.RequestMapper import RequestMapper
+from .db.GroupRequestMapper import GroupRequestMapper
 
 
 class BusinessLogic:
@@ -39,6 +40,7 @@ class BusinessLogic:
         # es müssen natürlich auch noch aus allen anderen Tabellen die Einträge gelöscht werden!
         with RequestMapper() as mapper:
             mapper.delete_by_person(person.get_id())
+        with GroupRequestMapper() as mapper:
             mapper.delete_group_by_person(person.get_id())
         with GroupMapper() as mapper:
             mapper.leave_all_groups(person.get_id())
@@ -137,7 +139,7 @@ class BusinessLogic:
         if result == False:
             with GroupChatMapper() as mapper:
                 mapper.delete(group.get_id())
-            with RequestMapper() as mapper:
+            with GroupRequestMapper() as mapper:
                 mapper.delete_by_group(group.get_id())
             with GroupMapper() as mapper:
                 mapper.delete(group.get_id())
@@ -154,7 +156,7 @@ class BusinessLogic:
     
     def add_request(self, sender, recipient):
         with RequestMapper() as mapper:
-            return mapper.insert_request(sender, recipient)
+            return mapper.insert(sender, recipient)
 
     def get_requests(self, id):
         result = []
@@ -181,25 +183,24 @@ class BusinessLogic:
         self.add_message(message)
         self.deny_request(sender, recipient)
 
-    def add_group_request(self, sender, recipient):
-        with RequestMapper() as mapper:
-            return mapper.insert_group_request(sender, recipient)
+    def add_group_request(self, sender, group):
+        with GroupRequestMapper() as mapper:
+            return mapper.insert(sender, group)
 
     def get_group_requests(self, id):
         result = []
         with GroupMapper() as mapper:
             groupList = mapper.find_groups_of_person(id)
-        with RequestMapper() as mapper:
+        with GroupRequestMapper() as mapper:
             for i in groupList:
-                item = mapper.find_all_groups(i)
+                item = mapper.find_all(i)
                 if item:
                     result.append(item)
-
         return result
 
     def deny_group_request(self, sender, groupID):
-        with RequestMapper() as mapper:
-            mapper.delete_group_request(sender, groupID)
+        with GroupRequestMapper() as mapper:
+            mapper.delete(sender, groupID)
     
     def accept_group_request(self, sender, groupID):
         self.add_group_member(groupID, sender)
@@ -260,6 +261,7 @@ class BusinessLogic:
 
         with RequestMapper() as mapper:
             requestList = mapper.find_by_person(personID)
+        with GroupRequestMapper() as mapper:
             groupRequestList = mapper.find_group_by_person(personID)
 
         with ChatMapper() as mapper:

@@ -339,6 +339,7 @@ class RequestOperations(Resource):
     
     def post(self, id):
         bl = BusinessLogic()
+        print(api.payload)
         response = bl.add_request(api.payload['sender'], api.payload['recipient'])
         return response, 200
     
@@ -361,7 +362,7 @@ class GroupRequestOperations(Resource):
     
     def post(self, id):
         bl = BusinessLogic()
-        response = bl.add_group_request(api.payload['sender'], api.payload['recipient'])
+        response = bl.add_group_request(api.payload['sender'], api.payload['group'])
         return response, 200
 
     def delete(self, id):
