@@ -52,7 +52,7 @@ class BusinessLogic:
     ''' Verknüpft ein Profil mit einer Person '''
     def link_person_profile(self, personID, profileID):
         with PersonMapper() as mapper:
-            mapper.link_person_profile(personID, profileID)
+            return mapper.link_person_profile(personID, profileID)
 
     ''' Methoden für alle Profilobjekte '''
     def get_profile(self, id):
@@ -206,6 +206,7 @@ class BusinessLogic:
         self.add_group_member(groupID, sender)
         self.deny_group_request(sender, groupID)
 
+
     def match(self, personID):
         ''' Matching-Algorithmus um Lernpartner zu finden
         Logik:
@@ -214,13 +215,16 @@ class BusinessLogic:
         3. Die Ähnlichkeit der Profile wird durch einen int-Wert repräsentiert, der sich bei gleichen Attributen erhöht
         4. durch die profileList iterieten und jedes Attribut vergleichen um so den Wert festzulegen
         5. Feststellen, ob das Profil zu einer Person oder einer Gruppe gehört
-        6. Die Personen und die Gruppen getrennt zurückgeben
+        6. Die Personen und Gruppen ausschließen, für die bereits Chats oder Anfragen bestehen
+        7. Die Personen und die Gruppen getrennt zurückgeben
         '''
 
+        with PersonMapper() as mapper:
+            profileID = mapper.find_by_key(personID).get_profileID()
         with ProfileMapper() as mapper:
-            myProfile = mapper.find_by_key(personID)    # das Profil der angemeldeten Person
-            profileList = mapper.find_all(personID)     # alle anderen Profile aus der Datenbank (Person + Gruppen)
-
+            myProfile = mapper.find_by_key(profileID)    # das Profil der angemeldeten Person
+            profileList = mapper.find_all(profileID)     # alle anderen Profile aus der Datenbank (Person + Gruppen)
+        
         result = []         # Liste mit den Profilen, die gematcht werden
         personList = []     # Liste mit den Personen
         groupList = []      # Liste mit den Gruppen
@@ -251,8 +255,8 @@ class BusinessLogic:
             if value >= 4:
                 result.append(profile)
 
-            # max. 10 Vorschläge reichen (vorerst)
-            if len(result) == 10:
+            # max. 7 Vorschläge reichen (vorerst)
+            if len(result) == 7:
                 break
 
         requestList = []
@@ -262,8 +266,7 @@ class BusinessLogic:
         with RequestMapper() as mapper:
             requestList = mapper.find_by_person(personID)
         with GroupRequestMapper() as mapper:
-            groupRequestList = mapper.find_group_by_person(personID)
-
+            groupRequestList = mapper.find_by_person(personID)
         with ChatMapper() as mapper:
             chatList = mapper.find_by_person(personID)
 
@@ -280,22 +283,27 @@ class BusinessLogic:
                     groupList.append(group)
 
         # wenn schon eine Anfrage oder ein Chat mit einer Person oder Gruppe besteht, sollen sie ausgeschlossen werden
+        # der 'hack' mit der Funktion im for-loop verhindert den ValueError wenn versucht wird, dasselbe Element zweimal zu löschen
         for person in personList[:]:
-            for j in requestList:
-                if person.get_id() in j and personID in j:
-                    personList.remove(person)
-                    continue
-            for k in chatList:
-                if person.get_id() in k and personID in k:
-                    personList.remove(person)
+            def check_person():
+                for i in requestList:
+                    if person.get_id() in i and personID in i:
+                        personList.remove(person)
+                        return
+                for i in chatList:
+                    if person.get_id() in i and personID in i:
+                        personList.remove(person)
+            check_person()
 
         for group in groupList[:]:
-            with GroupMapper() as mapper:
-                if personID in mapper.check_member(group.get_id()):
-                    groupList.remove(group)
-                    continue
-            for j in groupRequestList:
-                if group.get_id() in j and personID in j:
-                    groupList.remove(group)
+            def check_group():
+                with GroupMapper() as mapper:
+                    if personID in mapper.find_members(group.get_id()):
+                        groupList.remove(group)
+                        return
+                for i in groupRequestList:
+                    if group.get_id() in i and personID in i:
+                        groupList.remove(group)
+            check_group()
 
         return (personList, groupList)

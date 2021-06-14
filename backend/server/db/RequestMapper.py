@@ -27,6 +27,15 @@ class RequestMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
+        # aus den tuples müssen noch die Duplikate entfernt werden
+        # (1, 2) und (2, 1) => (2, 1) entfernen
+        for i in tuples:
+            j = list(i)     # i in eine Liste umwandeln
+            j.reverse()     # diese Liste umdrehen
+            j = tuple(j)    # und wieder in ein Tupel umwandeln
+            if j in tuples:
+                tuples.remove(j)
+
         return tuples
 
     def insert(self, sender, recipient):

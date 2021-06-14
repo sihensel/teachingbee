@@ -20,7 +20,7 @@ class GroupRequestMapper(Mapper):
     def find_by_key(self, key):
         pass
 
-    def find_group_by_person(self, personID):
+    def find_by_person(self, personID):
 
         cursor = self._cnx.cursor()
 

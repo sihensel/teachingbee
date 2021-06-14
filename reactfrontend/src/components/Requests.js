@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { withStyles, Typography, Card, CardContent, CardActions, Button } from "@material-ui/core";
+import { withStyles, Typography, Card, CardContent, CardActions, Button, Grid } from "@material-ui/core";
 import { TeachingbeeAPI } from "../api";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ConfirmDialog from './dialogs/ConfirmDialog';
@@ -133,51 +133,65 @@ class Requests extends Component {
         <Button className={classes.button_style} color="secondary" variant='outlined' onClick={this.handleClose}>
           <ArrowBackIcon />
         </Button>
+          <Grid
+            container
+            spacing={1}
+            direction="column"
+            alignItems="center"
+            justify="center"
+            style={{marginTop: 10}}
+          >
         { personList ?
-          personList.map(person => {
-            return (
-              <Card className={classes.root} variant="outlined" key={person.getID()}>
-                <CardContent>
-                  <Typography variant="h6" component="h4">
-                    {person.getFname()} {person.getLname()} ({this.calculateAge(person.getBirthdate())}, {person.getSemester()}. Semester) hat dir eine Anfrage geschickt.
-                      </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small" variant="contained" color="primary" onClick={() => this.acceptRequest(person.getID())}>
-                    Annehmen
-                      </Button>
-                  <Button size="small" variant="contained" color="primary" onClick={() => this.denyRequest(person.getID())}>
-                    Ablehnen
-                      </Button>
-                </CardActions>
-              </Card>
-            );
-          })
-          : <p>Es stehen keine Personenanfragen zur Verfügung.</p>}
-        {groupList ?
-          (len.length == personBOList.length && len.length == groupBOList.length) ?
-            len.map(index => {
+            personList.map(person => {
               return (
-                <Card className={classes.root} variant="outlined" key={person.getID()}>
-                  <CardContent>
-                    <Typography variant="h6" component="h4">
-                      {personBOList[index].getFname()} {personBOList[index].getLname()} hat eine Anfrage an {groupBOList[index].getName()} geschickt.
+                <Grid item>
+                  <Card className={classes.root} variant="outlined" key={person.getID()}>
+                    <CardContent>
+                      <Typography variant="h6" component="h4">
+                        {person.getFname()} {person.getLname()} ({this.calculateAge(person.getBirthdate())}, {person.getSemester()}. Semester) hat dir eine Anfrage geschickt.
                       </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small" variant="contained" color="primary" onClick={() => this.acceptGroupRequest(personBOList[index].getID(), groupBOList[index].getID())}>
-                      Annehmen
+                    </CardContent>
+                    <CardActions>
+                      <Button size="small" variant="contained" color="primary" onClick={() => this.acceptRequest(person.getID())}>
+                        Annehmen
                       </Button>
-                    <Button size="small" variant="contained" color="primary" onClick={() => this.denyGroupRequest(personBOList[index].getID(), groupBOList[index].getID())}>
-                      Ablehnen
+                      <Button size="small" variant="contained" color="primary" onClick={() => this.denyRequest(person.getID())}>
+                        Ablehnen
                       </Button>
-                  </CardActions>
-                </Card>
+                    </CardActions>
+                  </Card>
+                </Grid>
               );
             })
-            : null
-          : <p>Es stehen keine Gruppenanfragen zur Verfügung.</p>
-        }
+          : <p>Es stehen keine Personenanfragen zur Verfügung.</p>
+          }
+        { groupList ?
+              (len.length == personBOList.length && len.length == groupBOList.length) ?
+                len.map(index => {
+                  return (
+                    <Grid item>
+                      <Card className={classes.root} variant="outlined" key={person.getID()}>
+                        <CardContent>
+                          <Typography variant="h6" component="h4">
+                            {personBOList[index].getFname()} {personBOList[index].getLname()} hat eine Anfrage an {groupBOList[index].getName()} geschickt.
+                      </Typography>
+                        </CardContent>
+                        <CardActions>
+                          <Button size="small" variant="contained" color="primary" onClick={() => this.acceptGroupRequest(personBOList[index].getID(), groupBOList[index].getID())}>
+                            Annehmen
+                      </Button>
+                          <Button size="small" variant="contained" color="primary" onClick={() => this.denyGroupRequest(personBOList[index].getID(), groupBOList[index].getID())}>
+                            Ablehnen
+                      </Button>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  );
+                })
+                : null
+              : <p>Es stehen keine Gruppenanfragen zur Verfügung.</p>
+              }
+        </Grid>
         <ConfirmDialog show={showConfirm} action={action} onClose={this.closeConfirm} />
       </div>
     );

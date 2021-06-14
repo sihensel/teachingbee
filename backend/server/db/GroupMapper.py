@@ -131,7 +131,7 @@ class GroupMapper(Mapper):
         else:
             return False
     
-    def check_member(self, groupID):
+    def find_members(self, groupID):
         ''' Gibt alle Mitglieder einer Gruppe zurück '''
 
         cursor = self._cnx.cursor()

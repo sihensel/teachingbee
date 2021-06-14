@@ -19,7 +19,6 @@ class SignUp extends Component {
             interests: props.interests,
             showPerson: false,
             showProfile: false,
-            linked: false,
         };
     }
     showPersonDialog = () => {
@@ -53,51 +52,46 @@ class SignUp extends Component {
 
     // die Person mit ihrem Profil 'verknüpfen'
     link = () => {
-        if (!this.state.linked) {
-            TeachingbeeAPI.getAPI().link_person_profile(this.state.person.getID(), this.state.profile.getID()).then(response => {
-                if (response == 'successfull') {
-                    // dem PersonBO noch die ProfileID zuweisen
-                    this.state.person.setProfileID(this.state.profile.getID())
-                    this.setState({ linked: true });
-                }
-            })
-        }
+        TeachingbeeAPI.getAPI().link_person_profile(this.state.person.getID(), this.state.profile.getID()).then(response => {
+            if (response == 'successfull') {
+                // dem PersonBO noch die ProfileID zuweisen
+                this.state.person.setProfileID(this.state.profile.getID())
+                this.props.onClose(this.state.person)
+            }
+        })
     }
 
     render() {
         const { interests } = this.props;
-        const { person, profile, showPerson, showProfile, linked } = this.state;
+        const { person, profile, showPerson, showProfile } = this.state;
         return (
             <div>
-                { linked ?
-                    <App person={person} interests={interests} currentUser={person.getID()} />
-                    :
-                    <div>
+                  { <div>
                         <Paper variant='outlined'>
                             <Typography variant='h6'>
                                 Personendaten
                             </Typography>
-                            {!person ?
-                                <div><p>Keine Personendaten verfügbar</p>
+                            {!person
+                                ? <div><p>Keine Personendaten verfügbar</p>
                                     <Button variant='contained' color='primary' onClick={this.showPersonDialog}>
                                         Anlegen
-                        </Button></div>
+                                    </Button></div>
                                 : <p>Personendaten erfolgreich gespeichert. (ID: {person.getID()})</p>}
                         </Paper>
                         <Paper variant='outlined'>
                             <Typography variant='h6'>
                                 Lernprofil
                             </Typography>
-                            {person ?
-                                !profile ?
-                                    <div><p>Kein Lernprofil verfügbar</p>
+                            {person
+                                ? !profile
+                                    ? <div><p>Kein Lernprofil verfügbar</p>
                                         <Button variant='contained' color='primary' onClick={this.showProfileDialog}>
                                             Anlegen
-                        </Button></div>
+                                        </Button></div>
                                     : <div><p>Lernprofil erfolgreich gespeichert. (ID: {profile.getID()})</p></div> : null}
                         </Paper>
-                        {person && profile ?
-                            this.link()
+                        {person && profile
+                            ? this.link()
                             : null}
                         <PersonForm show={showPerson} person={person} onClose={this.closePersonDialog} />
                         <ProfileForm show={showProfile} profile={profile} interests={interests} onClose={this.closeProfileDialog} />

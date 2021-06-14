@@ -7,6 +7,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  Grid,
 } from "@material-ui/core";
 import { TeachingbeeAPI } from "../api";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -112,21 +113,30 @@ class Matching extends Component {
 
     return (
       <div>
-        {personList && groupList ? (
-          <div>
-            <h2>Lernpartner finden</h2>
-            <div>
-              <Button
-                className={classes.button_style}
-                variant="outlined"
-                color="primary"
-                onClick={this.handleClose}>
-                <ArrowBackIcon />
-              </Button>
-
-              {personList.map((person) => {
-                return (
-                  <Card className={classes.root} variant="outlined" key={person.getID()}>
+        <div>
+          <h2>Lernpartner finden</h2>
+          <Button
+            className={classes.button_style}
+            variant="outlined"
+            color="primary"
+            onClick={this.handleClose}>
+            <ArrowBackIcon />
+          </Button>
+        </div>
+        {(personList && groupList)
+          ?
+          <Grid
+            container
+            spacing={1}
+            direction="column"
+            alignItems="center"
+            justify="center"
+            style={{marginTop: 10}}
+          >
+            {personList.map((person) => {
+              return (
+                <Grid item style={{ width: 700 }}>
+                  <Card variant="outlined" key={person.getID()}>
                     <CardContent>
                       <Typography variant="h6" component="h4">
                         {person.getFname()} {person.getLname()}
@@ -155,14 +165,14 @@ class Matching extends Component {
                       </Button>
                     </CardActions>
                   </Card>
-                );
-              })}
+                </Grid>
+              );
+            })}
 
-            </div>
-            <div>
-              {groupList.map((group) => {
-                return (
-                  <Card className={classes.root} variant="outlined">
+            {groupList.map((group) => {
+              return (
+                <Grid item style={{ width: 700 }}>
+                  <Card variant="outlined">
                     <CardContent>
                       <Typography variant="h6" component="h4">
                         {group.getName()}
@@ -182,27 +192,19 @@ class Matching extends Component {
                       </Button>
                     </CardActions>
                   </Card>
-                );
-              })}
-            </div>
-          </div>
-        ) : (
-            <div>
-              <p>Oops, hier scheint etwas shiefgelaufen zu sein.</p>
-              <Button color="secondary" onClick={this.handleClose}>
-                <ArrowBackIcon />
-              </Button>
-            </div>
-          )}
+                </Grid>
+              );
+            })
+            }
+          </Grid>
+          : <p>Oops, hier scheint etwas schiefgelaufen zu sein.</p>
+        }
       </div>
     );
   }
 }
 
 const styles = (theme) => ({
-  root: {
-    maxWidth: 300,
-  },
   content: {
     fontSize: 18,
     marginTop: 7,
