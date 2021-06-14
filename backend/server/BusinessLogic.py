@@ -1,4 +1,3 @@
-from re import S
 from .bo.Person import Person
 from .bo.Profile import Profile
 from .bo.Message import Message
@@ -11,6 +10,8 @@ from .db.InterestMapper import InterestMapper
 from .db.ChatMapper import ChatMapper
 from .db.GroupChatMapper import GroupChatMapper
 from .db.GroupMapper import GroupMapper
+from .db.RequestMapper import RequestMapper
+from .db.GroupRequestMapper import GroupRequestMapper
 
 
 class BusinessLogic:
@@ -37,6 +38,12 @@ class BusinessLogic:
     
     def delete_person(self, person):
         # es müssen natürlich auch noch aus allen anderen Tabellen die Einträge gelöscht werden!
+        with RequestMapper() as mapper:
+            mapper.delete_by_person(person.get_id())
+        with GroupRequestMapper() as mapper:
+            mapper.delete_group_by_person(person.get_id())
+        with GroupMapper() as mapper:
+            mapper.leave_all_groups(person.get_id())
         with PersonMapper() as mapper:
             mapper.delete(person.get_id())
         self.delete_profile(person.get_id())         # das Profil muss natürlich auch geslöscht werden
@@ -126,11 +133,17 @@ class BusinessLogic:
     def leave_group(self, group, person):
         with GroupMapper() as mapper:
             mapper.remove_member(group.get_id(), person.get_id())
+            result = mapper.check_group(group.get_id())
 
             # wenn die Gruppe leer ist, soll sie mit dem zugehörigen Profil gelöscht werden
-            if mapper.check_group(group.get_id()) == None:
+        if result == False:
+            with GroupChatMapper() as mapper:
                 mapper.delete(group.get_id())
-                self.delete_profile(group.get_profileID())
+            with GroupRequestMapper() as mapper:
+                mapper.delete_by_group(group.get_id())
+            with GroupMapper() as mapper:
+                mapper.delete(group.get_id())
+            self.delete_profile(group.get_profileID())
 
     ''' Methoden für Gruppennachrichtenobjekte '''
     def get_group_message(self, id):
@@ -141,6 +154,58 @@ class BusinessLogic:
         with GroupChatMapper() as mapper:
             return mapper.insert(message)
     
+    def add_request(self, sender, recipient):
+        with RequestMapper() as mapper:
+            return mapper.insert(sender, recipient)
+
+    def get_requests(self, id):
+        result = []
+        with RequestMapper() as mapper:
+            personList = mapper.find_all(id)    # Liste mit allen Personen-IDs
+
+        with PersonMapper() as mapper:
+            for i in personList:
+                result.append(mapper.find_by_key(i))    # Liste mit den Personen-BOs
+        return result
+    
+    def deny_request(self, sender, recipient):
+        with RequestMapper() as mapper:
+            mapper.delete(sender, recipient)
+
+    def accept_request(self, sender, recipient):
+        ''' Eine Anfrage annehmen
+        Es wird ein Standard-Nachrichtenobjekt erstellt, damit beide Personen einen Chat haben
+        Anschließend wird die Anfrage gelöscht '''
+        message = Message()
+        message.set_content('Willkommen im Chat')
+        message.set_sender(sender)
+        message.set_recipient(recipient)
+        self.add_message(message)
+        self.deny_request(sender, recipient)
+
+    def add_group_request(self, sender, group):
+        with GroupRequestMapper() as mapper:
+            return mapper.insert(sender, group)
+
+    def get_group_requests(self, id):
+        result = []
+        with GroupMapper() as mapper:
+            groupList = mapper.find_groups_of_person(id)
+        with GroupRequestMapper() as mapper:
+            for i in groupList:
+                item = mapper.find_all(i)
+                if item:
+                    result.append(item)
+        return result
+
+    def deny_group_request(self, sender, groupID):
+        with GroupRequestMapper() as mapper:
+            mapper.delete(sender, groupID)
+    
+    def accept_group_request(self, sender, groupID):
+        self.add_group_member(groupID, sender)
+        self.deny_group_request(sender, groupID)
+
     def match(self, personID):
         ''' Matching-Algorithmus um Lernpartner zu finden
         Logik:
@@ -182,13 +247,25 @@ class BusinessLogic:
             if profile.get_interest() == myProfile.get_interest():
                 value += 2
 
-            # ab einem Wert von 5 kann man von recht ähnlichen Profilen sprechen
-            if value >= 5:
+            # ab einem Wert von 4 kann man von recht ähnlichen Profilen sprechen
+            if value >= 4:
                 result.append(profile)
 
-            # max. 5 Vorschläge reichen (vorerst)
-            if len(result) == 5:
+            # max. 10 Vorschläge reichen (vorerst)
+            if len(result) == 10:
                 break
+
+        requestList = []
+        groupRequestList = []
+        chatList = []
+
+        with RequestMapper() as mapper:
+            requestList = mapper.find_by_person(personID)
+        with GroupRequestMapper() as mapper:
+            groupRequestList = mapper.find_group_by_person(personID)
+
+        with ChatMapper() as mapper:
+            chatList = mapper.find_by_person(personID)
 
         # Es muss noch zwischen Person und Gruppe unterscheiden werden
         for profile in result:
@@ -197,8 +274,28 @@ class BusinessLogic:
             if person != None:
                 personList.append(person)
             else:
+                # es handelt sich um ein Gruppenobjekt
                 with GroupMapper() as mapper:
                     group = mapper.find_by_profileID(profile.get_id())
                     groupList.append(group)
+
+        # wenn schon eine Anfrage oder ein Chat mit einer Person oder Gruppe besteht, sollen sie ausgeschlossen werden
+        for person in personList[:]:
+            for j in requestList:
+                if person.get_id() in j and personID in j:
+                    personList.remove(person)
+                    continue
+            for k in chatList:
+                if person.get_id() in k and personID in k:
+                    personList.remove(person)
+
+        for group in groupList[:]:
+            with GroupMapper() as mapper:
+                if personID in mapper.check_member(group.get_id()):
+                    groupList.remove(group)
+                    continue
+            for j in groupRequestList:
+                if group.get_id() in j and personID in j:
+                    groupList.remove(group)
 
         return (personList, groupList)

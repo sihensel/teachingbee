@@ -74,6 +74,22 @@ class Matching extends Component {
     });
   };
 
+  addRequest = (recipientID) => {
+    TeachingbeeAPI.getAPI().addRequest(this.props.person.getID(), recipientID).then((response) => {
+      if (response == 'successfull') {
+        this.matchPerson();
+      }
+    })
+  }
+
+  addGroupRequest = (groupID) => {
+    TeachingbeeAPI.getAPI().addGroupRequest(this.props.person.getID(), groupID).then((response) => {
+      if (response == 'successfull') {
+        this.matchGroup();
+      }
+    })
+  }
+
   handleClose = () => {
     this.props.onClose();
   };
@@ -89,10 +105,10 @@ class Matching extends Component {
     return age_now;
   };
 
-    /** Renders the component */
-    render() {
-        const { classes } = this.props;
-        const { personList, groupList } = this.state;
+  /** Renders the component */
+  render() {
+    const { classes } = this.props;
+    const { personList, groupList } = this.state;
 
     return (
       <div>
@@ -110,7 +126,7 @@ class Matching extends Component {
 
               {personList.map((person) => {
                 return (
-                  <Card className={classes.root} variant="outlined">
+                  <Card className={classes.root} variant="outlined" key={person.getID()}>
                     <CardContent>
                       <Typography variant="h6" component="h4">
                         {person.getFname()} {person.getLname()}
@@ -133,7 +149,7 @@ class Matching extends Component {
                         size="small"
                         variant="contained"
                         color="primary"
-                        onClick={this.requestContact}
+                        onClick={() => this.addRequest(person.getID())}
                       >
                         Kontakt anfragen
                       </Button>
@@ -151,13 +167,16 @@ class Matching extends Component {
                       <Typography variant="h6" component="h4">
                         {group.getName()}
                       </Typography>
+                      <Typography variant="h6" component="h4">
+                        {group.getInfo()}
+                      </Typography>
                     </CardContent>
                     <CardActions>
                       <Button
                         size="small"
                         variant="contained"
                         color="primary"
-                        onClick={this.requestContact}
+                        onClick={() => this.addGroupRequest(group.getID())}
                       >
                         Kontakt anfragen
                       </Button>
@@ -168,13 +187,13 @@ class Matching extends Component {
             </div>
           </div>
         ) : (
-          <div>
-            <p>Oops, hier scheint etwas shiefgelaufen zu sein.</p>
-            <Button color="secondary" onClick={this.handleClose}>
-              <ArrowBackIcon />
-            </Button>
-          </div>
-        )}
+            <div>
+              <p>Oops, hier scheint etwas shiefgelaufen zu sein.</p>
+              <Button color="secondary" onClick={this.handleClose}>
+                <ArrowBackIcon />
+              </Button>
+            </div>
+          )}
       </div>
     );
   }
@@ -190,7 +209,7 @@ const styles = (theme) => ({
   },
   button_style: {
     marginBottom: 5,
-    padding:5,
+    padding: 5,
   },
 });
 

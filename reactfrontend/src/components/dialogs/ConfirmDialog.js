@@ -7,24 +7,16 @@ import { TeachingbeeAPI } from '../../api';
 //import LoadingProgress from './LoadingProgress';
 
 
-class DeleteDialog extends Component {
+class ConfirmDialog extends Component {
 
     constructor(props) {
         super(props);
 
         // Init the state
         this.state = {
-            deleted: false
         };
     }
-
-    deleteAccount = () => {
-        TeachingbeeAPI.getAPI().deletePerson(this.props.person).then(response => {
-            if (response == 'successfull') {
-                this.setState({ deleted: true })
-            }
-        });
-    }
+    
 
     // Close the Dialog
     handleClose = () => {
@@ -33,15 +25,14 @@ class DeleteDialog extends Component {
 
     /** Renders the component */
     render() {
-        const { classes, show } = this.props;
-        const { deleted } = this.state;
+        const { classes, show, action } = this.props;
 
-        let title = 'Account löschen'
+        let title = 'Anfrage erfolgreich angenommen';
         let header = '';
-        if (!deleted) {
-            header = 'Möchtest du wirklich Deinen Account und alle Deine Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.'
-        } else {
-            header = 'Account erfolgreich gelöscht.'
+        if (action == 'person') {
+            header = 'Nun könnt ihr über den Chat miteinander schreiben.';
+        } else if (action == 'group') {
+            header = 'Erfolgreich zur Gruppe hinzugefügt.'
         }
 
         return (
@@ -50,11 +41,9 @@ class DeleteDialog extends Component {
                     {this.props.children}
                     <Dialog open={show} onClose={this.handleClose} maxWidth='xs'>
                         <DialogTitle id='form-dialog-title'>{title}
-                            { !deleted ?
                             <IconButton className={classes.closeButton} onClick={this.handleClose}>
                                 <CloseIcon />
                             </IconButton>
-                            : null }
                         </DialogTitle>
                         <DialogContent>
                             <DialogContentText>
@@ -62,18 +51,9 @@ class DeleteDialog extends Component {
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                            { !deleted ?
-                            <div>
-                            <Button color='secondary' onClick={this.handleClose}>
-                                Abbrechen
-                            </Button>
-                            <Button variant='contained' color='secondary' onClick={this.deleteAccount}>
-                                Ja, löschen
-                            </Button>
-                            </div>
-                            : <Button variant='contained' color='primary' onClick={this.handleClose}>
+                            <Button variant='contained' color='primary' onClick={this.handleClose}>
                                 Ok
-                            </Button>}
+                            </Button>
                         </DialogActions>
                     </Dialog>
                     </div>
@@ -95,10 +75,11 @@ const styles = theme => ({
     },
 });
 
-DeleteDialog.propTypes = {
-    show: PropTypes.bool,
+ConfirmDialog.propTypes = {
+    show: PropTypes.bool.isRequired,
+    action: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     children: PropTypes.node
 }
 
-export default withStyles(styles)(DeleteDialog);
+export default withStyles(styles)(ConfirmDialog);

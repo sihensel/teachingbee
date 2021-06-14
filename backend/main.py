@@ -81,8 +81,6 @@ class Interests(Resource):
         return interests
 
 # eine einzelne Person bearbeiten
-
-
 @teachingbee.route('/person/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
@@ -113,8 +111,6 @@ class PersonOperations(Resource):
         return result, 200
 
 # Person neu speichern
-
-
 @teachingbee.route('/persons')
 @teachingbee.response(500, 'Internal Server Error')
 class AddPerson(Resource):
@@ -129,8 +125,6 @@ class AddPerson(Resource):
             return '', 500
 
 # Profil bearbeiten
-
-
 @teachingbee.route('/profile/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Profils')
@@ -155,8 +149,6 @@ class ProfileOperations(Resource):
             return '', 500
 
 # Profil neu speichern
-
-
 @teachingbee.route('/profiles')
 @teachingbee.response(500, 'Internal Server Error')
 class AddProfile(Resource):
@@ -171,8 +163,6 @@ class AddProfile(Resource):
             return '', 500
 
 # Profil und Person verknüpfen
-
-
 @teachingbee.route('/link')
 @teachingbee.response(500, 'Internal Server Error')
 class LinkPersonProfile(Resource):
@@ -186,8 +176,6 @@ class LinkPersonProfile(Resource):
             return '', 500
 
 # eine einzelne Nachricht bearbeiten
-
-
 @teachingbee.route('/chat/<int:sender>/<int:recipient>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('sender', 'Sender')
@@ -277,7 +265,7 @@ class GroupChatOperations(Resource):
 @teachingbee.route('/match-person/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
-class PersonMatching(Resource):
+class MatchPerson(Resource):
     @teachingbee.marshal_with(person)
     def get(self, id):
         bl = BusinessLogic()
@@ -285,12 +273,10 @@ class PersonMatching(Resource):
         return matchList[0]
 
 # Gruppe matchen
-
-
 @teachingbee.route('/match-group/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
-class GroupMatching(Resource):
+class MatchGroup(Resource):
     @teachingbee.marshal_with(group)
     def get(self, id):
         bl = BusinessLogic()
@@ -340,5 +326,50 @@ class AddGroup(Resource):
         else:
             return '', 500
 
+# Anfragen an Personen verwalten
+@teachingbee.route('/requests/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID des Users')
+class RequestOperations(Resource):
+
+    @teachingbee.marshal_with(person)
+    def get(self, id):
+        bl = BusinessLogic()
+        return bl.get_requests(id)
+    
+    def post(self, id):
+        bl = BusinessLogic()
+        print(api.payload)
+        response = bl.add_request(api.payload['sender'], api.payload['recipient'])
+        return response, 200
+    
+    def delete(self, id):
+        bl = BusinessLogic()
+        if api.payload['cmd'] == 'accept':
+            bl.accept_request(api.payload['sender'], api.payload['recipient'])
+        elif api.payload['cmd'] == 'deny':
+            bl.deny_request(api.payload['sender'],  api.payload['recipient'])
+
+# Anfragen an Gruppen verwalten
+@teachingbee.route('/grouprequests/<int:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID des Users')
+class GroupRequestOperations(Resource):
+
+    def get(self, id):
+        bl = BusinessLogic()
+        return bl.get_group_requests(id)
+    
+    def post(self, id):
+        bl = BusinessLogic()
+        response = bl.add_group_request(api.payload['sender'], api.payload['group'])
+        return response, 200
+
+    def delete(self, id):
+        bl = BusinessLogic()
+        if api.payload['cmd'] == 'accept':
+            bl.accept_group_request(api.payload['sender'], api.payload['group'])
+        elif api.payload['cmd'] == 'deny':
+            bl.deny_group_request(api.payload['sender'],  api.payload['group'])
 
 app.run(debug=True)

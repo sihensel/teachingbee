@@ -76,8 +76,7 @@ class GroupMapper(Mapper):
         return result
     
     def insert(self, group):
-        #Einfügen eines Group-Objekts in die Datenbank.
-
+        ''' Einfügen eines Group-Objekts in die Datenbank '''
         cursor = self._cnx.cursor()
 
         command = "INSERT INTO Studygroup (gname, info, profileID) VALUES (%s, %s, %s)"
@@ -117,6 +116,7 @@ class GroupMapper(Mapper):
         cursor.close()
     
     def check_group(self, groupID):
+        ''' Check, ob eine Gruppe noch Mitglieder hat '''
 
         cursor = self._cnx.cursor()
         command = "SELECT * FROM R_person_group WHERE groupID={}".format(groupID)
@@ -126,10 +126,38 @@ class GroupMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-        if tuples:
+        if len(tuples) > 0:
             return True
         else:
-            return None
+            return False
+    
+    def check_member(self, groupID):
+        ''' Gibt alle Mitglieder einer Gruppe zurück '''
+
+        cursor = self._cnx.cursor()
+        command = "SELECT personID FROM R_person_group WHERE groupID={}".format(groupID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        self._cnx.commit()
+        cursor.close()
+
+        result = [i[0] for i in tuples]
+
+        return result
+    
+    def find_groups_of_person(self, personID):
+        cursor = self._cnx.cursor()
+        command = "SELECT groupID FROM R_person_group WHERE personID={}".format(personID)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        self._cnx.commit()
+        cursor.close()
+
+        result = [i[0] for i in tuples]
+
+        return result
 
 
     def update(self, group):
@@ -156,6 +184,15 @@ class GroupMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "DELETE FROM Studygroup WHERE id={}".format(groupID)
+        cursor.execute(command)
+
+        self._cnx.commit()
+        cursor.close()
+    
+    def leave_all_groups(self, personID):
+        cursor = self._cnx.cursor()
+
+        command = "DELETE FROM R_person_group WHERE personID={}".format(personID)
         cursor.execute(command)
 
         self._cnx.commit()

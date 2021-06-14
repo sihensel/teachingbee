@@ -37,15 +37,22 @@ export default class TeachingbeeAPI {
 
   #getChatListURL = (id) => `${this.#ServerBaseURL}/chatlist/${id}`;
   #getGroupListURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
+
   #leaveGroupURL = (id) => `${this.#ServerBaseURL}/grouplist/${id}`;
   #addGroupURL = () => `${this.#ServerBaseURL}/groups`;
   #getGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
-  #deleteGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
   #updateGroupURL = (id) => `${this.#ServerBaseURL}/group/${id}`;
 
   #MatchPersonURL = (id) => `${this.#ServerBaseURL}/match-person/${id}`;
   #MatchGroupURL = (id) => `${this.#ServerBaseURL}/match-group/${id}`;
 
+  #getRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
+  #addRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
+  #deleteRequestsURL = (id) => `${this.#ServerBaseURL}/requests/${id}`;
+
+  #getGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
+  #addGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
+  #deleteGroupRequestsURL = (id) => `${this.#ServerBaseURL}/grouprequests/${id}`;
 
   static getAPI() {
     if (this.#api == null) {
@@ -365,5 +372,77 @@ export default class TeachingbeeAPI {
       body: JSON.stringify({'group': groupBO, 'person': personBO})
     })
   }
-    
+
+  addRequest(senderID, recipientID) {
+    return this.#fetchAdvanced(this.#addRequestsURL(senderID), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({"sender": senderID, "recipient": recipientID})
+    }).then((responseJSON) => {
+      return new Promise(function (resolve) {
+        resolve(responseJSON);
+      })
+    })
+  }
+
+  getRequests(personID) {
+    return this.#fetchAdvanced(this.#getRequestsURL(personID)).then(responseJSON => {
+      let personList = [];
+      responseJSON.map(item => {
+        let person = PersonBO.fromJSON(item);
+        personList.push(person);
+      })
+      return new Promise(function (resolve) {
+        resolve(personList);
+      })
+    })
+  }
+
+  handleRequest(personID, recipientID, cmd) {
+    return this.#fetchAdvanced(this.#deleteRequestsURL(personID), {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({'sender': personID, 'recipient': recipientID, 'cmd': cmd})
+    })
+  }
+
+  addGroupRequest(senderID, groupID) {
+    return this.#fetchAdvanced(this.#addGroupRequestsURL(senderID), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({"sender": senderID, "group": groupID})
+    }).then((responseJSON) => {
+      return new Promise(function (resolve) {
+        resolve(responseJSON);
+      })
+    })
+  }
+
+  getGroupRequests(personID) {
+    return this.#fetchAdvanced(this.#getGroupRequestsURL(personID)).then(responseJSON => {
+      return new Promise(function (resolve) {
+        resolve(responseJSON);
+      })
+    })
+  }
+
+  handleGroupRequest(personID, groupID, cmd) {
+    return this.#fetchAdvanced(this.#deleteGroupRequestsURL(personID), {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({'sender': personID, 'group': groupID, 'cmd': cmd})
+    })
+  }
 }
