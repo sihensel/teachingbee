@@ -14,15 +14,13 @@ Create Profile | Kai, Tobi
 Manage Profile | Jacky, Simon
 Manage Person | Jacky, Simon
 Matching | Simon
-Request Contact |
+Request Contact | Simon
 Chat | Kai, Tobi
-Join Group |
+Join Group | Lisa, Tim
 Create Group | Lisa, Tim
 Leave Group | Lisa, Tim
 Delete Group | Lisa, Tim
-Invite Student in Group |
-Kick Student from Group |
-Delete Person |
+Delete | Simon
 
 
 ## Set source directory for Python
