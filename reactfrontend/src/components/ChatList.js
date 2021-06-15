@@ -95,10 +95,10 @@ class ChatList extends Component {
     return (
       <div>
         {(chatList.length > 0 || groupList.length > 0) ?
-          showChat ?
-            <Chat sender={person} recipient={recipient} onClose={this.closeChat} />
-            : showGroupChat ?
-            <GroupChat person={person} group={group} onClose={this.closeGroupChat} />
+          showChat
+          ? <Chat sender={person} recipient={recipient} onClose={this.closeChat} />
+            : showGroupChat
+            ? <GroupChat person={person} group={group} onClose={this.closeGroupChat} />
             :
             <div>
               <h2>Deine Chats</h2>
@@ -135,8 +135,8 @@ class ChatList extends Component {
 const styles = (theme) => ({
   root: {
     width: '100%',
-    maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
+    margin: 10,
   },
 });
 

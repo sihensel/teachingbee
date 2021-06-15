@@ -18,7 +18,7 @@ class App extends Component {
 
     // Init the state
     this.state = {
-      currentUser: 1,
+      currentUser: null,
       //currentUser: 4,  // später die ID von Firebase
       person: null,
       interests: null,

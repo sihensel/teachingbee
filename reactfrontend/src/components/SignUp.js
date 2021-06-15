@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Paper, Button } from '@material-ui/core';
+import { Typography, Paper, Button, withStyles } from '@material-ui/core';
 import { TeachingbeeAPI } from '../api';
 import PersonForm from './dialogs/PersonForm';
 import ProfileForm from './dialogs/ProfileForm';
@@ -62,12 +62,13 @@ class SignUp extends Component {
     }
 
     render() {
-        const { interests } = this.props;
+        const { classes, interests } = this.props;
         const { person, profile, showPerson, showProfile } = this.state;
         return (
             <div>
-                  { <div>
-                        <Paper variant='outlined'>
+                { <div>
+                    <Paper variant='outlined' className={classes.root}>
+                        <div className={classes.content}>
                             <Typography variant='h6'>
                                 Personendaten
                             </Typography>
@@ -77,8 +78,10 @@ class SignUp extends Component {
                                         Anlegen
                                     </Button></div>
                                 : <p>Personendaten erfolgreich gespeichert. (ID: {person.getID()})</p>}
-                        </Paper>
-                        <Paper variant='outlined'>
+                        </div>
+                    </Paper>
+                    <Paper variant='outlined' className={classes.root}>
+                        <div className={classes.content}>
                             <Typography variant='h6'>
                                 Lernprofil
                             </Typography>
@@ -88,22 +91,40 @@ class SignUp extends Component {
                                         <Button variant='contained' color='primary' onClick={this.showProfileDialog}>
                                             Anlegen
                                         </Button></div>
-                                    : <div><p>Lernprofil erfolgreich gespeichert. (ID: {profile.getID()})</p></div> : null}
-                        </Paper>
-                        {person && profile
-                            ? this.link()
-                            : null}
-                        <PersonForm show={showPerson} person={person} onClose={this.closePersonDialog} />
-                        <ProfileForm show={showProfile} profile={profile} interests={interests} onClose={this.closeProfileDialog} />
-                    </div>}
+                                    : <div>
+                                        <p>Lernprofil erfolgreich gespeichert. (ID: {profile.getID()})</p>
+                                    </div>
+                                : null}
+                        </div>
+                    </Paper>
+                    {person && profile
+                        ? this.link()
+                        : null}
+                    <PersonForm show={showPerson} person={person} onClose={this.closePersonDialog} />
+                    <ProfileForm show={showProfile} profile={profile} interests={interests} onClose={this.closeProfileDialog} />
+                </div>}
             </div>
         );
     }
 }
+
+
+const styles = (theme) => ({
+    root: {
+        width: '100%',
+        //backgroundColor: theme.palette.background.paper,
+        margin: 10,
+    },
+    content: {
+        width: '100%',
+        //backgroundColor: theme.palette.background.paper,
+        margin: 10,
+    },
+});
 
 SignUp.propTypes = {
     classes: PropTypes.object.isRequired,
     interests: PropTypes.array.isRequired,
 }
 
-export default SignUp;
+export default withStyles(styles)(SignUp);

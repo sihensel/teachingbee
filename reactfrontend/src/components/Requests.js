@@ -165,8 +165,8 @@ class Requests extends Component {
             })
           : <p>Es stehen keine Personenanfragen zur Verfügung.</p>
           }
-        { groupList ?
-              (len.length == personBOList.length && len.length == groupBOList.length) ?
+        { groupList
+              ? (len.length == personBOList.length && len.length == groupBOList.length) ?
                 len.map(index => {
                   return (
                     <Grid item>

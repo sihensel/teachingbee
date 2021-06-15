@@ -114,14 +114,14 @@ class GroupChat extends Component {
                 <Button color='primary' variant='contained' onClick={this.showGroupForm}>
                     Bearbeiten
                 </Button>
-                <Button color='primary' variant='contained' onClick={this.leaveGroup}>
+                <Button style={{marginLeft: 10}} color='secondary' variant='contained' onClick={this.leaveGroup}>
                     Gruppe verlassen
                 </Button>
                 {showGroupForm ?
                     <GroupForm group={group} show={showGroupForm} onClose={this.closeGroupForm} />
                     : null}
-                {messages ?
-                    messages.map(message => {
+                {messages
+                    ? messages.map(message => {
                         {
                             if (message.getSender() != person.getID()) {
                                 return (

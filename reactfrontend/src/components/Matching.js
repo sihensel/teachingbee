@@ -222,4 +222,3 @@ Matching.propTypes = {
 };
 
 export default withStyles(styles)(Matching);
-//export default Matching;

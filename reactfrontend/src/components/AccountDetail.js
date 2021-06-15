@@ -116,8 +116,8 @@ class AccountDetail extends Component {
 
     return (
       <div>
-        {person && profile && interests ? (
-          <div>
+        {person && profile && interests
+          ? <div>
             <Button variant="outlined" color="primary" onClick={this.handleClose}>
                 <ArrowBackIcon/>
             </Button>
@@ -228,7 +228,7 @@ class AccountDetail extends Component {
               interests={interests}
             />
           </div>
-        ) : null}
+        : null}
         <PersonForm
           show={showPerson}
           onClose={this.closePersonDialog}
