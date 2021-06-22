@@ -47,3 +47,5 @@ Install via `npm i <module>`.
 - @material-ui/pickers
 - @material-ui/lab
 - @date-io/date-fns@1.x date-fns
+- react-router-dom
+- firebase

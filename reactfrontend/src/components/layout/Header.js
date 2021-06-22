@@ -45,16 +45,18 @@ class Header extends Component {
     this.props.showRequests();
   }
 
+  signOut = () => {
+    this.props.signOut();
+  }
+
   /** Renders the component */
   render() {
+    const {currentUser} = this.props;
 
     return (
       <div>
-        <h1 style={{ textAlign: 'center', color: '#FFD91D' }}>Teachingbee</h1>
+        <h1 style={{ textAlign: 'center', color: '#FFD91D' }}>Teachingbee - {currentUser.displayName}</h1>
         <CardActions style={{ justifyContent: 'center' }}>
-          <Button variant="contained" color="primary" onClick={this.showAccount}>
-            Account
-            </Button>
           <Button variant="contained" color="primary" onClick={this.showGroup}>
             Gruppe erstellen
             </Button>
@@ -63,6 +65,12 @@ class Header extends Component {
             </Button>
           <Button variant="contained" color="primary" onClick={this.showRequests}>
             Anfragen
+            </Button>
+          <Button variant="contained" color="primary" onClick={this.showAccount}>
+            Account
+            </Button>
+          <Button variant="contained" color="primary" onClick={this.signOut}>
+            Abmelden
             </Button>
         </CardActions>
       </div>

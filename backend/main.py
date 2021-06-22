@@ -125,6 +125,14 @@ class AddPerson(Resource):
         else:
             return '', 500
 
+@teachingbee.route('/personID/<string:id>')
+@teachingbee.response(500, 'Internal Server Error')
+@teachingbee.param('id', 'ID der Person')
+class FirebasePerson(Resource):
+    def get(self, id):
+        bl = BusinessLogic()
+        return bl.get_personID(id)
+
 # Profil bearbeiten
 @teachingbee.route('/profile/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')

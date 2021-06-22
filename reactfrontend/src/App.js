@@ -1,178 +1,155 @@
-import './App.css';
-import { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Container, ThemeProvider, CssBaseline, Button } from "@material-ui/core";
-import { TeachingbeeAPI } from './api';
+import React from 'react';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import { Container, ThemeProvider, CssBaseline } from '@material-ui/core';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import firebaseConfig from './firebaseconfig';
 import AccountDetail from './components/AccountDetail';
-import Matching from './components/Matching';
-import SignUp from './components/SignUp';
-import ChatList from './components/ChatList';
-import Requests from './components/Requests';
-import Theme from "./components/layout/Theme";
-import Header from "./components/layout/Header";
-import GroupForm from './components/dialogs/GroupForm';
+import SignIn from './components/SignIn';
+import Main from './Main';
+import { TeachingbeeAPI } from './api';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
+/**
+ * The main bank administration app. It uses Googles firebase to log into the bank end. For routing the 
+ * user to the respective pages, react-router-dom ist used.
+ * 
+ * @see See Google [firebase.auth()](https://firebase.google.com/docs/reference/js/firebase.auth.Auth)
+ * @see See Google [firebase.auth().signInWithRedirect](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signinwithredirect)
+ * @see [react-router-dom](https://reacttraining.com/react-router/web/guides/quick-start)
+ * 
+ * @author [Christoph Kunz](https://github.com/christophkunz)
+ */
+class App extends React.Component {
 
-    // Init the state
-    this.state = {
-      currentUser: null,
-      //currentUser: 4,  // später die ID von Firebase
-      person: null,
-      interests: null,
-      showGroup: false,
-      showAccount: false,
-      showMatching: false,
-      showRequests: false,
-      loadingInProgress: false,
-      loadingError: null,
-    };
-  }
+	/** Constructor of the app, which initializes firebase  */
+	constructor(props) {
+		super(props);
 
-  componentDidMount() {
-    this.getPerson();
-    this.getInterests();
-  }
+		// Init an empty state
+		this.state = {
+			currentUser: null,
+			userID: null,
+			appError: null,
+			authError: null,
+			authLoading: false
+		};
+	}
 
-  getPerson = () => {
-    TeachingbeeAPI.getAPI()
-      .getPerson(this.state.currentUser)
-      .then((person) =>
-        this.setState({
-          person: person,
-          loadingInProgress: false,
-          loadingError: null,
-        })
-      )
-      .catch((e) =>
-        this.setState({
-          person: null,
-          loadingInProgress: false,
-          loadingError: e,
-        })
-      );
-    this.setState({
-      loadingInProgress: true,
-      loadingError: null,
-    });
-  };
-  getInterests = () => {
-    TeachingbeeAPI.getAPI()
-      .getInterests()
-      .then((interests) =>
-        this.setState({
-          interests: interests,
-          loadingInProgress: false,
-          loadingError: null,
-        })
-      )
-      .catch((e) =>
-        this.setState({
-          interests: null,
-          loadingInProgress: false,
-          loadingError: e,
-        })
-      );
-    this.setState({
-      loadingInProgress: true,
-      loadingError: null,
-    });
-  };
+	/** 
+	 * Create an error boundary for this app and recieve all errors from below the component tree.
+	 * 
+	 * @See See Reacts [Error Boundaries](https://reactjs.org/docs/error-boundaries.html)
+	   */
+	static getDerivedStateFromError(error) {
+		// Update state so the next render will show the fallback UI.
+		return { appError: error };
+	}
 
-  showAccount = () => {
-    if (!this.state.showGroup && !this.state.showMatching && !this.state.showRequests) {
-      this.setState({ showAccount: true });
-    }
-  }
+	/** Handles firebase users logged in state changes  */
+	handleAuthStateChange = user => {
+		if (user) {
+			this.setState({
+				authLoading: true
+			});
+			// The user is signed in
+			user.getIdToken().then(token => {
+				// Add the token to the browser's cookies. The server will then be
+				// able to verify the token against the API.
+				// SECURITY NOTE: As cookies can easily be modified, only put the
+				// token (which is verified server-side) in a cookie; do not add other
+				// user information.
+				document.cookie = `token=${token};path=/`;
 
-  closeAccount = person => {
-    if (person) {
-      this.setState({
-        person: person,
-        showAccount: false
-      });
-    } else {
-      this.setState({ showAccount: false });
-    }
-  }
+				// Set the user not before the token arrived 
+				this.setState({
+					currentUser: user,
+					authError: null,
+					authLoading: false
+				});
+				this.getPersonID(this.state.currentUser.uid)
+			}).catch(e => {
+				this.setState({
+					authError: e,
+					authLoading: false
+				});
+			});
+		} else {
+			// User has logged out, so clear the id token
+			document.cookie = 'token=;path=/';
 
-  showGroup = () => {
-    if (!this.state.showAccount && !this.state.showMatching && !this.state.showRequests) {
-      this.setState({ showGroup: true });
-    }
-  }
+			// Set the logged out user to null
+			this.setState({
+				currentUser: null,
+				authLoading: false
+			});
+		}
+	}
 
-  closeGroup = () => {
-    this.setState({ showGroup: false });
+	getPersonID = (userID) => {
+		TeachingbeeAPI.getAPI().getPersonID(userID).then(response => {
+			this.setState({ userID: response })
+		})
+	}
 
-  }
+	/** 
+	 * Handles the sign in request of the SignIn component uses the firebase.auth() component to sign in.
+	   * @see See Google [firebase.auth()](https://firebase.google.com/docs/reference/js/firebase.auth.Auth)
+	   * @see See Google [firebase.auth().signInWithRedirect](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signinwithredirect)
+	   */
+	handleSignIn = () => {
+		this.setState({
+			authLoading: true
+		});
+		const provider = new firebase.auth.GoogleAuthProvider();
+		firebase.auth().signInWithRedirect(provider);
+	}
 
-  showMatching = () => {
-    if (!this.state.showAccount && !this.state.showGroup && !this.state.showRequests) {
-      this.setState({ showMatching: true });
-    }
-  }
+	/**
+	 * Lifecycle method, which is called when the component gets inserted into the browsers DOM.
+	 * Initializes the firebase SDK.
+	 * 
+	 * @see See Googles [firebase init process](https://firebase.google.com/docs/web/setup)
+	 */
+	componentDidMount() {
+		if (!firebase.apps.length) {
+			// schließt aus, dass die Firebase App mehrfach initialisiert wird
+			firebase.initializeApp(firebaseConfig);
+		}
+		firebase.auth().languageCode = 'en';
+		firebase.auth().onAuthStateChanged(this.handleAuthStateChange);
+	}
 
-  closeMatching = () => {
-    this.setState({ showMatching: false });
-  }
+	/** Renders the whole app */
+	render() {
+		const { currentUser, userID, appError, authError, authLoading } = this.state;
 
-  showRequests = () => {
-    if (!this.state.showAccount && !this.state.showGroup && !this.state.showMatching) {
-      this.setState({ showRequests: true });
-    }
-  }
-
-  closeRequests = () => {
-    this.setState({ showRequests: false });
-  }
-
-  closeSignup = (person) => {
-    this.setState({
-      currentUser: person.getID(),
-      person: person,
-    });
-  }
-
-  render() {
-    const { person, interests } = this.state;
-    const { showAccount, showMatching, showGroup, showRequests } = this.state
-    return (
-      <ThemeProvider theme={Theme}>
-        <CssBaseline />
-        <Header showAccount={this.showAccount} showMatching={this.showMatching} showGroup={this.showGroup} showRequests={this.showRequests} />
-        <Container maxWidth="md">
-          <div>
-            {interests
-              ? person
-                ? showAccount
-                  ? <AccountDetail person={person} interests={interests} onClose={this.closeAccount} />
-                  : showMatching
-                    ? <Matching person={person} onClose={this.closeMatching} />
-                    : showRequests
-                      ? <Requests person={person} onClose={this.closeRequests} />
-                      :
-                      <div>
-                        <GroupForm group={null} show={showGroup} onClose={this.closeGroup} person={person}></GroupForm>
-                        <ChatList person={person} />
-                      </div>
-                : <SignUp interests={interests} onClose={this.closeSignup} />
-              : null
-            }
-          </div>
-        </Container>
-      </ThemeProvider>
-    );
-  }
-}
-
-SignUp.propTypes = {
-  classes: PropTypes.object.isRequired,
-  person: PropTypes.object.isRequired,
-  interests: PropTypes.array.isRequired,
-  currentUser: PropTypes.number.isRequired,
+		return (
+			<Router basename={process.env.PUBLIC_URL}>
+				<Container maxWidth='md'>
+					{
+						// Is a user signed in?
+						(currentUser && userID) ?
+							<>
+								<Redirect from='/' to='main' />
+								<Route exact path='/main'>
+									<Main currentUser={currentUser} userID={userID} />
+								</Route>
+								<Route path='/transactions'>
+								</Route>
+								<Route path='/accounts'>
+								</Route>
+							</>
+							:
+							// else show the sign in page
+							<>
+								<Redirect to='/index.html' />
+								<SignIn onSignIn={this.handleSignIn} />
+							</>
+					}
+				</Container>
+			</Router>
+		);
+	}
 }
 
 export default App;

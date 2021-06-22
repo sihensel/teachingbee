@@ -104,6 +104,15 @@ CREATE TABLE Grouprequest (
   FOREIGN KEY (groupID) REFERENCES Studygroup(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS R_person_firebase;
+CREATE TABLE R_person_firebase (
+  id int NOT NULL AUTO_INCREMENT,
+  personID int NOT NULL,
+  firebaseID varchar(255) NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (personID) REFERENCES Person(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- insert values into tables
 INSERT INTO Interests (iname) VALUES ('Sport');
@@ -156,3 +165,5 @@ INSERT INTO R_person_group (groupID, personID) VALUES (2, 4);
 INSERT INTO Request (sender, recipient) VALUES (4, 1);
 INSERT INTO Request (sender, recipient) VALUES (5, 1);
 INSERT INTO Grouprequest (sender, groupID) VALUES (1, 3);
+
+INSERT INTO R_person_firebase (personID, firebaseID) VALUES (1, 'J2mS9UqEnXV9RpSxcv5a4pkYOoR2')

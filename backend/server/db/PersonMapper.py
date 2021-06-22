@@ -8,16 +8,12 @@ class PersonMapper(Mapper):
     def find_all(self):
         pass
 
-    def find_by_name(self, fname, lname):
-        pass
-
     def find_by_key(self, key):
         """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
         result = None
 
         cursor = self._cnx.cursor()
         command = "SELECT id, fname, lname, birthdate, semester, gender, profileID FROM Person WHERE id={}".format(key)
-        # command = "SELECT * FROM Person WHERE id={}".format(key)   # only when the timestamp is needed as well
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -41,6 +37,17 @@ class PersonMapper(Mapper):
         cursor.close()
 
         return result
+
+    def find_by_firebaseID(self, id):
+        cursor = self._cnx.cursor()
+        command = "SELECT personID FROM R_person_firebase WHERE firebaseID='{}'".format(id)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        self._cnx.commit()
+        cursor.close()
+
+        return tuples[0][0]
+
     
     def find_by_profileID(self, profileID):
         """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
@@ -87,7 +94,7 @@ class PersonMapper(Mapper):
 
         person.set_id(tuples[0][0])
 
-        #self._cnx.commit()
+        self._cnx.commit()
         cursor.close()
 
         return person

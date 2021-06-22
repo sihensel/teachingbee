@@ -20,6 +20,7 @@ export default class TeachingbeeAPI {
   #getPersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   #updatePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   #deletePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
+  #getPersonIDURL = (id) => `${this.#ServerBaseURL}/personID/${id}`;
 
   #LinkURL = () => `${this.#ServerBaseURL}/link`;
 
@@ -87,6 +88,13 @@ export default class TeachingbeeAPI {
       let person = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
         resolve(person)
+      })
+    })
+  }
+  getPersonID(firebaseID) {
+    return this.#fetchAdvanced(this.#getPersonIDURL(firebaseID)).then((responseJSON) => {
+      return new Promise(function (resolve) {
+        resolve(responseJSON)
       })
     })
   }

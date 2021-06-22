@@ -91,7 +91,6 @@ class ChatList extends Component {
     const { classes, person } = this.props;
     const { chatList, groupList, recipient, showChat, group, showGroupChat } = this.state;
 
-    console.log(groupList.length)
     return (
       <div>
         {(chatList.length > 0 || groupList.length > 0) ?
