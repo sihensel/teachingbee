@@ -1,7 +1,7 @@
-# Bee Happy
+# Teachingbee
 
 __Teachingbee__  
-This is the repo for the coding project of the 4th semester WI-7 at HDM Stuttgart.
+Webapp für Studenten um Lernpartner zu finden.
 
 ## Features
 
@@ -24,6 +24,8 @@ Delete | Simon
 
 
 ## Set source directory for Python
+In VSCode muss unter umständen die `root directory` für das Python backend gesetzt werden.  
+Dazu die folgenden Zeilen in der `settings.json` einfügen.
 
 ```json
 "terminal.integrated.env.osx": {
@@ -39,8 +41,8 @@ Delete | Simon
 ```
 
 ## Used Node Modules
-
-Install via `npm i <module>`.
+Im Folgenden befinden sich alle genutzten Node Modules.
+Sie können über `npm i <module>` installiert werden.
 
 - @material-ui/core
 - @material-ui/icons

@@ -1,14 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {
-  withStyles,
-  Typography,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Grid,
-} from "@material-ui/core";
+import { withStyles, Typography, Button, Card, CardActions, CardContent, Grid } from "@material-ui/core";
 import { TeachingbeeAPI } from "../api";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 //import ContextErrorMessage from './ContextErrorMessage';
@@ -96,6 +88,9 @@ class Matching extends Component {
   };
 
   calculateAge = (birthday) => {
+    /**
+     * @see https://codereview.stackexchange.com/questions/251301/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
+     */
     var today = new Date();
     var birthDate = new Date(birthday);
     var age_now = today.getFullYear() - birthDate.getFullYear();
@@ -197,7 +192,7 @@ class Matching extends Component {
             })
             }
           </Grid>
-          : <p>Oops, hier scheint etwas schiefgelaufen zu sein.</p>
+          : <p>Es konnten leider keine passenden Matches gefunden werden.</p>
         }
       </div>
     );

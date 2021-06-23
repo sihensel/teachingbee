@@ -97,14 +97,17 @@ class Requests extends Component {
   };
 
   calculateAge = (birthday) => {
+    /**
+     * @see https://codereview.stackexchange.com/questions/251301/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
+     */
     var today = new Date();
     var birthDate = new Date(birthday);
-    var age_now = today.getFullYear() - birthDate.getFullYear();
+    var age = today.getFullYear() - birthDate.getFullYear();
     var m = today.getMonth() - birthDate.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age_now--;
+      age--;
     }
-    return age_now;
+    return age;
   };
 
   render() {
