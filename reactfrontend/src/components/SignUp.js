@@ -4,8 +4,6 @@ import { Typography, Paper, Button, withStyles } from '@material-ui/core';
 import { TeachingbeeAPI } from '../api';
 import PersonForm from './dialogs/PersonForm';
 import ProfileForm from './dialogs/ProfileForm';
-import AccountDetail from './AccountDetail';
-import App from '../App';
 
 class SignUp extends Component {
 
@@ -14,6 +12,7 @@ class SignUp extends Component {
 
         // Init the state
         this.state = {
+            currentUser: props.currentUser,
             person: null,
             profile: null,
             interests: props.interests,
@@ -26,6 +25,7 @@ class SignUp extends Component {
     }
     closePersonDialog = person => {
         if (person) {
+            TeachingbeeAPI.getAPI().addPersonFirebase(person.getID(), this.state.currentUser.uid)
             this.setState({
                 person: person,     // update PersonBO
                 showPerson: false
@@ -62,7 +62,7 @@ class SignUp extends Component {
     }
 
     render() {
-        const { classes, interests } = this.props;
+        const { classes, interests, currentUser } = this.props;
         const { person, profile, showPerson, showProfile } = this.state;
         return (
             <div>
@@ -73,9 +73,9 @@ class SignUp extends Component {
                                 Personendaten
                             </Typography>
                             {!person
-                                ? <div><p>Keine Personendaten verfügbar</p>
+                                ? <div><p>Du scheinst noch keine Informationen über dich angelegt zu haben.</p>
                                     <Button variant='contained' color='primary' onClick={this.showPersonDialog}>
-                                        Anlegen
+                                        Account erstellen
                                     </Button></div>
                                 : <p>Personendaten erfolgreich gespeichert. (ID: {person.getID()})</p>}
                         </div>
@@ -87,9 +87,9 @@ class SignUp extends Component {
                             </Typography>
                             {person
                                 ? !profile
-                                    ? <div><p>Kein Lernprofil verfügbar</p>
+                                    ? <div><p>Du scheinst noch keine Lernvorlieben gespeichert zu haben.</p>
                                         <Button variant='contained' color='primary' onClick={this.showProfileDialog}>
-                                            Anlegen
+                                            Lernprofil erstellen
                                         </Button></div>
                                     : <div>
                                         <p>Lernprofil erfolgreich gespeichert. (ID: {profile.getID()})</p>
@@ -112,17 +112,16 @@ class SignUp extends Component {
 const styles = (theme) => ({
     root: {
         width: '100%',
-        //backgroundColor: theme.palette.background.paper,
         margin: 10,
     },
     content: {
         width: '100%',
-        //backgroundColor: theme.palette.background.paper,
         margin: 10,
     },
 });
 
 SignUp.propTypes = {
+    currentUser: PropTypes.isRequired,
     classes: PropTypes.object.isRequired,
     interests: PropTypes.array.isRequired,
 }

@@ -51,11 +51,9 @@ class Header extends Component {
 
   /** Renders the component */
   render() {
-    const {currentUser} = this.props;
-
     return (
       <div>
-        <h1 style={{ textAlign: 'center', color: '#FFD91D' }}>Teachingbee - {currentUser.displayName}</h1>
+        <h1 style={{ textAlign: 'center', color: '#FFD91D' }}>Teachingbee</h1>
         <CardActions style={{ justifyContent: 'center' }}>
           <Button variant="contained" color="primary" onClick={this.showGroup}>
             Gruppe erstellen
@@ -76,6 +74,13 @@ class Header extends Component {
       </div>
     )
   }
+}
+Header.propTypes = {
+  showAccount: PropTypes.func.isRequired,
+  showGroup: PropTypes.func.isRequired,
+  showMatching: PropTypes.func.isRequired,
+  showRequests: PropTypes.func.isRequired,
+  signOut: PropTypes.func.isRequired
 }
 
 export default Header;

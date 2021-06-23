@@ -27,13 +27,12 @@ class SignIn extends Component {
 
 		return (
 			<div>
-				<Typography className={classes.root} align='center' variant='h6'>Welcome to the HdM React/Python Project Showcase</Typography>
-				<Typography className={classes.root} align='center'>It appears, that you are not signed in.</Typography>
-				<Typography className={classes.root} align='center'>To use the services of the HdM Bank please</Typography>
+				<Typography className={classes.root} align='center' variant='h2'>Teachingbee</Typography>
+				<Typography className={classes.root} align='center'>Um die App nutzen zu können, melde dich bitte mit Google an.</Typography>
 				<Grid container justify='center'>
 					<Grid item>
 						<Button variant='contained' color='primary' onClick={this.handleSignInButtonClicked}>
-							Sign in with Google
+							Mit Google anmelden
       			</Button>
 					</Grid>
 				</Grid>
@@ -51,11 +50,7 @@ const styles = theme => ({
 
 /** PropTypes */
 SignIn.propTypes = {
-	/** @ignore */
 	classes: PropTypes.object.isRequired,
-	/** 
-	 * Handler function, which is called if the user wants to sign in.
-	 */
 	onSignIn: PropTypes.func.isRequired,
 }
 

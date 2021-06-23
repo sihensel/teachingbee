@@ -1,12 +1,13 @@
+import './App.css';
+import Theme from "./components/layout/Theme";
 import React from 'react';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import { Container, ThemeProvider, CssBaseline } from '@material-ui/core';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import firebaseConfig from './firebaseconfig';
-import AccountDetail from './components/AccountDetail';
 import SignIn from './components/SignIn';
-import Main from './Main';
+import Main from './components/Main';
 import { TeachingbeeAPI } from './api';
 
 /**
@@ -28,7 +29,6 @@ class App extends React.Component {
 		// Init an empty state
 		this.state = {
 			currentUser: null,
-			userID: null,
 			appError: null,
 			authError: null,
 			authLoading: false
@@ -66,7 +66,6 @@ class App extends React.Component {
 					authError: null,
 					authLoading: false
 				});
-				this.getPersonID(this.state.currentUser.uid)
 			}).catch(e => {
 				this.setState({
 					authError: e,
@@ -121,33 +120,32 @@ class App extends React.Component {
 
 	/** Renders the whole app */
 	render() {
-		const { currentUser, userID, appError, authError, authLoading } = this.state;
+		const { currentUser, appError, authError, authLoading } = this.state;
 
 		return (
-			<Router basename={process.env.PUBLIC_URL}>
-				<Container maxWidth='md'>
-					{
-						// Is a user signed in?
-						(currentUser && userID) ?
-							<>
-								<Redirect from='/' to='main' />
-								<Route exact path='/main'>
-									<Main currentUser={currentUser} userID={userID} />
-								</Route>
-								<Route path='/transactions'>
-								</Route>
-								<Route path='/accounts'>
-								</Route>
-							</>
-							:
-							// else show the sign in page
-							<>
-								<Redirect to='/index.html' />
-								<SignIn onSignIn={this.handleSignIn} />
-							</>
-					}
-				</Container>
-			</Router>
+			<ThemeProvider theme={Theme}>
+				<CssBaseline />
+				<Router basename={process.env.PUBLIC_URL}>
+					<Container maxWidth='md'>
+						{
+							// Is a user signed in?
+							currentUser ?
+								<>
+									<Redirect from='/' to='main' />
+									<Route exact path='/main'>
+										<Main currentUser={currentUser} />
+									</Route>
+								</>
+								:
+								// else show the sign in page
+								<>
+									<Redirect to='/index.html' />
+									<SignIn onSignIn={this.handleSignIn} />
+								</>
+						}
+					</Container>
+				</Router>
+			</ThemeProvider>
 		);
 	}
 }

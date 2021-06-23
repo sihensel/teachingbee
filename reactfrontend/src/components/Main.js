@@ -1,26 +1,25 @@
-import './App.css';
+import '../App.css';
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Container, ThemeProvider, CssBaseline, Button } from "@material-ui/core";
-import { TeachingbeeAPI } from './api';
-import AccountDetail from './components/AccountDetail';
-import Matching from './components/Matching';
-import SignUp from './components/SignUp';
-import ChatList from './components/ChatList';
-import Requests from './components/Requests';
-import Theme from "./components/layout/Theme";
-import Header from "./components/layout/Header";
-import GroupForm from './components/dialogs/GroupForm';
+import { TeachingbeeAPI } from '../api';
+import AccountDetail from './AccountDetail';
+import Matching from './Matching';
+import SignUp from './SignUp';
+import ChatList from './ChatList';
+import Requests from './Requests';
+import Theme from "./layout/Theme";
+import Header from "./layout/Header";
+import GroupForm from './dialogs/GroupForm';
 import firebase from 'firebase/app';
 
-class App extends Component {
+class Main extends Component {
   constructor(props) {
     super(props);
 
     // Init the state
     this.state = {
       currentUser: props.currentUser,
-      userID: props.userID,
       //currentUser: 4,  // später die ID von Firebase
       person: null,
       interests: null,
@@ -40,7 +39,7 @@ class App extends Component {
 
   getPerson = () => {
     TeachingbeeAPI.getAPI()
-      .getPerson(this.state.userID)
+      .getPersonByFirebase(this.state.currentUser.uid)
       .then((person) =>
         this.setState({
           person: person,
@@ -145,14 +144,15 @@ class App extends Component {
 
   render() {
     const { person, interests, currentUser, showAccount, showMatching, showGroup, showRequests } = this.state;
+    console.log(person)
     return (
       <ThemeProvider theme={Theme}>
         <CssBaseline />
-        <Header currentUser={currentUser} showAccount={this.showAccount} showMatching={this.showMatching} showGroup={this.showGroup} showRequests={this.showRequests} signOut={this.handleSignOut}/>
+        <Header showAccount={this.showAccount} showMatching={this.showMatching} showGroup={this.showGroup} showRequests={this.showRequests} signOut={this.handleSignOut}/>
         <Container maxWidth="md">
           <div>
             {interests
-              ? person
+              ? (person && person.getID())
                 ? showAccount
                   ? <AccountDetail person={person} interests={interests} onClose={this.closeAccount} />
                   : showMatching
@@ -164,7 +164,7 @@ class App extends Component {
                         <GroupForm group={null} show={showGroup} onClose={this.closeGroup} person={person} />
                         <ChatList person={person} />
                       </div>
-                : <SignUp interests={interests} onClose={this.closeSignup} />
+                : <SignUp interests={interests} onClose={this.closeSignup} currentUser={currentUser} />
               : null
             }
           </div>
@@ -174,9 +174,9 @@ class App extends Component {
   }
 }
 
-SignUp.propTypes = {
+Main.propTypes = {
   classes: PropTypes.object.isRequired,
   currentUser: PropTypes.number.isRequired,
 }
 
-export default App;
+export default Main;

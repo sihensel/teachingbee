@@ -28,9 +28,18 @@ class BusinessLogic:
         with PersonMapper() as mapper:
             return mapper.find_by_key(id)
 
-    def get_personID(self, id):
+    def get_person_firebase(self, id):
         with PersonMapper() as mapper:
-            return mapper.find_by_firebaseID(id)
+            personID = mapper.find_by_firebaseID(id)
+        
+        if personID is not None:
+            return self.get_person(personID)
+        else:
+            return None
+        
+    def add_person_firebase(self, personID, firebaseID):
+        with PersonMapper() as mapper:
+            mapper.insert_firebase(personID, firebaseID)
     
     def save_person(self, person):
         with PersonMapper() as mapper:

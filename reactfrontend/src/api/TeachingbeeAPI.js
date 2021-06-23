@@ -20,7 +20,8 @@ export default class TeachingbeeAPI {
   #getPersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   #updatePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
   #deletePersonURL = (id) => `${this.#ServerBaseURL}/person/${id}`;
-  #getPersonIDURL = (id) => `${this.#ServerBaseURL}/personID/${id}`;
+  #getPersonByFirebaseURL = (id) => `${this.#ServerBaseURL}/firebase/${id}`;
+  #addPersonFirebaseURL = (id) => `${this.#ServerBaseURL}/firebase/${id}`;
 
   #LinkURL = () => `${this.#ServerBaseURL}/link`;
 
@@ -91,11 +92,22 @@ export default class TeachingbeeAPI {
       })
     })
   }
-  getPersonID(firebaseID) {
-    return this.#fetchAdvanced(this.#getPersonIDURL(firebaseID)).then((responseJSON) => {
+  getPersonByFirebase(firebaseID) {
+    return this.#fetchAdvanced(this.#getPersonByFirebaseURL(firebaseID)).then((responseJSON) => {
+      let person = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve(responseJSON)
+        resolve(person)
       })
+    })
+  }
+  addPersonFirebase(personID, firebaseID) {
+    return this.#fetchAdvanced(this.#addPersonFirebaseURL(firebaseID), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({ 'personID': personID, 'firebaseID': firebaseID })
     })
   }
   // Person speichern

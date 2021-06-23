@@ -39,6 +39,8 @@ class PersonMapper(Mapper):
         return result
 
     def find_by_firebaseID(self, id):
+        result = []
+
         cursor = self._cnx.cursor()
         command = "SELECT personID FROM R_person_firebase WHERE firebaseID='{}'".format(id)
         cursor.execute(command)
@@ -46,9 +48,24 @@ class PersonMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-        return tuples[0][0]
+        try:
+            result = tuples[0][0]
+        except IndexError:
+            result = None
+        
+        return result
 
-    
+    def insert_firebase(self, personID, firebaseID):
+        """Einfügen eines User-Objekts in die Datenbank. """
+        cursor = self._cnx.cursor()
+
+        command = "INSERT INTO R_person_firebase (personID, firebaseID) VALUES (%s,%s)"
+        data = (personID, firebaseID)
+        cursor.execute(command, data)
+
+        self._cnx.commit()
+        cursor.close()
+
     def find_by_profileID(self, profileID):
         """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
         result = None

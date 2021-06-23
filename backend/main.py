@@ -125,13 +125,22 @@ class AddPerson(Resource):
         else:
             return '', 500
 
-@teachingbee.route('/personID/<string:id>')
+@teachingbee.route('/firebase/<id>')
 @teachingbee.response(500, 'Internal Server Error')
-@teachingbee.param('id', 'ID der Person')
+@teachingbee.param('id', 'Firebase-ID der Person')
 class FirebasePerson(Resource):
+    @teachingbee.marshal_with(person)
     def get(self, id):
+        ''' Person anhand der Firebase ID auslesen '''
         bl = BusinessLogic()
-        return bl.get_personID(id)
+        return bl.get_person_firebase(id)
+    
+    def post(self, id):
+        ''' Person das erste mal anlegen '''
+        bl = BusinessLogic()
+        print(api.payload)
+        bl.add_person_firebase(api.payload['personID'], api.payload['firebaseID'])
+        return '', 200
 
 # Profil bearbeiten
 @teachingbee.route('/profile/<int:id>')
@@ -386,4 +395,5 @@ class GroupRequestOperations(Resource):
         elif api.payload['cmd'] == 'deny':
             bl.deny_group_request(api.payload['sender'],  api.payload['group'])
 
-app.run(debug=True)
+if __name__ == '__main__':
+    app.run()

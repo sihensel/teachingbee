@@ -2,38 +2,28 @@ import mysql.connector as connector
 from contextlib import AbstractContextManager
 from abc import ABC, abstractmethod
 from sys import platform
+import os
 
 
 class Mapper (AbstractContextManager, ABC):
     """Abstrakte Basisklasse aller Mapper-Klassen"""
 
     def __init__(self):
+        self._cnx = None
 
-        # zu Testzwecken auf der lokalen Installation
-        if platform == 'darwin':
-            # Mac
-            USER = 'root'
-            PASSWD = 'password'
-            HOST = 'localhost'
-            DB = 'teachingbee'
-        elif platform == 'win32':
-            # Windows
-            USER = 'me'
-            PASSWD = 'password'
-            HOST = '192.168.0.105'
-            DB = 'teachingbee'
-        elif platform == "linux":
-            # Linux
-            USER = 'me'
-            PASSWD = 'password'
-            HOST = '192.168.0.105'
-            DB = 'teachingbee'
+    def __enter__(self):
 
+        if os.getenv('GAE_ENV', '').startswith('standard'):
+            ''' Cloud '''
+            self._cnx = connector.connect(user='root', password='password',
+                                          unix_socket='/cloudsql/teachingbee-179c2:europe-west3:teachingbee',
+                                          database='teachingbee')
+        else:
+            self._cnx = connector.connect(user='me', password='password',
+                                  host='192.168.0.105',
+                                  database='teachingbee')
 
-        self._cnx = connector.connect(user=USER, password=PASSWD,
-                              host=HOST,
-                              database=DB)
-
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Was soll geschehen, wenn wir (evtl. vorübergehend) aufhören, mit dem Mapper zu arbeiten?"""
