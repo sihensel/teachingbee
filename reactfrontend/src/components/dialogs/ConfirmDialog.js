@@ -2,28 +2,22 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { TeachingbeeAPI } from '../../api';
-//import ContextErrorMessage from './ContextErrorMessage';
-//import LoadingProgress from './LoadingProgress';
-
 
 class ConfirmDialog extends Component {
 
     constructor(props) {
         super(props);
 
-        // Init the state
         this.state = {
+
         };
     }
     
-
-    // Close the Dialog
+    // den Dialog schließen
     handleClose = () => {
         this.props.onClose();
     }
 
-    /** Renders the component */
     render() {
         const { classes, show, action } = this.props;
 
@@ -62,7 +56,6 @@ class ConfirmDialog extends Component {
     }
 }
 
-/** Component specific styles */
 const styles = theme => ({
     root: {
         width: '100%',

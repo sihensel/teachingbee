@@ -1,5 +1,5 @@
 /**
- * Reexports the Bussines Objects for a well-encaspulated Api module. 
+ * Hier wird die komplette API als geschlossenes Modul exportieren
  */
 export {default as TeachingbeeAPI} from './TeachingbeeAPI';
 export {default as PersonBO} from './PersonBO';

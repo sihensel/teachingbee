@@ -9,7 +9,6 @@ class Requests extends Component {
   constructor(props) {
     super(props);
 
-    // Init the state
     this.state = {
       personList: null,
       groupList: null,

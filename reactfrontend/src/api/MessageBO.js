@@ -1,17 +1,7 @@
 import BusinessObject from './BusinessObject';
 
-/**
- * Represents a person
- */
 export default class MessageBO extends BusinessObject {
 
-  /**
-   * Constructs a CustomerBO object with a given firstname and lastname.
-   * 
-   * @param {String} content - the firstname of this CustomerBO.
-   * @param {String} sender - the firstname of this CustomerBO.
-   * @param {String} recipient - the firstname of this CustomerBO.
-   */
   constructor(content, sender, recipient) {
     super();
     this.content = content;
@@ -19,22 +9,38 @@ export default class MessageBO extends BusinessObject {
     this.recipient = recipient;
   }
 
-  getContent(content) {
+  getContent() {
+    // Inhalt auslesen
     return this.content;
   }
 
-  getSender(sender) {
+  setContent(content) {
+    // Inhalt setzen
+    this.content = content;
+  }
+
+  getSender() {
+    // Sender auslesen
     return this.sender;
   }
 
-  getRecipient(recipient) {
+  setSender(sender) {
+    // Sender setzen
+    this.sender = sender;
+  }
+
+  getRecipient() {
+    // Empfänger auslesen
     return this.recipient;
   }
+
+  setRecipipient(recipient) {
+    // Empfänger setzen
+    this.recipient = recipient;
+  }
   
-  /** 
-   * Returns an Object from a JSON
-   */
   static fromJSON(message) {
+    // Objekt anhand einer JSON-Struktur erstellen
     let msg = Object.setPrototypeOf(message, MessageBO.prototype);
     return msg;
   }

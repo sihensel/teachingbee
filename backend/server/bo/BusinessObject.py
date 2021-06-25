@@ -1,11 +1,7 @@
 from abc import ABC, abstractmethod
 
-
 class BusinessObject(ABC):
-    """Gemeinsame Basisklasse aller Businessobjekte
-
-    Jedes Objekt hat eine eindeutige ID (Primärschlüssel)
-    """
+    ''' Gemeinsame Basisklasse aller Businessobjekte '''
     def __init__(self):
         self._id = 0
         self._stamp = 0

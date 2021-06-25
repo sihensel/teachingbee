@@ -21,12 +21,7 @@ class GroupChatMapper(Mapper):
         return result
 
     def find_by_sender(self, groupID):
-        """Auslesen aller Benutzer anhand des Benutzernamens.
-
-        :param name Name der zugehörigen Benutzer.
-        :return Eine Sammlung mit User-Objekten, die sämtliche Benutzer
-            mit dem gewünschten Namen enthält.
-        """
+        ''' Nachricht eines Senders auslesen '''
         result = []
         cursor = self._cnx.cursor()
         command = "SELECT * FROM Groupmessage WHERE groupID = '{}'".format(groupID)
@@ -35,13 +30,11 @@ class GroupChatMapper(Mapper):
         
         for (id, stamp, content, sender, group) in tuples:
             message = GroupMessage()
-
             message.set_id(id)
             message.set_stamp(stamp)
             message.set_content(content)
             message.set_sender(sender)
             message.set_group(group)
-
             result.append(message)
 
         self._cnx.commit()
@@ -53,14 +46,7 @@ class GroupChatMapper(Mapper):
         pass
 
     def insert(self, message):
-        """Einfügen eines User-Objekts in die Datenbank.
-
-        Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
-        berichtigt.
-
-        :param user das zu speichernde Objekt
-        :return das bereits übergebene Objekt, jedoch mit ggf. korrigierter ID.
-        """
+        ''' Nachricht in die DB einfügen '''
         cursor = self._cnx.cursor()
 
         command = "INSERT INTO Groupmessage (content, sender, groupID) VALUES (%s,%s,%s)"
@@ -80,6 +66,7 @@ class GroupChatMapper(Mapper):
         pass
 
     def delete(self, groupID):
+        ''' Gruppennachricht aus der DB löschen '''
         cursor = self._cnx.cursor()
 
         command = "DELETE FROM Groupmessage WHERE groupID={}".format(groupID)

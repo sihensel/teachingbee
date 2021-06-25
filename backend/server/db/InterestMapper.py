@@ -1,16 +1,13 @@
 from server.db.Mapper import Mapper
 
 class InterestMapper(Mapper):
-    ''' Mapper, der die Interssen aus der Tabelle 'Interests ausliest' '''
+    ''' Mapper, der die Interssen aus der Tabelle 'Interests' ausliest '''
 
     def __init__(self):
         super().__init__()
 
     def find_all(self):
-        """Auslesen aller Interessen.
-
-        :return die Interessen mit IDs als geschachtelte Liste
-        """
+        ''' Alle Interessen auslesen '''
         interestList = []
         cursor = self._cnx.cursor()
         cursor.execute("SELECT * from Interests")

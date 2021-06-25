@@ -9,7 +9,7 @@ class PersonMapper(Mapper):
         pass
 
     def find_by_key(self, key):
-        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
+        ''' Person anhand der ID auslesen '''
         result = None
 
         cursor = self._cnx.cursor()
@@ -29,8 +29,7 @@ class PersonMapper(Mapper):
             person.set_profileID(profileID)
             result = person
         except IndexError:
-            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
-            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
+            ''' wenn tuples leer ist '''
             result = None
 
         self._cnx.commit()
@@ -39,6 +38,7 @@ class PersonMapper(Mapper):
         return result
 
     def find_by_firebaseID(self, id):
+        ''' Person anhand der FirebaseID auslesen '''
         result = []
 
         cursor = self._cnx.cursor()
@@ -56,7 +56,7 @@ class PersonMapper(Mapper):
         return result
 
     def insert_firebase(self, personID, firebaseID):
-        """Einfügen eines User-Objekts in die Datenbank. """
+        ''' Firebase ID schreiben '''
         cursor = self._cnx.cursor()
 
         command = "INSERT INTO R_person_firebase (personID, firebaseID) VALUES (%s,%s)"
@@ -67,7 +67,7 @@ class PersonMapper(Mapper):
         cursor.close()
 
     def find_by_profileID(self, profileID):
-        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
+        ''' person anhand des Profils auslesen '''
         result = None
 
         cursor = self._cnx.cursor()
@@ -87,8 +87,7 @@ class PersonMapper(Mapper):
             person.set_profileID(profileID)
             result = person
         except IndexError:
-            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
-            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
+            ''' wenn tuples leer ist '''
             result = None
 
         self._cnx.commit()
@@ -97,7 +96,7 @@ class PersonMapper(Mapper):
         return result
 
     def insert(self, person):
-        """Einfügen eines User-Objekts in die Datenbank. """
+        ''' Person in die DB schreiben '''
         cursor = self._cnx.cursor()
 
         command = "INSERT INTO Person (fname, lname, birthdate, semester, gender, profileID) VALUES (%s,%s,%s,%s,%s,%s)"
@@ -105,8 +104,8 @@ class PersonMapper(Mapper):
         cursor.execute(command, data)
 
         self._cnx.commit()
-
-        cursor.execute("SELECT LAST_INSERT_ID()")
+ 
+        cursor.execute("SELECT LAST_INSERT_ID()")   # ID des gerade geschriebene Datensatzen auslesen
         tuples = cursor.fetchall()
 
         person.set_id(tuples[0][0])
@@ -117,10 +116,7 @@ class PersonMapper(Mapper):
         return person
 
     def update(self, person):
-        """Wiederholtes Schreiben eines Objekts in die Datenbank.
-
-        :param user das Objekt, das in die DB geschrieben werden soll
-        """
+        ''' Person updaten '''
         cursor = self._cnx.cursor()
 
         command = "UPDATE Person " + "SET fname=%s, lname=%s, birthdate=%s, semester=%s, gender=%s WHERE id=%s"
@@ -133,10 +129,7 @@ class PersonMapper(Mapper):
         return person
 
     def delete(self, personID):
-        """Löschen der Daten eines User-Objekts aus der Datenbank.
-
-        :param user das aus der DB zu löschende "Objekt"
-        """
+        ''' Person löschen '''
         cursor = self._cnx.cursor()
 
         cursor.execute("DELETE FROM Person WHERE id={}".format(personID))

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Chat from './Chat';
 import PropTypes from "prop-types";
 import { TeachingbeeAPI } from "../api";
-import { withStyles, Typography, Paper, Button } from "@material-ui/core";
+import { withStyles } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
@@ -13,7 +13,6 @@ class ChatList extends Component {
   constructor(props) {
     super(props);
 
-    // Init the state
     this.state = {
       chatList: [],       // Liste mit den IDs aller Chatpartner
       groupList: [],      // Liste mit den IDs aller Gruppen
@@ -29,41 +28,29 @@ class ChatList extends Component {
     this.getChatList();
   }
 
+  // Gruppen des Users auslesen
   getGroupList = () => {
     TeachingbeeAPI.getAPI().getGroupList(this.props.person.getID()).then((response) =>
       this.setState({
         groupList: response,
-        loadingInProgress: false,
-        loadingError: null,
       })).catch((e) =>
         this.setState({
           groupList: null,
-          loadingInProgress: false,
-          loadingError: e,
         }));
   }
   
+  // Chatliste des Users auslesen
   getChatList = () => {
     TeachingbeeAPI.getAPI().getChatList(this.props.person.getID()).then((response) =>
       this.setState({
         chatList: response,
-        loadingInProgress: false,
-        loadingError: null,
       })).catch((e) =>
         this.setState({
           chatList: null,
-          loadingInProgress: false,
-          loadingError: e,
         }));
   }
 
-  showChat = (item) => {
-    this.setState({
-      recipient: item,
-      showChat: true
-    })
-
-  }
+  // Chat Componente anzeigen
   showChat = (item) => {
     this.setState({
       recipient: item,
@@ -71,10 +58,12 @@ class ChatList extends Component {
     })
   }
 
+  // Chat schließen
   closeChat = () => {
     this.setState({ showChat: false })
   }
 
+  // Gruppenchat anzeigen
   showGroupChat = (item) => {
     this.setState({
       group: item,
@@ -82,6 +71,7 @@ class ChatList extends Component {
     })
   }
 
+  // Gruppenchat anzeigen
   closeGroupChat = () => {
     this.getGroupList()
     this.setState({ showGroupChat: false })

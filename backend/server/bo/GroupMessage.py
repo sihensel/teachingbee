@@ -1,12 +1,12 @@
 import server.bo.BusinessObject as bo
 
 class GroupMessage(bo.BusinessObject):
+    ''' Klasse für die Gruppennachrichten '''
     def __init__(self):
         super().__init__()
         self._content = ""
         self._sender = 0
         self._group = 0
-
 
     def set_content(self, content):
         self._content = content

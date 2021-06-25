@@ -1,3 +1,5 @@
+# Die .gitignore enthält ungefiltert alle möglichen Optionen, egal ob sie benötigt werden oder nicht
+
 # Created by https://www.toptal.com/developers/gitignore/api/vscode
 # Edit at https://www.toptal.com/developers/gitignore?templates=vscode
 
@@ -189,3 +191,4 @@ sketch
 # End of https://www.toptal.com/developers/gitignore/api/react
 
 .eslintcache
+firebaseconfig.js

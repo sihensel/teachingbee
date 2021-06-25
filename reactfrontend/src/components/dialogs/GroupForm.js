@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { TeachingbeeAPI, GroupBO } from '../../api';
-//import ContextErrorMessage from './ContextErrorMessage';
-//import LoadingProgress from './LoadingProgress';
-
 
 class GroupForm extends Component {
 
@@ -19,81 +16,40 @@ class GroupForm extends Component {
       pid = props.group.getProfileID();
     }
 
-    // Init the state
     this.state = {
       name: name,
       info: info,
       profileID: pid,
-      addingInProgress: false,
-      updatingInProgress: false,
-      addingError: null,
-      updatingError: null
     };
-    // save this state for canceling
+    // den State zwischenspeichern
     this.initialState = this.state;
   }
 
-  /** Adds the customer
-   * @todo Error handling/verification still missing
-   */
+  // Gruppe neu erstellen
   addGroup = () => {
     let newGroup = new GroupBO(this.state.info, this.props.person.getProfileID())
     newGroup.setName(this.state.name)
     TeachingbeeAPI.getAPI().addGroup(newGroup, this.props.person).then(group => {
-      // Backend call sucessfull
-      // reinit the dialogs state for a new empty customer
       this.setState(this.initialState);
       this.props.onClose(group); // call the parent with the object from backend
-    }).catch(e =>
-      this.setState({
-        updatingInProgress: false,    // disable loading indicator 
-        updatingError: e              // show error message
-      })
-    );
-
-    // set loading to true
-    this.setState({
-      updatingInProgress: true,       // show loading indicator
-      updatingError: null             // disable error message
     });
   }
 
-  /** Updates the person
-   * @todo !!!ERROR HANDLING IS STILL MISSING!!!
-   */
+  // Gruppe bearbeiten
   updateGroup = () => {
-    // clone the original cutomer, in case the backend call fails
     let updatedGroup = Object.assign(new GroupBO(), this.props.group);
-    // set the new attributes from our dialog
     updatedGroup.setName(this.state.name);
     updatedGroup.setInfo(this.state.info);
-    // das Datum muss bei Änderung noch in das Format 'yyyy-MM-dd' gebracht werden
 
     TeachingbeeAPI.getAPI().updateGroup(updatedGroup).then(group => {
-      this.setState({
-        updatingInProgress: false,              // disable loading indicator  
-        updatingError: null                     // no error message
-      });
-      // keep the new state as base state
+      // den neuen State als Fallback setzen
       this.initialState.name = this.state.name;
       this.initialState.info = this.state.info;
 
-      this.props.onClose(group);      // call the parent with the new group
-    }).catch(e =>
-      this.setState({
-        updatingInProgress: false,              // disable loading indicator 
-        updatingError: e                        // show error message
-      })
-    );
-
-    // set loading to true
-    this.setState({
-      updatingInProgress: true,                 // show loading indicator
-      updatingError: null                       // disable error message
+      this.props.onClose(group);      // Parent-Componente mit dem neuen Objekt aufrufen
     });
   }
 
-  /** Handles value changes of the forms textfields and validates them */
   textFieldValueChange = (event) => {
     const value = event.target.value;
 
@@ -104,34 +60,24 @@ class GroupForm extends Component {
 
     this.setState({
       [event.target.id]: event.target.value,
-      [event.target.id + 'ValidationFailed']: error,
-      [event.target.id + 'Edited']: true
     });
   }
 
-  // Close the Dialog
+  // Dialog schließen
   handleClose = () => {
     this.setState(this.initialState);
     this.props.onClose();
   }
 
-  handleChange = (event) => {
-    this.setState({ gender: event.target.value });
-  }
-  handleDateChange = (date) => {
-    this.setState({ birthdate: date });
-  }
-
-  /** Renders the component */
   render() {
     const { classes, group, show} = this.props;
-    const {name, info, profileID, addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+    const {name, info } = this.state;
 
     let title = '';
     let header = '';
 
     if (group) {
-      // Person bereits vorhanden => bearneiten
+      // Person bereits vorhanden => bearbeiten
       title = 'Guppe bearbeiten';
       header = `Gruppen-ID: ${group.getID()}`;
     } else {
@@ -167,7 +113,7 @@ class GroupForm extends Component {
                     </Button>
                 : <Button variant='contained' color='primary' onClick={this.addGroup}>
                   Anlegen
-                    </Button>
+                  </Button>
               }
             </DialogActions>
           </Dialog></div>
@@ -176,7 +122,6 @@ class GroupForm extends Component {
   }
 }
 
-/** Component specific styles */
 const styles = theme => ({
   root: {
     width: '100%',

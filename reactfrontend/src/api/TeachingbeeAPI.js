@@ -4,16 +4,11 @@ import MessageBO from './MessageBO';
 import GroupMessageBO from './GroupMessageBO';
 import GroupBO from './GroupBO';
 
-/**
- * Abstracts the REST interface of the Python backend with convenient access methods.
- * The class is implemented as a singleton. 
- */
 export default class TeachingbeeAPI {
 
-  // Singelton instance
   static #api = null;
 
-  // Local Python backend
+  // URL des Flask Servers
   #ServerBaseURL = '/teachingbee';
 
   #addPersonURL = () => `${this.#ServerBaseURL}/persons`;
@@ -64,27 +59,22 @@ export default class TeachingbeeAPI {
   }
 
   /**
-   *  Returns a Promise which resolves to a json object. 
-   *  The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
-   *  fetchAdvanced throws an Error also an server status errors
+   *  holt sich das JSON von Flask und gibt es als Promise zurück
    */
   #fetchAdvanced = (url, init) => fetch(url, init)
     .then(res => {
-      // The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
+      // wird auch bei HTTP Error 401 und 500 ausgeführt
       if (!res.ok) {
         throw Error(`${res.status} ${res.statusText}`);
       }
       return res.json();
     })
 
-
-  /**
-   * Returns a Promise, which resolves to a PersonBO
-   *
-   * @param {Number} personID to be retrieved
-   * @public
-   */
+  /*
+  Die nachfolgendenden Funktionen rufen eine URL des Flask Servers auf und geben das JSON als Promise zurück
+  */
   getPerson(personID) {
+    // Person abfragen
     return this.#fetchAdvanced(this.#getPersonURL(personID)).then((responseJSON) => {
       let person = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
@@ -92,7 +82,9 @@ export default class TeachingbeeAPI {
       })
     })
   }
+
   getPersonByFirebase(firebaseID) {
+    // Person anhand der FirebaseID auslesen
     return this.#fetchAdvanced(this.#getPersonByFirebaseURL(firebaseID)).then((responseJSON) => {
       let person = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
@@ -100,7 +92,9 @@ export default class TeachingbeeAPI {
       })
     })
   }
+
   addPersonFirebase(personID, firebaseID) {
+    // Person einer FirebaseID zuweisen
     return this.#fetchAdvanced(this.#addPersonFirebaseURL(firebaseID), {
       method: 'POST',
       headers: {
@@ -110,8 +104,9 @@ export default class TeachingbeeAPI {
       body: JSON.stringify({ 'personID': personID, 'firebaseID': firebaseID })
     })
   }
-  // Person speichern
+
   updatePerson(personBO) {
+    // Person updaten
     return this.#fetchAdvanced(this.#updatePersonURL(personBO.getID()), {
       method: 'PUT',
       headers: {
@@ -128,6 +123,7 @@ export default class TeachingbeeAPI {
   }
 
   addPerson(personBO) {
+    // Person neu anlegen
     return this.#fetchAdvanced(this.#addPersonURL(), {
       method: 'POST',
       headers: {
@@ -143,16 +139,8 @@ export default class TeachingbeeAPI {
     })
   }
 
-  getProfile(profileID) {
-    return this.#fetchAdvanced(this.#getProfileURL(profileID)).then((responseJSON) => {
-      let profile = ProfileBO.fromJSON(responseJSON);
-      return new Promise(function (resolve) {
-        resolve(profile)
-      })
-    })
-  }
-
   deletePerson(personBO) {
+    // Person löschen
     return this.#fetchAdvanced(this.#deletePersonURL(personBO.getID()), {
       method: 'DELETE',
       headers: {
@@ -163,8 +151,19 @@ export default class TeachingbeeAPI {
     })
   }
 
-  // Profil speichern
+  getProfile(profileID) {
+    // Profil abfragen
+    return this.#fetchAdvanced(this.#getProfileURL(profileID)).then((responseJSON) => {
+      let profile = ProfileBO.fromJSON(responseJSON);
+      return new Promise(function (resolve) {
+        resolve(profile)
+      })
+    })
+  }
+
+
   updateProfile(profileBO) {
+    // Profil updaten
     return this.#fetchAdvanced(this.#updateProfileURL(profileBO.getID()), {
       method: 'PUT',
       headers: {
@@ -181,6 +180,7 @@ export default class TeachingbeeAPI {
   }
 
   addProfile(profileBO) {
+    // Profil neu anlegen
     return this.#fetchAdvanced(this.#addProfileURL(), {
       method: 'POST',
       headers: {
@@ -197,6 +197,7 @@ export default class TeachingbeeAPI {
   }
 
   getInterests() {
+    // Interessen abfragen
     return this.#fetchAdvanced(this.#InterestsURL()).then((response) => {
       return new Promise(function (resolve) {
         resolve(response)
@@ -205,6 +206,7 @@ export default class TeachingbeeAPI {
   } 
 
   link_person_profile(personID, profileID) {
+    // Person mit einem Profil verknüpfen
     return this.#fetchAdvanced(this.#LinkURL(), {
       method: 'PUT',
       headers: {
@@ -213,7 +215,6 @@ export default class TeachingbeeAPI {
       },
       body: JSON.stringify({ 'personID': personID, 'profileID': profileID })
     }).then((responseJSON) => {
-      //let responsePersonBO = PersonBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
         resolve(responseJSON);
       })
@@ -221,6 +222,7 @@ export default class TeachingbeeAPI {
   }
 
   getMessage(sender, recipient) {
+    // Nachrichten abfragen
     return this.#fetchAdvanced(this.#getMessageURL(sender, recipient)).then((responseJSON) => {
       let messageList = [];
       responseJSON.map(item => {
@@ -235,6 +237,7 @@ export default class TeachingbeeAPI {
   }
 
   addMessage(messageBO) {
+    // Nachricht hinzufügen
     return this.#fetchAdvanced(this.#addMessageURL(messageBO.getSender(), messageBO.getRecipient()), {
       method: 'POST',
       headers: {
@@ -251,6 +254,7 @@ export default class TeachingbeeAPI {
   }
 
   getGroupMessage(id) {
+    // Gruppennachricht abfragen
     return this.#fetchAdvanced(this.#getGroupMessageURL(id)).then((responseJSON) => {
       let messageList = [];
       responseJSON.map(item => {
@@ -264,6 +268,7 @@ export default class TeachingbeeAPI {
   }
 
   addGroupMessage(groupmessageBO) {
+    // Gruppennachricht hinzufügen
     return this.#fetchAdvanced(this.#addGroupMessageURL(groupmessageBO.getGroup()), {
       method: 'POST',
       headers: {
@@ -280,6 +285,7 @@ export default class TeachingbeeAPI {
   }
 
   getChatList(id) {
+    // Liste aller Chats einer Person auslesen
     return this.#fetchAdvanced(this.#getChatListURL(id)).then((responseJSON) => {
       let chatList = [];
       responseJSON.map(item => {
@@ -293,6 +299,7 @@ export default class TeachingbeeAPI {
   }
 
   getGroupList(id) {
+    // Liste mit Gruppen einer Person auslesen
     return this.#fetchAdvanced(this.#getGroupListURL(id)).then((responseJSON) => {
       let groupList = [];
       responseJSON.map(item => {
@@ -305,16 +312,8 @@ export default class TeachingbeeAPI {
     })
   }
 
-  getGroup(id) {
-    return this.#fetchAdvanced(this.#getGroupURL(id)).then((responseJSON) => {
-      let group = GroupBO.fromJSON(responseJSON);
-      return new Promise(function (resolve) {
-         resolve(group)
-       })
-    })
-  }
-
   matchPerson(id) {
+    // Person matchen
     return this.#fetchAdvanced(this.#MatchPersonURL(id)).then((responseJSON) => {
       let personList = [];
       responseJSON.map(item => {
@@ -328,6 +327,7 @@ export default class TeachingbeeAPI {
   }
 
   matchGroup(id) {
+    // Gruppen matchen
     return this.#fetchAdvanced(this.#MatchGroupURL(id)).then((responseJSON) => {
       let groupList = [];
       responseJSON.map(item => {
@@ -340,17 +340,18 @@ export default class TeachingbeeAPI {
     })
   }
 
-  getGroup(groupID) {
-    return this.#fetchAdvanced(this.#getGroupURL(groupID)).then((responseJSON) => {
+  getGroup(id) {
+    // Gruppe abfragen
+    return this.#fetchAdvanced(this.#getGroupURL(id)).then((responseJSON) => {
       let group = GroupBO.fromJSON(responseJSON);
       return new Promise(function (resolve) {
-        resolve(group)
-      })
+         resolve(group)
+       })
     })
   }
 
-  // Profil speichern
   updateGroup(groupBO) {
+    // Gruppe updaten
     return this.#fetchAdvanced(this.#updateGroupURL(groupBO.getID()), {
       method: 'PUT',
       headers: {
@@ -367,6 +368,7 @@ export default class TeachingbeeAPI {
   }
 
   addGroup(groupBO, personBO) {
+    // Gruppe neu anlegen
     return this.#fetchAdvanced(this.#addGroupURL(), {
       method: 'POST',
       headers: {
@@ -383,6 +385,7 @@ export default class TeachingbeeAPI {
   }
       
   leaveGroup(groupBO, personBO) {
+    // Gruppe verlassen
     return this.#fetchAdvanced(this.#leaveGroupURL(personBO.getID()), {
       method: 'PUT',
       headers: {
@@ -394,6 +397,7 @@ export default class TeachingbeeAPI {
   }
 
   addRequest(senderID, recipientID) {
+    // Anfragen stellen
     return this.#fetchAdvanced(this.#addRequestsURL(senderID), {
       method: 'POST',
       headers: {
@@ -409,6 +413,7 @@ export default class TeachingbeeAPI {
   }
 
   getRequests(personID) {
+    // Anfragen abfragen
     return this.#fetchAdvanced(this.#getRequestsURL(personID)).then(responseJSON => {
       let personList = [];
       responseJSON.map(item => {
@@ -422,6 +427,7 @@ export default class TeachingbeeAPI {
   }
 
   handleRequest(personID, recipientID, cmd) {
+    // Anfrage bearbeiten
     return this.#fetchAdvanced(this.#deleteRequestsURL(personID), {
       method: 'DELETE',
       headers: {
@@ -433,6 +439,7 @@ export default class TeachingbeeAPI {
   }
 
   addGroupRequest(senderID, groupID) {
+    // Gruppenanfrage stellen
     return this.#fetchAdvanced(this.#addGroupRequestsURL(senderID), {
       method: 'POST',
       headers: {
@@ -448,6 +455,7 @@ export default class TeachingbeeAPI {
   }
 
   getGroupRequests(personID) {
+    // Gruppenanfragen auslesen
     return this.#fetchAdvanced(this.#getGroupRequestsURL(personID)).then(responseJSON => {
       return new Promise(function (resolve) {
         resolve(responseJSON);
@@ -456,6 +464,7 @@ export default class TeachingbeeAPI {
   }
 
   handleGroupRequest(personID, groupID, cmd) {
+    // Gruppenanfragen bearbeiten
     return this.#fetchAdvanced(this.#deleteGroupRequestsURL(personID), {
       method: 'DELETE',
       headers: {

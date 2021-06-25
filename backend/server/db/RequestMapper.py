@@ -27,8 +27,7 @@ class RequestMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        # aus den tuples müssen noch die Duplikate entfernt werden
-        # (1, 2) und (2, 1) => (2, 1) entfernen
+        # aus den tuples müssen noch die umgekehrten Duplikate entfernt werden
         for i in tuples:
             j = list(i)     # i in eine Liste umwandeln
             j.reverse()     # diese Liste umdrehen
@@ -39,7 +38,7 @@ class RequestMapper(Mapper):
         return tuples
 
     def insert(self, sender, recipient):
-        """Einfügen eines User-Objekts in die Datenbank. """
+        ''' Anfragen in die DB einfügen '''
         cursor = self._cnx.cursor()
         command = "INSERT INTO Request (sender, recipient) VALUES (%s,%s)"
         data = (sender, recipient)
@@ -56,8 +55,7 @@ class RequestMapper(Mapper):
         pass
 
     def delete(self, sender, recipient):
-        """Löschen der Daten eines User-Objekts aus der Datenbank. """
-
+        ''' Anfrage löschen '''
         cursor = self._cnx.cursor()
 
         cursor.execute("DELETE FROM Request WHERE sender={} AND recipient={}".format(sender, recipient))
@@ -66,6 +64,7 @@ class RequestMapper(Mapper):
         cursor.close()
 
     def delete_by_person(self, personID):
+        ''' Anfrage einer Person löschen '''
         cursor = self._cnx.cursor()
 
         cursor.execute("DELETE FROM Request WHERE sender={} OR recipient={}".format(personID, personID))

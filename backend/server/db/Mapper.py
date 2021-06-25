@@ -1,9 +1,7 @@
 import mysql.connector as connector
 from contextlib import AbstractContextManager
 from abc import ABC, abstractmethod
-from sys import platform
 import os
-
 
 class Mapper (AbstractContextManager, ABC):
     """Abstrakte Basisklasse aller Mapper-Klassen"""
@@ -14,11 +12,12 @@ class Mapper (AbstractContextManager, ABC):
     def __enter__(self):
 
         if os.getenv('GAE_ENV', '').startswith('standard'):
-            ''' Cloud '''
+            ''' Wenn die App in der Cloud läuft '''
             self._cnx = connector.connect(user='root', password='password',
                                           unix_socket='/cloudsql/teachingbee-179c2:europe-west3:teachingbee',
                                           database='teachingbee')
         else:
+            ''' Wenn die App lokal ausgeführt wird '''
             self._cnx = connector.connect(user='me', password='password',
                                   host='192.168.0.105',
                                   database='teachingbee')
@@ -26,30 +25,30 @@ class Mapper (AbstractContextManager, ABC):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Was soll geschehen, wenn wir (evtl. vorübergehend) aufhören, mit dem Mapper zu arbeiten?"""
+        ''' den Mapper stoppen '''
         self._cnx.close()
 
     @abstractmethod
     def find_all(self):
-        """Lies alle Tupel aus und gib sie als Objekte zurück."""
+        ''' Alle Objekte aus einer Tabelle auslesen '''
         pass
 
     @abstractmethod
     def find_by_key(self, key):
-        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
+        ''' Eintrag aus der DB nach Primärschlüssel auslesen '''
         pass
 
     @abstractmethod
     def insert(self, object):
-        """Füge das folgende Objekt als Datensatz in die DB ein."""
+        ''' Eintrag in die DB einfügen '''
         pass
 
     @abstractmethod
     def update(self, object):
-        """Ein Objekt auf einen bereits in der DB enthaltenen Datensatz abbilden."""
+        ''' Eintag in der DB ändern '''
         pass
 
     @abstractmethod
     def delete(self, object):
-        """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""
+        ''' Eintrag aus der DB löschen '''
         pass

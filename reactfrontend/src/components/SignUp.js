@@ -10,7 +10,6 @@ class SignUp extends Component {
     constructor(props) {
         super(props);
 
-        // Init the state
         this.state = {
             currentUser: props.currentUser,
             person: null,
@@ -20,14 +19,18 @@ class SignUp extends Component {
             showProfile: false,
         };
     }
+
+    // PersonDialog anzeigen
     showPersonDialog = () => {
         this.setState({ showPerson: true });
     }
+    
+    // PersonDialog schließen
     closePersonDialog = person => {
         if (person) {
             TeachingbeeAPI.getAPI().addPersonFirebase(person.getID(), this.state.currentUser.uid)
             this.setState({
-                person: person,     // update PersonBO
+                person: person,
                 showPerson: false
             });
         } else {
@@ -42,7 +45,7 @@ class SignUp extends Component {
     closeProfileDialog = profile => {
         if (profile) {
             this.setState({
-                profile: profile,     // update PersonBO
+                profile: profile,
                 showProfile: false
             });
         } else {
@@ -62,7 +65,7 @@ class SignUp extends Component {
     }
 
     render() {
-        const { classes, interests, currentUser } = this.props;
+        const { classes, interests } = this.props;
         const { person, profile, showPerson, showProfile } = this.state;
         return (
             <div>
@@ -107,7 +110,6 @@ class SignUp extends Component {
         );
     }
 }
-
 
 const styles = (theme) => ({
     root: {

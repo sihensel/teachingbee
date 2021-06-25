@@ -1,6 +1,5 @@
 import server.bo.BusinessObject as bo
 
-
 class Profile (bo.BusinessObject):
     ''' Lernprofil einer Person oder Lerngruppe '''
     def __init__(self):
@@ -53,9 +52,11 @@ class Profile (bo.BusinessObject):
         self._online = value
 
     def get_interest(self):
+        ''' Interesse auslesen '''
         return self._interest
 
     def set_interest(self, value):
+        ''' Interesse setzen '''
         self._interest = value
 
     def __str__(self):
@@ -64,7 +65,7 @@ class Profile (bo.BusinessObject):
 
     @staticmethod
     def from_dict(dictionary=dict()):
-        """Umwandeln eines Python dict() in einen Customer()."""
+        """Umwandeln eines Python dict() in ein Profile()."""
         obj = Profile()
         obj.set_id(dictionary["id"])
         obj.set_course(dictionary["course"])

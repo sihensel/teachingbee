@@ -1,6 +1,7 @@
 import server.bo.BusinessObject as bo
 
 class Message(bo.BusinessObject):
+    ''' Klasse für die Nachrichten '''
     def __init__(self):
         super().__init__()
         self._content = ""

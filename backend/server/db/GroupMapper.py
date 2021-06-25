@@ -10,13 +10,7 @@ class GroupMapper(Mapper):
         pass
 
     def find_by_key(self, key):
-        """Suchen eines Benutzers mit vorgegebener User ID. Da diese eindeutig ist,
-        wird genau ein Objekt zurückgegeben.
-
-        :param key Primärschlüsselattribut (->DB)
-        :return User-Objekt, das dem übergebenen Schlüssel entspricht, None bei
-            nicht vorhandenem DB-Tupel.
-        """
+        ''' Gruppe anhand der ID auslesen '''
         result = None
 
         cursor = self._cnx.cursor()
@@ -33,8 +27,7 @@ class GroupMapper(Mapper):
             group.set_profileID(profileID)
             result = group
         except IndexError:
-            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
-            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
+            ''' wenn tuples leer ist '''
             result = None
 
         self._cnx.commit()
@@ -43,13 +36,7 @@ class GroupMapper(Mapper):
         return result
 
     def find_by_profileID(self, profileID):
-        """Suchen eines Benutzers mit vorgegebener User ID. Da diese eindeutig ist,
-        wird genau ein Objekt zurückgegeben.
-
-        :param key Primärschlüsselattribut (->DB)
-        :return User-Objekt, das dem übergebenen Schlüssel entspricht, None bei
-            nicht vorhandenem DB-Tupel.
-        """
+        ''' Gruppe anhand des Profils finden '''
         result = None
 
         cursor = self._cnx.cursor()
@@ -66,8 +53,7 @@ class GroupMapper(Mapper):
             group.set_profileID(profileID)
             result = group
         except IndexError:
-            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
-            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
+            ''' wenn tuples leer ist '''
             result = None
 
         self._cnx.commit()
@@ -94,7 +80,7 @@ class GroupMapper(Mapper):
         return group
 
     def insert_member(self, groupID, personID):
-        ''' eine Person einer Gruppe zufügen '''
+        ''' eine Person einer Gruppe hinzufügen '''
 
         cursor = self._cnx.cursor()
         command = "INSERT INTO R_person_group (groupID, personID) VALUES (%s, %s)"
@@ -147,6 +133,7 @@ class GroupMapper(Mapper):
         return result
     
     def find_groups_of_person(self, personID):
+        ''' Gibt alle Gruppen einer Person zurück '''
         cursor = self._cnx.cursor()
         command = "SELECT groupID FROM R_person_group WHERE personID={}".format(personID)
         cursor.execute(command)
@@ -159,12 +146,8 @@ class GroupMapper(Mapper):
 
         return result
 
-
     def update(self, group):
-        """Wiederholtes Schreiben eines Objekts in die Datenbank.
-
-        :param user das Objekt, das in die DB geschrieben werden soll
-        """
+        ''' Gruppe updaten '''
         cursor = self._cnx.cursor()
 
         command = "UPDATE Studygroup " + "SET gname=%s, info=%s WHERE id=%s"
@@ -177,10 +160,7 @@ class GroupMapper(Mapper):
         return group
 
     def delete(self, groupID):
-        """Löschen der Daten eines User-Objekts aus der Datenbank.
-
-        :param user das aus der DB zu löschende "Objekt"
-        """
+        ''' Gruppe löschen '''
         cursor = self._cnx.cursor()
 
         command = "DELETE FROM Studygroup WHERE id={}".format(groupID)
@@ -190,6 +170,7 @@ class GroupMapper(Mapper):
         cursor.close()
     
     def leave_all_groups(self, personID):
+        ''' Wenn der Account gelöscht wird, sollen alle Gruppen verlassen werden '''
         cursor = self._cnx.cursor()
 
         command = "DELETE FROM R_person_group WHERE personID={}".format(personID)

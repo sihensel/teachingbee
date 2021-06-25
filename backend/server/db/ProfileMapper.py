@@ -6,7 +6,7 @@ class ProfileMapper(Mapper):
         super().__init__()
 
     def find_all(self, key):
-        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
+        ''' alle Profile auslesen, die nicht dem des Users entsprechen '''
         result = []
 
         cursor = self._cnx.cursor()
@@ -35,7 +35,7 @@ class ProfileMapper(Mapper):
         pass
 
     def find_by_key(self, key):
-        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
+        ''' Profil anhand der ID auslesen '''
         result = None
 
         cursor = self._cnx.cursor()
@@ -56,7 +56,7 @@ class ProfileMapper(Mapper):
             profile.set_interest(interest)
             result = profile
         except IndexError:
-            """ wenn der SELECT nichts zurück gibt """
+            ''' wenn tuples leer ist '''
             result = None
 
         self._cnx.commit()
@@ -65,7 +65,7 @@ class ProfileMapper(Mapper):
         return result
 
     def insert(self, profile):
-        """Einfügen eines User-Objekts in die Datenbank. """
+        ''' Profil in die DB einfügen '''
         cursor = self._cnx.cursor()
         command = "INSERT INTO Profile (course, studytype, extroverted, frequency, online, interest) VALUES (%s,%s,%s,%s,%s, %s)"
         data = (profile.get_course(), profile.get_studytype(), profile.get_extroverted(), profile.get_frequency(), profile.get_online(), profile.get_interest())
@@ -83,7 +83,7 @@ class ProfileMapper(Mapper):
         return profile
 
     def update(self, profile):
-        ''' Einen Eintrag in der Datenbank mittels eines Objekts updaten '''
+        ''' Profil updaten '''
         cursor = self._cnx.cursor()
 
         command = "UPDATE Profile " + "SET course=%s, studytype=%s, extroverted=%s, frequency=%s, online=%s, interest=%s WHERE id=%s"
@@ -96,8 +96,7 @@ class ProfileMapper(Mapper):
         return profile
 
     def delete(self, profileID):
-        """Löschen der Daten eines User-Objekts aus der Datenbank. """
-
+        ''' Profil löschen '''
         cursor = self._cnx.cursor()
 
         cursor.execute("DELETE FROM Profile WHERE id={}".format(profileID))

@@ -9,6 +9,7 @@ class ChatMapper(Mapper):
         ''' Auslesen aller Chatpartner eines Users '''
         result = []
         cursor = self._cnx.cursor()
+        # Nachrichten, die vom User gesendet wurden
         command = "SELECT DISTINCT recipient FROM Message WHERE sender = '{}'".format(senderID)
         cursor.execute(command)
         tuples = cursor.fetchall()
@@ -16,6 +17,7 @@ class ChatMapper(Mapper):
         for i in tuples:
             result.append(i[0])
         
+        # Nachrichten, die der User empfangen hat
         command = "SELECT DISTINCT sender FROM Message WHERE recipient = '{}'".format(senderID)
         cursor.execute(command)
         tuples = cursor.fetchall()
@@ -38,13 +40,11 @@ class ChatMapper(Mapper):
         
         for (id, stamp, content, sender, recipient) in tuples:
             message = Message()
-
             message.set_id(id)
             message.set_stamp(stamp)
             message.set_content(content)
             message.set_sender(sender)
             message.set_recipient(recipient)
-
             result.append(message)
 
         command = "SELECT * FROM Message WHERE sender = '{}' AND recipient = '{}' ORDER BY stamp".format(recipient, sender)
@@ -53,13 +53,11 @@ class ChatMapper(Mapper):
 
         for (id, stamp, content, sender, recipient) in tuples:
             message = Message()
-
             message.set_id(id)
             message.set_stamp(stamp)
             message.set_content(content)
             message.set_sender(sender)
             message.set_recipient(recipient)
-
             result.append(message)
 
         self._cnx.commit()
@@ -71,14 +69,13 @@ class ChatMapper(Mapper):
         pass
 
     def find_by_person(self, personID):
-
+        ''' Nachrichten einer Person auslesen '''
         cursor = self._cnx.cursor()
         command = "SELECT DISTINCT sender, recipient FROM Message WHERE sender={} OR recipient={}".format(personID, personID)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        # aus den tuples müssen noch die Duplikate entfernt werden
-        # (1, 2) und (2, 1) => (2, 1) entfernen
+        # aus den tuples müssen noch die umgekehrten Duplikate entfernt werden
         for i in tuples:
             j = list(i)     # i in eine Liste umwandeln
             j.reverse()     # diese Liste umdrehen
@@ -89,14 +86,8 @@ class ChatMapper(Mapper):
         return tuples
 
     def insert(self, message):
-        """Einfügen eines User-Objekts in die Datenbank.
+        ''' Nachricht in die DB schreiben '''
 
-        Dabei wird auch der Primärschlüssel des übergebenen Objekts geprüft und ggf.
-        berichtigt.
-
-        :param user das zu speichernde Objekt
-        :return das bereits übergebene Objekt, jedoch mit ggf. korrigierter ID.
-        """
         cursor = self._cnx.cursor()
 
         command = "INSERT INTO Message (content, sender, recipient) VALUES (%s,%s,%s)"

@@ -1,35 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {
-  withStyles,
-  Typography,
-  Paper,
-  Button,
-  Table,
-  TableCell,
-  TableContainer,
-  TableRow,
-  CardActions,
-} from "@material-ui/core";
+import { withStyles, Typography, Paper, Button, Table, TableCell, TableContainer, TableRow, CardActions } from "@material-ui/core";
 import { TeachingbeeAPI } from "../api";
 import PersonForm from "./dialogs/PersonForm";
 import ProfileForm from "./dialogs/ProfileForm";
 import DeleteDialog from "./dialogs/DeleteDialog";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-//import ContextErrorMessage from './ContextErrorMessage';
-//import LoadingProgress from './LoadingProgress';
 
 class AccountDetail extends Component {
   constructor(props) {
     super(props);
 
-    // Init the state
     this.state = {
       interests: props.interests,
       person: props.person,
       profile: null,
-      loadingInProgress: false,
-      loadingError: null,
       showPerson: false,
       showProfile: false,
       showDelete: false,
@@ -40,29 +25,18 @@ class AccountDetail extends Component {
   }
 
   getProfile = () => {
-    TeachingbeeAPI.getAPI()
-      .getProfile(this.state.person.getProfileID())
-      .then((profile) =>
+    TeachingbeeAPI.getAPI().getProfile(this.state.person.getProfileID()).then((profile) =>
         this.setState({
           profile: profile,
-          loadingInProgress: false,
-          loadingError: null,
         })
-      )
-      .catch((e) =>
+      ).catch((e) =>
         this.setState({
           profile: null,
-          loadingInProgress: false,
-          loadingError: e,
         })
       );
-    this.setState({
-      loadingInProgress: true,
-      loadingError: null,
-    });
   };
 
-  // handle PersonDialog
+  // PersonDialog anzeigen
   showPersonDialog = () => {
     this.setState({ showPerson: true });
   };
@@ -92,26 +66,19 @@ class AccountDetail extends Component {
     }
   };
 
+  // DeleteDialog anzeigen
   toggleDelete = () => {
     this.setState({ showDelete: !this.state.showDelete });
   };
 
+  // AccountDetail schließen
   handleClose = () => {
     this.props.onClose(this.state.person);
   };
 
-  /** Renders the component */
   render() {
     const { classes, interests } = this.props;
-    const {
-      person,
-      profile,
-      loadingInProgress,
-      loadingError,
-      showPerson,
-      showProfile,
-      showDelete,
-    } = this.state;
+    const { person, profile, showPerson, showProfile, showDelete } = this.state;
     const ExtrovertList = ["wenig", "mäßig", "sehr"];
 
     return (

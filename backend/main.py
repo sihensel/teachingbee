@@ -1,5 +1,5 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS, cross_origin
+from flask import Flask
+from flask_cors import CORS
 from flask_restx import Api, Resource, fields
 
 from server.BusinessLogic import BusinessLogic
@@ -12,7 +12,6 @@ from server.bo.GroupMessage import GroupMessage
 
 app = Flask(__name__)
 CORS(app, resources=r'/teachingbee/*')
-
 
 api = Api(app, version='1.0', title='Teachingbee', description='App um Lernpartner zu finden.')
 teachingbee = api.namespace('teachingbee', description='Namespace der App')
@@ -27,7 +26,6 @@ person = api.inherit('Person', bo, {
     'fname': fields.String(attribute='_fname', description='Vorname'),
     'lname': fields.String(attribute='_lname', description='Nachname'),
     'birthdate': fields.String(attribute='_birthdate', description='Geburtsdatum'),
-    # vllt als String lassen?
     'semester': fields.String(attribute='_semester', description='Semester'),
     'gender': fields.String(attribute='_gender', description='Geschlecht'),
     'profileID': fields.Integer(attribute='_profileID', description='ID des Profils'),
@@ -64,12 +62,10 @@ groupmessage = api.inherit('GroupMessage', bo, {
     'group': fields.Integer(attribute='_group', description='ID der Gruppe'),
 })
 
-
 # POST: create
 # PUT: update
 # DELETE: delete
 
-# interessen aus der Datenbank auslesen
 @teachingbee.route('/interests')
 @teachingbee.response(500, 'Internal Server Error')
 class Interests(Resource):
@@ -79,7 +75,6 @@ class Interests(Resource):
         interests = bl.get_all_interests()
         return interests
 
-# eine einzelne Person bearbeiten
 @teachingbee.route('/person/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
@@ -110,7 +105,6 @@ class PersonOperations(Resource):
         result = bl.delete_person(pers)
         return result, 200
 
-# Person neu speichern
 @teachingbee.route('/persons')
 @teachingbee.response(500, 'Internal Server Error')
 class AddPerson(Resource):
@@ -142,7 +136,6 @@ class FirebasePerson(Resource):
         bl.add_person_firebase(api.payload['personID'], api.payload['firebaseID'])
         return '', 200
 
-# Profil bearbeiten
 @teachingbee.route('/profile/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Profils')
@@ -166,7 +159,6 @@ class ProfileOperations(Resource):
         else:
             return '', 500
 
-# Profil neu speichern
 @teachingbee.route('/profiles')
 @teachingbee.response(500, 'Internal Server Error')
 class AddProfile(Resource):
@@ -181,7 +173,6 @@ class AddProfile(Resource):
         else:
             return '', 500
 
-# Profil und Person verknüpfen
 @teachingbee.route('/link')
 @teachingbee.response(500, 'Internal Server Error')
 class LinkPersonProfile(Resource):
@@ -194,7 +185,6 @@ class LinkPersonProfile(Resource):
         else:
             return '', 500
 
-# eine einzelne Nachricht bearbeiten
 @teachingbee.route('/chat/<int:sender>/<int:recipient>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('sender', 'Sender')
@@ -219,7 +209,6 @@ class ChatOperations(Resource):
         else:
             return '', 500
 
-# eine Liste von Chats verwalten
 @teachingbee.route('/chatlist/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')
@@ -231,8 +220,6 @@ class ChatListOperations(Resource):
         personList = bl.get_chatList(id)
         return personList
 
-
-# Eine Liste von Gruppen einer Person verwalten
 @teachingbee.route('/grouplist/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')
@@ -255,8 +242,6 @@ class GroupListOperations(Resource):
         else:
             return '', 500
 
-
-# eine einzelne Gruppennachricht bearbeiten
 @teachingbee.route('/groupchat/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Gruppe')
@@ -280,7 +265,6 @@ class GroupChatOperations(Resource):
         else:
             return '', 500
 
-# Person matchen
 @teachingbee.route('/match-person/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID der Person')
@@ -304,7 +288,6 @@ class MatchGroup(Resource):
         matchList = bl.match(id)
         return matchList[1]
 
-# Gruppe bearbeiten
 @teachingbee.route('/group/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')
@@ -328,7 +311,6 @@ class GroupOperations(Resource):
         else:
             return '', 500
 
-# Eine Gruppe hinzufügen
 @teachingbee.route('/groups')
 @teachingbee.response(500, 'Internal Server Error')
 class AddGroup(Resource):
@@ -346,7 +328,6 @@ class AddGroup(Resource):
         else:
             return '', 500
 
-# Anfragen an Personen verwalten
 @teachingbee.route('/requests/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')
@@ -371,7 +352,6 @@ class RequestOperations(Resource):
         elif api.payload['cmd'] == 'deny':
             bl.deny_request(api.payload['sender'],  api.payload['recipient'])
 
-# Anfragen an Gruppen verwalten
 @teachingbee.route('/grouprequests/<int:id>')
 @teachingbee.response(500, 'Internal Server Error')
 @teachingbee.param('id', 'ID des Users')
@@ -396,4 +376,4 @@ class GroupRequestOperations(Resource):
             bl.deny_group_request(api.payload['sender'],  api.payload['group'])
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

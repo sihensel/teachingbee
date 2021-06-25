@@ -1,5 +1,5 @@
 /**
- * Base class for all BusinessObjects, which has an ID field by default.
+ * Basisklasse für alle Klassen
  */
 export default class BusinessObject {
 
@@ -10,36 +10,30 @@ export default class BusinessObject {
   }
 
   setID(id) {
+    // ID setzen
     this.id = id;
   }
 
   getID() {
+    // ID auslesen
     return this.id;
   }
   
   setName(name) {
-      this.name = name
+    // Name setzen
+    this.name = name
   }
   getName() {
-      return this.name
+    // Name auslesen
+    return this.name
   }
 
   setStamp(stamp) {
-      this.stamp = stamp
+    // Stamp setzen
+    this.stamp = stamp
   }
   getStamp() {
-      return this.stamp
-  }
-  
-
-  /**
-   * Returns a string representation of this Object. This is useful for debugging purposes.
-   */
-  toString() {
-    let result = '';
-    for (var prop in this) {
-      result += prop + ': ' + this[prop] + ' ';
-    }
-    return result;
+    // Stamp auslesen
+    return this.stamp
   }
 }

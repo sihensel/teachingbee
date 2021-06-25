@@ -1,20 +1,10 @@
 import BusinessObject from './BusinessObject';
 
 /**
- * Represents a person
+ * Klasse für die Gruppenobjekte
  */
 export default class GroupBO extends BusinessObject {
 
-    /**
-     * Constructs a CustomerBO object with a given firstname and lastname.
-     * 
-     * @param {String} members - the members of this CustomerBO.
-     * @param {String} lname - the firstname of this CustomerBO.
-     * @param {String} birthdate - the firstname of this CustomerBO.
-     * @param {String} semester - the firstname of this CustomerBO.
-     * @param {String} gender - the firstname of this CustomerBO.
-     * @param {String} profileID - the firstname of this CustomerBO.
-     */
     constructor(info, profileID) {
         super();
         this.info = info;
@@ -22,26 +12,27 @@ export default class GroupBO extends BusinessObject {
     }
 
     setInfo(info){
+        // Gruppeninfo auslesen
         this.info = info
     }
 
     getInfo(){
+        // Gruppeninfo setzen
         return this.info
     }
 
     setProfileID(profileID) {
+        // profileID setzen
         this.profileID = profileID;
     }
 
     getProfileID() {
+        // profileID auslesen
         return this.profileID;
     }
 
-
-    /** 
-     * Returns an Object from a JSON
-     */
     static fromJSON(group) {
+        // Objekt anhand einer JSON-Struktur erstellen
         let p = Object.setPrototypeOf(group, GroupBO.prototype);
         return p;
     }

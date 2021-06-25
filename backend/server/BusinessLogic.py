@@ -123,9 +123,8 @@ class BusinessLogic:
 
     def add_group(self, group, personID):
         ''' Eine neue Gruppe erstellen
-        Die Gruppe erhält ein gleiches Profil wie die erstellende Person
-        Das Gruppenobjekt enthält zuerst die profileID oder Person, damit wird das Profil erstellt
-        Das neue Profil wird dann als profileID der neuen Gruppe gesetzt und ebenfalls bespeichert
+        Das Gruppenobjekt enthält zuerst die profileID der Person, damit wird das Profil erstellt
+        Das neue Profil wird dann als profileID der neuen Gruppe gesetzt und ebenfalls gespeichert
         Zum Schluss wird die Gruppe mit der Person verknüpft
         '''
         profile = self.get_profile(group.get_profileID())
@@ -148,7 +147,7 @@ class BusinessLogic:
             mapper.remove_member(group.get_id(), person.get_id())
             result = mapper.check_group(group.get_id())
 
-            # wenn die Gruppe leer ist, soll sie mit dem zugehörigen Profil gelöscht werden
+        # wenn die Gruppe leer ist, soll sie mit dem zugehörigen Profil gelöscht werden
         if result == False:
             with GroupChatMapper() as mapper:
                 mapper.delete(group.get_id())
@@ -167,6 +166,7 @@ class BusinessLogic:
         with GroupChatMapper() as mapper:
             return mapper.insert(message)
     
+    ''' Methoden für Personenanfragen '''
     def add_request(self, sender, recipient):
         with RequestMapper() as mapper:
             return mapper.insert(sender, recipient)
@@ -196,6 +196,7 @@ class BusinessLogic:
         self.add_message(message)
         self.deny_request(sender, recipient)
 
+    ''' Methoden für alle Gruppenanfragen '''
     def add_group_request(self, sender, group):
         with GroupRequestMapper() as mapper:
             return mapper.insert(sender, group)
@@ -237,7 +238,7 @@ class BusinessLogic:
         with ProfileMapper() as mapper:
             myProfile = mapper.find_by_key(profileID)    # das Profil der angemeldeten Person
             profileList = mapper.find_all(profileID)     # alle anderen Profile aus der Datenbank (Person + Gruppen)
-        
+ 
         result = []         # Liste mit den Profilen, die gematcht werden
         personList = []     # Liste mit den Personen
         groupList = []      # Liste mit den Gruppen

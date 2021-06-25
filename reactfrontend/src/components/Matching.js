@@ -16,15 +16,14 @@ class Matching extends Component {
       groupList: null,
     };
   }
+
   componentDidMount() {
     this.matchPerson();
     this.matchGroup();
   }
 
   matchPerson = () => {
-    TeachingbeeAPI.getAPI()
-      .matchPerson(this.props.person.getID())
-      .then((response) =>
+    TeachingbeeAPI.getAPI().matchPerson(this.props.person.getID()).then((response) =>
         this.setState({
           personList: response,
           loadingInProgress: false,
@@ -45,9 +44,7 @@ class Matching extends Component {
   };
 
   matchGroup = () => {
-    TeachingbeeAPI.getAPI()
-      .matchGroup(this.props.person.getID())
-      .then((response) =>
+    TeachingbeeAPI.getAPI() .matchGroup(this.props.person.getID()) .then((response) =>
         this.setState({
           groupList: response,
           loadingInProgress: false,

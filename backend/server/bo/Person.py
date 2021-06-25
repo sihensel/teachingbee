@@ -1,7 +1,7 @@
 import server.bo.BusinessObject as bo
 
 class Person(bo.BusinessObject):
-    ''' Personendaten eines Accounts '''
+    ''' Klasse für die Personendaten '''
     def __init__(self):
         super().__init__()
         self._fname = ''

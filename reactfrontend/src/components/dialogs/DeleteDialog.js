@@ -3,21 +3,18 @@ import PropTypes from 'prop-types';
 import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { TeachingbeeAPI } from '../../api';
-//import ContextErrorMessage from './ContextErrorMessage';
-//import LoadingProgress from './LoadingProgress';
-
 
 class DeleteDialog extends Component {
 
     constructor(props) {
         super(props);
 
-        // Init the state
         this.state = {
             deleted: false
         };
     }
 
+    // Account löschen
     deleteAccount = () => {
         TeachingbeeAPI.getAPI().deletePerson(this.props.person).then(response => {
             if (response == 'successfull') {
@@ -26,12 +23,11 @@ class DeleteDialog extends Component {
         });
     }
 
-    // Close the Dialog
+    // Dialog schließen
     handleClose = () => {
         this.props.onClose();
     }
 
-    /** Renders the component */
     render() {
         const { classes, show } = this.props;
         const { deleted } = this.state;
@@ -82,7 +78,6 @@ class DeleteDialog extends Component {
     }
 }
 
-/** Component specific styles */
 const styles = theme => ({
     root: {
         width: '100%',

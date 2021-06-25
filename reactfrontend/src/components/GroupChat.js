@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { withStyles, Typography, Paper, Button } from "@material-ui/core";
+import { withStyles, Typography, Button } from "@material-ui/core";
 import { TeachingbeeAPI, GroupMessageBO } from "../api";
 import GroupForm from './dialogs/GroupForm';
 import Divider from "@material-ui/core/Divider";
@@ -13,7 +13,6 @@ class GroupChat extends Component {
     constructor(props) {
         super(props);
 
-        // Init the state
         this.state = {
             group: props.group,
             messages: null,
@@ -26,58 +25,41 @@ class GroupChat extends Component {
         this.getMessage();
     }
 
+    // Nachricht hinzufügen
     addMessage = () => {
         let newMessage = new GroupMessageBO(this.state.content, this.props.person.getID(), this.state.group.getID())
         TeachingbeeAPI.getAPI().addGroupMessage(newMessage).then(message => {
             this.state.messages.push(message)
             this.setState({ content: '' });
-            // Backend call sucessfull
-            // reinit the dialogs state for a new empty customer
-        }).catch(e =>
-            this.setState({
-                updatingInProgress: false,    // disable loading indicator 
-                updatingError: e              // show error message
-            })
-        );
-
-        // set loading to true
-        this.setState({
-            updatingInProgress: true,       // show loading indicator
-            updatingError: null             // disable error message
-        });
+        })
     }
 
     getMessage = () => {
         TeachingbeeAPI.getAPI().getGroupMessage(this.state.group.getID()).then(messages =>
             this.setState({
                 messages: messages,
-                loadingInProgress: false,
-                loadingError: null
             })).catch(e =>
                 this.setState({
                     messages: null,
-                    loadingInProgress: false,
-                    loadingError: e
                 })
             );
-        this.setState({
-            loadingInProgress: true,
-            loadingError: null
-        });
     }
 
+    // Gruppe verlassen
     leaveGroup = () => {
         TeachingbeeAPI.getAPI().leaveGroup(this.state.group, this.props.person).then(response =>
             this.handleClose()
         )
     }
 
+    // GroupForm anzeigen
     showGroupForm = () => {
         this.setState({
             showGroupForm: true
         })
     }
 
+    // GroupForm schließen
     closeGroupForm = group => {
         if (group) {
             this.setState({
@@ -89,10 +71,12 @@ class GroupChat extends Component {
         }
     }
 
+    // Inhalt desn Textfelds ändern
     handleChange = (e) => {
         this.setState({ content: e.target.value })
     }
 
+    // Componente schließen
     handleClose = () => {
         this.props.onClose()
     }

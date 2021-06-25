@@ -1,12 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {
-  withStyles,
-  Typography,
-  Paper,
-  Button,
-  CardActions,
-} from "@material-ui/core";
+import { withStyles, Typography, Button } from "@material-ui/core";
 import { TeachingbeeAPI, MessageBO } from "../api";
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
@@ -17,7 +11,6 @@ class Chat extends Component {
   constructor(props) {
     super(props);
 
-    // Init the state
     this.state = {
       messages: null,
       content: "",
@@ -39,50 +32,28 @@ class Chat extends Component {
       .then((message) => {
         this.state.messages.push(message);
         this.setState({ content: "" });
-        // Backend call sucessfull
-        // reinit the dialogs state for a new empty customer
       })
-      .catch((e) =>
-        this.setState({
-          updatingInProgress: false, // disable loading indicator
-          updatingError: e, // show error message
-        })
-      );
-
-    // set loading to true
-    this.setState({
-      updatingInProgress: true, // show loading indicator
-      updatingError: null, // disable error message
-    });
   };
 
   getMessage = () => {
     TeachingbeeAPI.getAPI()
-      .getMessage(this.props.sender.getID(), this.props.recipient.getID())
-      .then((messages) =>
+      .getMessage(this.props.sender.getID(), this.props.recipient.getID()).then((messages) =>
         this.setState({
           messages: messages,
-          loadingInProgress: false,
-          loadingError: null,
         })
-      )
-      .catch((e) =>
+      ).catch((e) =>
         this.setState({
           messages: null,
-          loadingInProgress: false,
-          loadingError: e,
         })
       );
-    this.setState({
-      loadingInProgress: true,
-      loadingError: null,
-    });
   };
 
+  // Nachricht ändern
   handleChange = (e) => {
     this.setState({ content: e.target.value });
   };
 
+  // Componente schließen
   handleClose = () => {
     this.props.onClose();
   };

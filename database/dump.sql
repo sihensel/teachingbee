@@ -51,6 +51,7 @@ CREATE TABLE Studygroup (
   FOREIGN KEY (profileID) REFERENCES Profile(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Verknüft Personen mit Gruppen
 DROP TABLE IF EXISTS R_person_group;
 CREATE TABLE R_person_group (
   id int NOT NULL AUTO_INCREMENT,
@@ -104,6 +105,7 @@ CREATE TABLE Grouprequest (
   FOREIGN KEY (groupID) REFERENCES Studygroup(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Verknüpft Personen mit einer FirebaseID
 DROP TABLE IF EXISTS R_person_firebase;
 CREATE TABLE R_person_firebase (
   id int NOT NULL AUTO_INCREMENT,
@@ -114,7 +116,7 @@ CREATE TABLE R_person_firebase (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- insert values into tables
+-- Testdaten
 INSERT INTO Interests (iname) VALUES ('Sport');
 INSERT INTO Interests (iname) VALUES ('Technologie');
 INSERT INTO Interests (iname) VALUES ('Musik');
@@ -165,5 +167,3 @@ INSERT INTO R_person_group (groupID, personID) VALUES (2, 4);
 INSERT INTO Request (sender, recipient) VALUES (4, 1);
 INSERT INTO Request (sender, recipient) VALUES (5, 1);
 INSERT INTO Grouprequest (sender, groupID) VALUES (1, 3);
-
-INSERT INTO R_person_firebase (personID, firebaseID) VALUES (1, 'J2mS9UqEnXV9RpSxcv5a4pkYOoR2')

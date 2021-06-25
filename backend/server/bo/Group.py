@@ -1,7 +1,7 @@
 import server.bo.BusinessObject as bo
 
-
 class Group(bo.BusinessObject):
+    ''' Klasse aller Gruppenobjekte '''
     def __init__(self):
         super().__init__()
         self._info = ""

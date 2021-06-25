@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, InputLabel, Select, MenuItem, Divider } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { TeachingbeeAPI, ProfileBO} from '../../api';
-//import ContextErrorMessage from './ContextErrorMessage';
-//import LoadingProgress from './LoadingProgress';
 
 class ProfileForm extends Component {
 
@@ -21,55 +19,30 @@ class ProfileForm extends Component {
         interest = props.profile.getInterest();
     }
 
-    // Init the state
     this.state = {
       course: course,
-      fnameValidationFailed: false,
-      fnameEdited: false,
       studytype: studytype,
-      lnameValidationFailed: false,
-      lnameEdited: false,
       extroverted: extroverted,
       frequency: frequency,
       online: online,
       interest: interest,
-      addingInProgress: false,
-      updatingInProgress: false,
-      addingError: null,
-      updatingError: null
     };
-    // save this state for canceling
+    // state als Fallback speichern
     this.initialState = this.state;
   }
 
-  /** Adds the customer */
+  // profil erstellen
   addProfile = () => {
     let newProfile = new ProfileBO(this.state.course, this.state.studytype, this.state.extroverted, this.state.frequency, this.state.online, this.state.interest);
     TeachingbeeAPI.getAPI().addProfile(newProfile).then(profile => {
-      // Backend call sucessfull
-      // reinit the dialogs state for a new empty customer
       this.setState(this.initialState);
-      this.props.onClose(profile); // call the parent with the customer object from backend
-    }).catch(e =>
-      this.setState({
-        updatingInProgress: false,    // disable loading indicator 
-        updatingError: e              // show error message
-      })
-    );
-
-    // set loading to true
-    this.setState({
-      updatingInProgress: true,       // show loading indicator
-      updatingError: null             // disable error message
+      this.props.onClose(profile); 
     });
   }
 
-  /** Updates the customeastr */
-  
+  // Profil updaten
   updateProfile = () => {
-    // clone the original cutomer, in case the backend call fails
     let updatedProfile = Object.assign(new ProfileBO(), this.props.profile);
-    // set the new attributes from our dialog
     updatedProfile.setCourse(this.state.course);
     updatedProfile.setStudytype(this.state.studytype);
     updatedProfile.setExtroverted(this.state.extroverted);
@@ -77,33 +50,18 @@ class ProfileForm extends Component {
     updatedProfile.setOnline(this.state.online);
     updatedProfile.setInterest(this.state.interest);
     TeachingbeeAPI.getAPI().updateProfile(updatedProfile).then(profile => {
-      this.setState({
-        updatingInProgress: false,              // disable loading indicator  
-        updatingError: null                     // no error message
-      });
-      // keep the new state as base state
+      // neuer State als Fallback stetzen
       this.initialState.course = this.state.course;
       this.initialState.studytype = this.state.studytype;
       this.initialState.extroverted = this.state.extroverted;
       this.initialState.frequency = this.state.frequency;
       this.initialState.online = this.state.online;
       this.initialState.interest = this.state.interest;
-      this.props.onClose(profile);      // call the parent with the new customer
-    }).catch(e =>
-      this.setState({
-        updatingInProgress: false,              // disable loading indicator 
-        updatingError: e                        // show error message
-      })
-    );
-
-    // set loading to true
-    this.setState({
-      updatingInProgress: true,                 // show loading indicator
-      updatingError: null                       // disable error message
+      this.props.onClose(profile);
     });
   }
 
-  /** Handles value changes of the forms textfields and validates them */
+  // Inhalt eines Textfelds ändern
   textFieldValueChange = (event) => {
     const value = event.target.value;
 
@@ -114,8 +72,6 @@ class ProfileForm extends Component {
 
     this.setState({
       [event.target.id]: event.target.value,
-      [event.target.id + 'ValidationFailed']: error,
-      [event.target.id + 'Edited']: true
     });
   }
 
@@ -146,11 +102,9 @@ class ProfileForm extends Component {
   }
 
 
-  /** Renders the component */
   render() {
     const { classes, profile, interests, show } = this.props;
-    const { course, fnameValidationFailed, fnameEdited, studytype, lnameValidationFailed, lnameEdited, extroverted, frequency, online, interest, addingInProgress,
-      addingError, updatingInProgress, updatingError } = this.state;
+    const { course, studytype, extroverted, frequency, online, interest } = this.state;
 
     let title = '';
     let header = '';
@@ -249,7 +203,6 @@ class ProfileForm extends Component {
   }
 }
 
-/** Component specific styles */
 const styles = theme => ({
   root: {
     width: '100%',

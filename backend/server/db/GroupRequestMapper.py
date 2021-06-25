@@ -21,7 +21,7 @@ class GroupRequestMapper(Mapper):
         pass
 
     def find_by_person(self, personID):
-
+        ''' Alle Anfragen, die eine Person geschickt hat '''
         cursor = self._cnx.cursor()
 
         command = "SELECT DISTINCT sender, groupID FROM Grouprequest WHERE sender={}".format(personID)
@@ -31,7 +31,7 @@ class GroupRequestMapper(Mapper):
         return tuples
 
     def insert(self, sender, group):
-        """Einfügen eines User-Objekts in die Datenbank. """
+        ''' Anfrage in die Datenbank einfügen '''
         cursor = self._cnx.cursor()
         command = "INSERT INTO Grouprequest (sender, groupID) VALUES (%s,%s)"
         data = (sender, group)
@@ -48,8 +48,7 @@ class GroupRequestMapper(Mapper):
         pass
 
     def delete(self, sender, groupID):
-        """Löschen der Daten eines User-Objekts aus der Datenbank. """
-
+        ''' Anfrage aus der DB löschen '''
         cursor = self._cnx.cursor()
 
         cursor.execute("DELETE FROM Grouprequest WHERE sender={} AND groupID={}".format(sender, groupID))
@@ -58,6 +57,7 @@ class GroupRequestMapper(Mapper):
         cursor.close()
     
     def delete_by_group(self, groupID):
+        ''' Anfragen an eine Gruppe löschen, wenn die Gruppe gelöscht wird '''
         cursor = self._cnx.cursor()
 
         cursor.execute("DELETE FROM Grouprequest WHERE groupID={}".format(groupID))
@@ -66,6 +66,7 @@ class GroupRequestMapper(Mapper):
         cursor.close()
     
     def delete_group_by_person(self, personID):
+        ''' Gruppenanfragen von einer Person löschen '''
         cursor = self._cnx.cursor()
 
         cursor.execute("DELETE FROM Grouprequest WHERE sender={}".format(personID))

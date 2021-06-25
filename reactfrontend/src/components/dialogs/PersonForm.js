@@ -7,8 +7,6 @@ import DateFnsUtils from '@date-io/date-fns';
 import { format } from 'date-fns';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 import { TeachingbeeAPI, PersonBO } from '../../api';
-//import ContextErrorMessage from './ContextErrorMessage';
-//import LoadingProgress from './LoadingProgress';
 
 
 class PersonForm extends Component {
@@ -26,59 +24,31 @@ class PersonForm extends Component {
       pid = props.person.getProfileID();
     }
 
-    // Init the state
     this.state = {
       fname: fn,
-      fnameValidationFailed: false,
-      fnameEdited: false,
       lname: ln,
-      lnameValidationFailed: false,
-      lnameEdited: false,
       birthdate: bd,
       semester: sem,
       gender: gend,
       profileID: pid,
-      addingInProgress: false,
-      updatingInProgress: false,
-      addingError: null,
-      updatingError: null
     };
-    // save this state for canceling
+    // State als Fallback speichern
     this.initialState = this.state;
   }
 
-  /** Adds the customer
-   * @todo Error handling/verification still missing
-   */
+  // Person neu anlegen
   addPerson = () => {
     const bdate = format(this.state.birthdate, 'yyyy-MM-dd');
     let newPerson = new PersonBO(this.state.fname, this.state.lname, bdate, this.state.semester, this.state.gender, this.state.profileID)
     TeachingbeeAPI.getAPI().addPerson(newPerson).then(person => {
-      // Backend call sucessfull
-      // reinit the dialogs state for a new empty customer
       this.setState(this.initialState);
-      this.props.onClose(person); // call the parent with the object from backend
-    }).catch(e =>
-      this.setState({
-        updatingInProgress: false,    // disable loading indicator 
-        updatingError: e              // show error message
-      })
-    );
-
-    // set loading to true
-    this.setState({
-      updatingInProgress: true,       // show loading indicator
-      updatingError: null             // disable error message
-    });
+      this.props.onClose(person);
+    })
   }
 
-  /** Updates the person
-   * @todo !!!ERROR HANDLING IS STILL MISSING!!!
-   */
+  // Person ändern
   updatePerson = () => {
-    // clone the original cutomer, in case the backend call fails
     let updatedPerson = Object.assign(new PersonBO(), this.props.person);
-    // set the new attributes from our dialog
     updatedPerson.setFname(this.state.fname);
     updatedPerson.setLname(this.state.lname);
     // das Datum muss bei Änderung noch in das Format 'yyyy-MM-dd' gebracht werden
@@ -92,11 +62,6 @@ class PersonForm extends Component {
     updatedPerson.setGender(this.state.gender);
 
     TeachingbeeAPI.getAPI().updatePerson(updatedPerson).then(person => {
-      this.setState({
-        updatingInProgress: false,              // disable loading indicator  
-        updatingError: null                     // no error message
-      });
-      // keep the new state as base state
       this.initialState.fname = this.state.fname;
       this.initialState.lname = this.state.lname;
       // Datumsformat beachten (s.o.)
@@ -108,22 +73,11 @@ class PersonForm extends Component {
       }
       this.initialState.semester = this.state.semester;
       this.initialState.gender = this.state.gender;
-      this.props.onClose(person);      // call the parent with the new person
-    }).catch(e =>
-      this.setState({
-        updatingInProgress: false,              // disable loading indicator 
-        updatingError: e                        // show error message
-      })
-    );
-
-    // set loading to true
-    this.setState({
-      updatingInProgress: true,                 // show loading indicator
-      updatingError: null                       // disable error message
+      this.props.onClose(person);
     });
   }
 
-  /** Handles value changes of the forms textfields and validates them */
+  // Textfelder ändern
   textFieldValueChange = (event) => {
     const value = event.target.value;
 
@@ -134,28 +88,28 @@ class PersonForm extends Component {
 
     this.setState({
       [event.target.id]: event.target.value,
-      [event.target.id + 'ValidationFailed']: error,
-      [event.target.id + 'Edited']: true
     });
   }
 
-  // Close the Dialog
+  // Dialog schließen
   handleClose = () => {
     this.setState(this.initialState);
     this.props.onClose();
   }
 
+  // Inhalt des Geschlecht-Dropdowns ändern
   handleChange = (event) => {
     this.setState({ gender: event.target.value });
   }
+
+  // Datum ändern
   handleDateChange = (date) => {
     this.setState({ birthdate: date });
   }
 
-  /** Renders the component */
   render() {
     const { classes, person, show } = this.props;
-    const { fname, fnameValidationFailed, fnameEdited, lname, lnameValidationFailed, lnameEdited, birthdate, semester, gender, profileID, addingInProgress, addingError, updatingInProgress, updatingError } = this.state;
+    const { fname, lname, birthdate, semester, gender, profileID } = this.state;
 
     let title = '';
     let header = '';
@@ -183,8 +137,8 @@ class PersonForm extends Component {
                     {header}
                 </DialogContentText>
               <form className={classes.root} noValidate autoComplete='off'>
-                <TextField autoFocus type='text' required fullWidth margin='normal' id='fname' label='Vorname:' value={fname} onChange={this.textFieldValueChange} error={fnameValidationFailed} />
-                <TextField type='text' required fullWidth margin='normal' id='lname' label='Nachname:' value={lname} onChange={this.textFieldValueChange} error={lnameValidationFailed} />
+                <TextField autoFocus type='text' required fullWidth margin='normal' id='fname' label='Vorname:' value={fname} onChange={this.textFieldValueChange} />
+                <TextField type='text' required fullWidth margin='normal' id='lname' label='Nachname:' value={lname} onChange={this.textFieldValueChange} />
                 <br />
                 <br />
                 <InputLabel id='gender-label'>Geschlecht</InputLabel>
@@ -198,20 +152,20 @@ class PersonForm extends Component {
                   <DatePicker disableToolbar required variant='inline' format='dd.MM.yyyy' margin='normal' id='birthdate' label='Geburtsdatum' value={birthdate} onChange={this.handleDateChange} />
                 </MuiPickersUtilsProvider>
 
-                <TextField type='text' required fullWidth margin='normal' id='semester' label='Semester:' value={semester} onChange={this.textFieldValueChange} error={fnameValidationFailed} />
+                <TextField type='text' required fullWidth margin='normal' id='semester' label='Semester:' value={semester} onChange={this.textFieldValueChange} />
               </form>
             </DialogContent>
             <DialogActions>
               <Button color='secondary' onClick={this.handleClose}>
                 Abbrechen
-                </Button>
+              </Button>
               {person ?
                 <Button variant='contained' color='primary' onClick={this.updatePerson}>
                   Speichern
-                    </Button>
+                  </Button>
                 : <Button variant='contained' color='primary' onClick={this.addPerson}>
                   Anlegen
-                    </Button>
+                  </Button>
               }
             </DialogActions>
           </Dialog></div>
@@ -220,7 +174,6 @@ class PersonForm extends Component {
   }
 }
 
-/** Component specific styles */
 const styles = theme => ({
   root: {
     width: '100%',

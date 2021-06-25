@@ -1,17 +1,7 @@
 import BusinessObject from './BusinessObject';
 
-/**
- * Represents a groupmessage
- */
 export default class GroupMessageBO extends BusinessObject {
 
-  /**
-   * Constructs a CustomerBO object with a given firstname and lastname.
-   * 
-   * @param {String} content - the firstname of this CustomerBO.
-   * @param {String} sender - the firstname of this CustomerBO.
-   * @param {String} group - the firstname of this CustomerBO.
-   */
   constructor(content, sender, group) {
     super();
     this.content = content;
@@ -19,22 +9,38 @@ export default class GroupMessageBO extends BusinessObject {
     this.group = group;
   }
 
-  getContent(content) {
+  getContent() {
+    // Inhalt der Nachricht auslesen
     return this.content;
   }
 
-  getSender(sender) {
+  setContent(content) {
+    // Inhalt setzen
+    this.content = content;
+  }
+
+  getSender() {
+    // Sender auslesen
     return this.sender;
   }
 
-  getGroup(recipient) {
-    return this.group;
+  setSender(sender) {
+    // Sender setzen
+    this.sender = sender;
   }
 
-  /** 
-   * Returns an Object from a JSON
-   */
+  getGroup() {
+    // Gruppe auslesen
+    return this.group;
+  }
+  
+  setGroup(group) {
+    // Gruppe setzen
+    this.group = group;
+  }
+
   static fromJSON(groupmessage) {
+    // Objekt anhand einer JSON-Struktur erstellen
     let msg = Object.setPrototypeOf(groupmessage, GroupMessageBO.prototype);
     return msg;
   }
