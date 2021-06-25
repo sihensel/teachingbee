@@ -3,14 +3,11 @@ import PropTypes from "prop-types";
 import { withStyles, Typography, Button, Card, CardActions, CardContent, Grid } from "@material-ui/core";
 import { TeachingbeeAPI } from "../api";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-//import ContextErrorMessage from './ContextErrorMessage';
-//import LoadingProgress from './LoadingProgress';
 
 class Matching extends Component {
   constructor(props) {
     super(props);
 
-    // Init the state
     this.state = {
       personList: null,
       groupList: null,
@@ -24,12 +21,12 @@ class Matching extends Component {
 
   matchPerson = () => {
     TeachingbeeAPI.getAPI().matchPerson(this.props.person.getID()).then((response) =>
-        this.setState({
-          personList: response,
-          loadingInProgress: false,
-          loadingError: null,
-        })
-      )
+      this.setState({
+        personList: response,
+        loadingInProgress: false,
+        loadingError: null,
+      })
+    )
       .catch((e) =>
         this.setState({
           profile: null,
@@ -44,13 +41,13 @@ class Matching extends Component {
   };
 
   matchGroup = () => {
-    TeachingbeeAPI.getAPI() .matchGroup(this.props.person.getID()) .then((response) =>
-        this.setState({
-          groupList: response,
-          loadingInProgress: false,
-          loadingError: null,
-        })
-      )
+    TeachingbeeAPI.getAPI().matchGroup(this.props.person.getID()).then((response) =>
+      this.setState({
+        groupList: response,
+        loadingInProgress: false,
+        loadingError: null,
+      })
+    )
       .catch((e) =>
         this.setState({
           profile: null,
@@ -98,7 +95,6 @@ class Matching extends Component {
     return age_now;
   };
 
-  /** Renders the component */
   render() {
     const { classes } = this.props;
     const { personList, groupList } = this.state;
@@ -115,17 +111,16 @@ class Matching extends Component {
             <ArrowBackIcon />
           </Button>
         </div>
-        {(personList && groupList)
-          ?
-          <Grid
-            container
-            spacing={1}
-            direction="column"
-            alignItems="center"
-            justify="center"
-            style={{marginTop: 10}}
-          >
-            {personList.map((person) => {
+        <Grid
+          container
+          spacing={1}
+          direction="column"
+          alignItems="center"
+          justify="center"
+          style={{ marginTop: 10 }}
+        >
+          {personList
+            ? personList.map((person) => {
               return (
                 <Grid item style={{ width: 700 }}>
                   <Card variant="outlined" key={person.getID()}>
@@ -159,9 +154,11 @@ class Matching extends Component {
                   </Card>
                 </Grid>
               );
-            })}
-
-            {groupList.map((group) => {
+            })
+            : null
+          }
+          {groupList
+            ? groupList.map((group) => {
               return (
                 <Grid item style={{ width: 700 }}>
                   <Card variant="outlined">
@@ -187,10 +184,9 @@ class Matching extends Component {
                 </Grid>
               );
             })
-            }
-          </Grid>
-          : <p>Es konnten leider keine passenden Matches gefunden werden.</p>
-        }
+            : <p>Es konnten keine passen Gruppen gefunden werden.</p>
+          }
+        </Grid>
       </div>
     );
   }
