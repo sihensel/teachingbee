@@ -28,8 +28,8 @@ Um die App lokal zu nutzen muss zuerst die Datenbank mit MySQL/MariaDB erstellt 
 Dazu die `/database/dump.sql` einlesen und in der Datei `/backend/server/db/Mapper.py` die entsprechenden Login-Daten angeben.
 
 ## Starten der App
-Der React-Client kann mit dem Befehl `npm start` im Ordner `/reactfrontend` gestarted werden. Dieser steht dann unter `http://localhost:3000` zur Verfügung.  
-Um React zusammen mit Flask verwenden zu können, muss der React-Client erst mit `npm run build` kompiliert werden. Der Inhalt des entstandenen Ordners `/reactfrontend/build` muss dann nach `/backend/server/static/reactclient` kopiert werden.  
+Zuerst muss in Firebase ein Projekt angelegt werden und die entsprechende Konfiguration in die Datei `/reactfrontend/src/firebaseconfig.js` eingefügt werden.  
+Dann kann der React-Client mit `npm run build` im Ordner `/reactfrontend` kompiliert werden. Der Inhalt des entstandenen Ordners `/reactfrontend/build` muss dann nach `/backend/server/static/reactclient` kopiert werden.  
 Anschließend kann das Python Backend gestartet werden, in dem die Datei `main.py` im Ordner `/backend` ausgeführt wird.  
 Die REST-API steht dann unter `http://localhost:5000` zur Verfügung. Die Anwendung kann über `http://localhost:5000/static/reactclient/index.html` aufgerufen werden.
 
