@@ -58,8 +58,9 @@ class BusinessLogic:
         with GroupMapper() as mapper:
             mapper.leave_all_groups(person.get_id())
         with PersonMapper() as mapper:
+            mapper.delete_firebase(person.get_id())
             mapper.delete(person.get_id())
-        self.delete_profile(person.get_id())         # das Profil muss natürlich auch geslöscht werden
+        self.delete_profile(person.get_profileID())         # das Profil muss natürlich auch geslöscht werden
         return 'successfull'
 
     ''' Verknüpft ein Profil mit einer Person '''

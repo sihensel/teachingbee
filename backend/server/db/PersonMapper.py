@@ -65,6 +65,17 @@ class PersonMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
+    
+    def delete_firebase(self, personID):
+        ''' FirebaseID löschen '''
+        cursor = self._cnx.cursor()
+
+        command = 'DELETE FROM R_person_firebase WHERE personID={}'.format(personID)
+        cursor.execute(command)
+
+        self._cnx.commit()
+        cursor.close()
+
 
     def find_by_profileID(self, profileID):
         ''' person anhand des Profils auslesen '''

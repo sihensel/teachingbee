@@ -18,8 +18,8 @@ class Mapper (AbstractContextManager, ABC):
                                           database='teachingbee')
         else:
             ''' Wenn die App lokal ausgeführt wird '''
-            self._cnx = connector.connect(user='me', password='password',
-                                  host='192.168.0.105',
+            self._cnx = connector.connect(user='root', password='password',
+                                  host='localhost',
                                   database='teachingbee')
 
         return self
